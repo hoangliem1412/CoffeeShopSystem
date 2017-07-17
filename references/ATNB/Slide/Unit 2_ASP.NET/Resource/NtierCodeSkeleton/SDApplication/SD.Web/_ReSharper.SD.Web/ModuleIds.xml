@@ -1,0 +1,7 @@
+<Modules>
+  <Module PersistentId="15884A0D-A0F6-4583-8E01-DDBFEEB8E753" ModuleId="SD.Web" />
+  <Module PersistentId="C47332D7-A7B6-416D-9873-1697B8D4AC6F" ModuleId="SD.Commons" />
+  <Module PersistentId="0A58A259-3722-498A-84A2-09BD6BDE9A84" ModuleId="SD.Business" />
+  <Module PersistentId="0049227C-0E12-4E87-81CE-1577D3FFE86D" ModuleId="SD.DataAccess" />
+  <Module PersistentId="A96BB8AA-553A-436B-889A-FB885BC1BE59" ModuleId="SD.Entities" />
+</Modules>

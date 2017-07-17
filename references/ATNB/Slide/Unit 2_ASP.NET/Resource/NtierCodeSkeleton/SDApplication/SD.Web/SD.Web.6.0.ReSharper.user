@@ -1,0 +1,57 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/f:Errors.aspx.cs" caret="13" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/d:Controls/f:WebUserControl1.ascx.cs" caret="13" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/d:Shares/f:Site1.Master.cs" caret="13" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/f:Default.aspx.cs" caret="13" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Helpers/f:DateTimeHelpers.cs" caret="0" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Helpers/f:CryptographyHelper.cs" caret="0" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/f:Web.config" caret="0" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Constants/f:UIMessage.cs" caret="68" fromTop="4" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Constants/f:DBSchemas.cs" caret="0" fromTop="0" />
+      <File id="0A58A259-3722-498A-84A2-09BD6BDE9A84/f:SDManager.cs" caret="405" fromTop="13" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Helpers/f:SQLHelper.cs" caret="2293" fromTop="6" />
+      <File id="0049227C-0E12-4E87-81CE-1577D3FFE86D/f:UserDao.cs" caret="961" fromTop="22" />
+      <File id="A96BB8AA-553A-436B-889A-FB885BC1BE59/f:User.cs" caret="0" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/d:Views/f:Login.aspx.cs" caret="0" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/f:AppConfig.cs" caret="299" fromTop="9" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/f:Errors.aspx.cs" caret="13" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/d:Controls/f:WebUserControl1.ascx.cs" caret="13" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/d:Views/f:Login.aspx.cs" caret="13" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/d:Shares/f:Site1.Master.cs" caret="13" fromTop="0" />
+      <File id="15884A0D-A0F6-4583-8E01-DDBFEEB8E753/f:Default.aspx.cs" caret="13" fromTop="0" />
+      <File id="A96BB8AA-553A-436B-889A-FB885BC1BE59/f:User.cs" caret="13" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Constants/f:DBSchemas.cs" caret="0" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Helpers/f:DateTimeHelpers.cs" caret="0" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Constants/f:UIMessage.cs" caret="0" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/f:AppConfig.cs" caret="0" fromTop="0" />
+      <File id="C47332D7-A7B6-416D-9873-1697B8D4AC6F/d:Helpers/f:CryptographyHelper.cs" caret="0" fromTop="0" />
+      <File id="0A58A259-3722-498A-84A2-09BD6BDE9A84/f:SDManager.cs" caret="459" fromTop="14" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir>C:\Program Files (x86)\NUnit 2.5.10\bin\net-2.0\lib</NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Default">
+      <Item value="false" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+</Configuration>
