@@ -9,15 +9,14 @@ using System.Threading.Tasks;
 
 namespace CoffeeShop.Model.Models
 {
-    [Table("Shops")]
-    public class Shop : Auditable
+    [Table("Districts")]
+    public class District : Auditable
     {
         [Required]
-        public int WardID { get; set; }
-        [MaxLength(256)]
-        public string DetailAddress { get; set; }
+        public int CityID { get; set; }
 
-        [ForeignKey("WardID")]
-        public virtual Ward Ward { get; set; }
+        [ForeignKey("CityID")]
+        public virtual City City { get; set; }
+        public virtual IEnumerable<Ward> Wards { get; set; }
     }
 }

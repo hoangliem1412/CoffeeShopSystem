@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoffeeShop.Data.Infrastructure
 {
-    public class DbFactory : Disposable, IDbFactory
+    public class DbFactory : Disposable, IDbFactory //kế thừa 1 inteface và 1 class.
     {
         CoffeeShopDbContext dbContext;
         public CoffeeShopDbContext Init()

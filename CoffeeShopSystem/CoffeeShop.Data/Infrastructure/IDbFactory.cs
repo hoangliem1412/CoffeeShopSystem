@@ -8,6 +8,6 @@ namespace CoffeeShop.Data.Infrastructure
 {
     public interface IDbFactory : IDisposable
     {
-        CoffeeShopDbContext Init();
+        CoffeeShopDbContext Init(); // 1 phương thức đễ khởi tạo dbcontext
     }
 }

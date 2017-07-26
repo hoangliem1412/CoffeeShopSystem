@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace CoffeeShop.Model.Models
 {
-    [Table("GroupTables")]
-    public class GroupTable : Auditable
+    [Table("Roles")]
+    public class Role : Auditable
     {
-        public string Surcharge { get; set; }
-
-        public virtual IEnumerable<Table> Tables { get; set; }
+        public virtual IEnumerable<ShopUser> ShopUsers { get; set; }
     }
 }

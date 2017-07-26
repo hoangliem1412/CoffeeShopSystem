@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CoffeeShop.Data.Infrastructure
 {
-    public abstract class RepositoryBase<T> where T : class
+    public abstract class RepositoryBase<T> : IRepository<T> where T : class
     {
         private CoffeeShopDbContext dbContext;
         private readonly IDbSet<T> dbSet;
@@ -21,7 +21,7 @@ namespace CoffeeShop.Data.Infrastructure
         }
         protected CoffeeShopDbContext DbContext
         {
-            get { return dbContext ?? (dbContext = new CoffeeShopDbContext()); }
+            get { return dbContext ?? (dbContext = DbFactory.Init()); }
         }
 
         protected RepositoryBase(IDbFactory dbFactory)
@@ -31,8 +31,6 @@ namespace CoffeeShop.Data.Infrastructure
 
         }
 
-
-        #region Implementation
         public virtual void Add(T entity)
         {
             dbSet.Add(entity);
@@ -63,7 +61,7 @@ namespace CoffeeShop.Data.Infrastructure
             return dbSet.Find(id);
         }
 
-        public virtual T GetSingleByCondition(Expression<Func<T, bool>> where, string[] includes = null)
+        public virtual T GetsingleByCondition(Expression<Func<T, bool>> where, string[] includes = null)
         {
             return GetAll(includes).FirstOrDefault(where);
         }
@@ -88,10 +86,10 @@ namespace CoffeeShop.Data.Infrastructure
                 }
                 return query.AsQueryable();
             }
-            return dbContext.Set<T>().AsQueryable();
+            return dbContext.Set<T>().AsQueryable<T>();
         }
 
-        IQueryable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null)
+        public virtual IQueryable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null)
         {
             if (includes != null && includes.Count() >= 0)
             {
@@ -100,9 +98,38 @@ namespace CoffeeShop.Data.Infrastructure
                 {
                     query = query.Include(include);
                 }
-                return query.AsQueryable();
+                return query.Where<T>(predicate).AsQueryable<T>();
             }
-            return dbContext.Set<T>().Include(predicate).AsQueryable();
+            return dbContext.Set<T>().Where<T>(predicate).AsQueryable<T>();
+        }
+        
+        public virtual IQueryable<T> GetMultiPaging(Expression<Func<T, bool>> predicate, out int total, int index = 0, int size = 20, string[] includes = null)
+        {
+            int skipCount = index * size;
+            IQueryable<T> _resetSet;
+
+            if (includes != null && includes.Count() > 0)
+            {
+                var query = dbContext.Set<T>().Include(includes.First());
+                foreach (var include in includes.Skip(1))
+                {
+                    query = query.Include(include);
+                }
+                _resetSet = predicate != null ? query.Where<T>(predicate).AsQueryable() : query.AsQueryable();
+            }
+            else
+            {
+                _resetSet = predicate != null ? dbContext.Set<T>().Where<T>(predicate).AsQueryable() : dbContext.Set<T>().AsQueryable();
+            }
+
+            _resetSet = skipCount == 0 ? _resetSet.Take(size) : _resetSet.Skip(skipCount).Take(size);
+            total = _resetSet.Count();
+            return _resetSet.AsQueryable();
+        }
+
+        public bool CheckContains(Expression<Func<T, bool>> predicate)
+        {
+            return dbContext.Set<T>().Count<T>(predicate) > 0;
         }
 
     }

@@ -15,6 +15,12 @@ namespace CoffeeShop.Data.Infrastructure
         {
             this.dbFactory = dbFactory;
         }
+
+        public CoffeeShopDbContext DbContext
+        {
+            get { return dbContext ?? (dbContext = dbFactory.Init()); }
+        }
+
         public void Commit()
         {
             dbContext.SaveChanges();
