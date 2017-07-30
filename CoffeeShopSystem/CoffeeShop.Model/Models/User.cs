@@ -14,6 +14,7 @@ namespace CoffeeShop.Model.Models
     {
         [Required]
         [MaxLength(100)]
+        [Column(TypeName = "VARCHAR")]
         public string Username { get; set; }
         [Required]
         [MaxLength(100)]

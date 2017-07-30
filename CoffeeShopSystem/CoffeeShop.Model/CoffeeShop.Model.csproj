@@ -51,9 +51,23 @@
   <ItemGroup>
     <Compile Include="Abstract\Auditable.cs" />
     <Compile Include="Abstract\IAuditable.cs" />
+    <Compile Include="Abstract\Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\District.cs" />
     <Compile Include="Models\GroupTable.cs" />
+    <Compile Include="Models\Material.cs" />
+    <Compile Include="Models\MaterialCategogy.cs" />
+    <Compile Include="Models\MaterialOrder.cs" />
+    <Compile Include="Models\MaterialOrderDetail.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderProduct.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductCategory.cs" />
+    <Compile Include="Models\Promotion.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Shop.cs" />
     <Compile Include="Models\ShopUser.cs" />
@@ -66,7 +80,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Abstract\Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

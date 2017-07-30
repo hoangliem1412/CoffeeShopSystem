@@ -3,7 +3,7 @@ using CoffeeShop.Model.Models;
 
 namespace CoffeeShop.Data.Repositories
 {
-    public class GroupTableRepository : RepositoryBase<GroupTable>, IGroupTableRepository
+    public class DistrictRepository : RepositoryBase<District>, IDistrictRepository
     {
     }
 }

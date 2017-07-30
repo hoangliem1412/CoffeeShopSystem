@@ -24,16 +24,17 @@ namespace CoffeeShop.Data.Infrastructure
             get { return dbContext ?? (dbContext = DbFactory.Init()); }
         }
 
-        protected RepositoryBase(IDbFactory dbFactory)
+        protected RepositoryBase()
         {
+            IDbFactory dbFactory = new DbFactory();
             DbFactory = dbFactory;
             dbSet = dbContext.Set<T>();
 
         }
 
-        public virtual void Add(T entity)
+        public virtual T Add(T entity)
         {
-            dbSet.Add(entity);
+            return dbSet.Add(entity);
         }
 
         public virtual void Update(T entity)
@@ -42,18 +43,15 @@ namespace CoffeeShop.Data.Infrastructure
             dbContext.Entry(entity).State = EntityState.Modified;
         }
 
-        public virtual void Delete(T entity)
+        public virtual T Delete(T entity)
         {
-            dbSet.Remove(entity);
+            return dbSet.Remove(entity);
         }
 
-        public virtual void DeleteMulti(Expression<Func<T, bool>> where)
+        public virtual T Delete(int id)
         {
-            IEnumerable<T> objects = dbSet.Where<T>(where).AsEnumerable();
-            foreach (T obj in objects)
-            {
-                dbSet.Remove(obj);
-            }
+            var entity = dbSet.Find(id);
+            return dbSet.Remove(entity);
         }
 
         public virtual T GetSingleById(int id)
@@ -63,7 +61,16 @@ namespace CoffeeShop.Data.Infrastructure
 
         public virtual T GetsingleByCondition(Expression<Func<T, bool>> where, string[] includes = null)
         {
-            return GetAll(includes).FirstOrDefault(where);
+            if (includes != null && includes.Count() >= 0)
+            {
+                var query = dbContext.Set<T>().Include(includes.First());
+                foreach (var include in includes.Skip(1))
+                {
+                    query = query.Include(include);
+                }
+                return query.FirstOrDefault(where);
+            }
+            return dbContext.Set<T>().FirstOrDefault(where);
         }
         public virtual IEnumerable<T> GetMany(Expression<Func<T, bool>> where)
         {
@@ -75,7 +82,7 @@ namespace CoffeeShop.Data.Infrastructure
             return dbSet.Count(where);
         }
 
-        public virtual IQueryable<T> GetAll(string[] includes = null)
+        public virtual IEnumerable<T> GetAll(string[] includes = null)
         {
             if (includes != null && includes.Count() >= 0)
             {
@@ -89,7 +96,7 @@ namespace CoffeeShop.Data.Infrastructure
             return dbContext.Set<T>().AsQueryable<T>();
         }
 
-        public virtual IQueryable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null)
+        public virtual IEnumerable<T> GetMulti(Expression<Func<T, bool>> predicate, string[] includes = null)
         {
             if (includes != null && includes.Count() >= 0)
             {
@@ -103,7 +110,7 @@ namespace CoffeeShop.Data.Infrastructure
             return dbContext.Set<T>().Where<T>(predicate).AsQueryable<T>();
         }
         
-        public virtual IQueryable<T> GetMultiPaging(Expression<Func<T, bool>> predicate, out int total, int index = 0, int size = 20, string[] includes = null)
+        public virtual IEnumerable<T> GetMultiPaging(Expression<Func<T, bool>> predicate, out int total, int index = 0, int size = 20, string[] includes = null)
         {
             int skipCount = index * size;
             IQueryable<T> _resetSet;
