@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using CoffeeShop.Model.ModelEntity;
 
 namespace CoffeeShop.Data.Infrastructure
 {
     public class DbFactory : Disposable, IDbFactory //kế thừa 1 inteface và 1 class.
     {
-        CoffeeShopDbContext dbContext;
-        public CoffeeShopDbContext Init()
+        private CoffeeSystemDbContext dbContext;
+
+        public CoffeeSystemDbContext Init()
         {
-            return dbContext ?? (dbContext = new CoffeeShopDbContext());
+            return dbContext ?? (dbContext = new CoffeeSystemDbContext());
         }
 
         protected override void DisposeCore()

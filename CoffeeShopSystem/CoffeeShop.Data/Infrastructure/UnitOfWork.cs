@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CoffeeShop.Model.ModelEntity;
 
 namespace CoffeeShop.Data.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IDbFactory dbFactory;
-        private CoffeeShopDbContext dbContext;
+        private CoffeeSystemDbContext dbContext;
 
         public UnitOfWork(IDbFactory dbFactory)
         {
             this.dbFactory = dbFactory;
         }
 
-        public CoffeeShopDbContext DbContext
+        public CoffeeSystemDbContext DbContext
         {
             get { return dbContext ?? (dbContext = dbFactory.Init()); }
         }

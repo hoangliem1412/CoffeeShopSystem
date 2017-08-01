@@ -1,6 +1,6 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Data.Repositories;
-using CoffeeShop.Model.Models;
+using CoffeeShop.Model.ModelEntity;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,7 @@ namespace CoffeeShop.UnitTest.RepositoryTest
         public void GroupTable_Repository_GetAll()
         {
             var list = objRepository.GetAll().ToList();
-            Assert.AreEqual(10, list.Count);
+            Assert.AreEqual(7, list.Count);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Data.Repositories;
-using CoffeeShop.Model.Models;
+using CoffeeShop.Model.ModelEntity;
 using System.Collections.Generic;
 
 namespace CoffeeShop.Service

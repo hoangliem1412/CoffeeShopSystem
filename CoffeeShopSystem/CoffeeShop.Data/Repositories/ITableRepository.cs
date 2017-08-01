@@ -1,5 +1,5 @@
 ﻿using CoffeeShop.Data.Infrastructure;
-using CoffeeShop.Model.Models;
+using CoffeeShop.Model.ModelEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

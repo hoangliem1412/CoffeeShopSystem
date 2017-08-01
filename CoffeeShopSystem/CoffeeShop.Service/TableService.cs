@@ -1,6 +1,6 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Data.Repositories;
-using CoffeeShop.Model.Models;
+using CoffeeShop.Model.ModelEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,12 +46,12 @@ namespace CoffeeShop.Service
 
         public IEnumerable<Table> GetAllPaging(int page, int size, out int totalRow)
         {
-            return _tableRepository.GetMultiPaging(x => !x.IsDelete, out totalRow, page, size);
+            return _tableRepository.GetMultiPaging(x => (!x.IsDelete ?? true), out totalRow, page, size);
         }
 
         public IEnumerable<Table> GetAllPagingByGroup(int groupTable, int pageIndex, int pageSize, out int totalRow)
         {
-            return _tableRepository.GetMultiPaging(x => !x.IsDelete && x.GroupTableId == groupTable, out totalRow, pageIndex, pageSize, new string[] { "GroupTable" });
+            return _tableRepository.GetMultiPaging(x => (!x.IsDelete ?? true) && x.GroupTableID == groupTable, out totalRow, pageIndex, pageSize, new string[] { "GroupTable" });
         }
 
         public Table GetByID(int id)

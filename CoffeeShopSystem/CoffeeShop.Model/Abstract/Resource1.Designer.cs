@@ -63,9 +63,9 @@ namespace CoffeeShop.Model.Abstract {
         /// <summary>
         ///   Looks up a localized string similar to 256.
         /// </summary>
-        internal static string Name {
+        internal static string LengthName {
             get {
-                return ResourceManager.GetString("Name", resourceCulture);
+                return ResourceManager.GetString("LengthName", resourceCulture);
             }
         }
     }

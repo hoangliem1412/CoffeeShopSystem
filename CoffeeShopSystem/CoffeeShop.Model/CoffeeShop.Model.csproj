@@ -41,6 +41,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,25 +57,27 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Models\City.cs" />
-    <Compile Include="Models\District.cs" />
-    <Compile Include="Models\GroupTable.cs" />
-    <Compile Include="Models\Material.cs" />
-    <Compile Include="Models\MaterialCategogy.cs" />
-    <Compile Include="Models\MaterialOrder.cs" />
-    <Compile Include="Models\MaterialOrderDetail.cs" />
-    <Compile Include="Models\Order.cs" />
-    <Compile Include="Models\OrderProduct.cs" />
-    <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\ProductCategory.cs" />
-    <Compile Include="Models\Promotion.cs" />
-    <Compile Include="Models\Role.cs" />
-    <Compile Include="Models\Shop.cs" />
-    <Compile Include="Models\ShopUser.cs" />
-    <Compile Include="Models\Table.cs" />
-    <Compile Include="Models\User.cs" />
-    <Compile Include="Models\Ward.cs" />
+    <Compile Include="ModelEntity\City.cs" />
+    <Compile Include="ModelEntity\CoffeeSystem.cs" />
+    <Compile Include="ModelEntity\District.cs" />
+    <Compile Include="ModelEntity\GroupTable.cs" />
+    <Compile Include="ModelEntity\Material.cs" />
+    <Compile Include="ModelEntity\MaterialCategory.cs" />
+    <Compile Include="ModelEntity\MaterialLog.cs" />
+    <Compile Include="ModelEntity\MaterialView.cs" />
+    <Compile Include="ModelEntity\Order.cs" />
+    <Compile Include="ModelEntity\OrderProduct.cs" />
+    <Compile Include="ModelEntity\Product.cs" />
+    <Compile Include="ModelEntity\ProductCategory.cs" />
+    <Compile Include="ModelEntity\Promotion.cs" />
+    <Compile Include="ModelEntity\Role.cs" />
+    <Compile Include="ModelEntity\Shop.cs" />
+    <Compile Include="ModelEntity\ShopUser.cs" />
+    <Compile Include="ModelEntity\Table.cs" />
+    <Compile Include="ModelEntity\User.cs" />
+    <Compile Include="ModelEntity\Ward.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +88,7 @@
     <EmbeddedResource Include="Abstract\Resource1.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

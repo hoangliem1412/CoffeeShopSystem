@@ -1,6 +1,6 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Data.Repositories;
-using CoffeeShop.Model.Models;
+using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

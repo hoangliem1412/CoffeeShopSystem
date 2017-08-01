@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using CoffeeShop.Model.ModelEntity;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Data.Infrastructure
 {
     public abstract class RepositoryBase<T> : IRepository<T> where T : class
     {
-        private CoffeeShopDbContext dbContext;
+        private CoffeeSystemDbContext dbContext;
         private readonly IDbSet<T> dbSet;
 
         protected IDbFactory DbFactory
@@ -19,7 +17,8 @@ namespace CoffeeShop.Data.Infrastructure
             get;
             private set;
         }
-        protected CoffeeShopDbContext DbContext
+
+        protected CoffeeSystemDbContext DbContext
         {
             get { return dbContext ?? (dbContext = DbFactory.Init()); }
         }
@@ -28,8 +27,7 @@ namespace CoffeeShop.Data.Infrastructure
         {
             IDbFactory dbFactory = new DbFactory();
             DbFactory = dbFactory;
-            dbSet = dbContext.Set<T>();
-
+            dbSet = DbContext.Set<T>();
         }
 
         public virtual T Add(T entity)
@@ -72,6 +70,7 @@ namespace CoffeeShop.Data.Infrastructure
             }
             return dbContext.Set<T>().FirstOrDefault(where);
         }
+
         public virtual IEnumerable<T> GetMany(Expression<Func<T, bool>> where)
         {
             return dbSet.Where<T>(where).ToList<T>();
@@ -109,7 +108,7 @@ namespace CoffeeShop.Data.Infrastructure
             }
             return dbContext.Set<T>().Where<T>(predicate).AsQueryable<T>();
         }
-        
+
         public virtual IEnumerable<T> GetMultiPaging(Expression<Func<T, bool>> predicate, out int total, int index = 0, int size = 20, string[] includes = null)
         {
             int skipCount = index * size;
@@ -138,6 +137,5 @@ namespace CoffeeShop.Data.Infrastructure
         {
             return dbContext.Set<T>().Count<T>(predicate) > 0;
         }
-
     }
 }
