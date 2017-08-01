@@ -32,6 +32,7 @@ namespace CoffeeShop.Service
         public void Add(Table table)
         {
             _tableRepository.Add(table);
+            //thuc hien moi xu li khi them 1 ban.
         }
 
         public void Delete(int id)
@@ -41,7 +42,7 @@ namespace CoffeeShop.Service
 
         public IEnumerable<Table> GetAll()
         {
-            return _tableRepository.GetAll(new string[] { "GroupTable" }); //select duoc group table tuong ung.
+            return _tableRepository.GetAll(); //select duoc group table tuong ung.
         }
 
         public IEnumerable<Table> GetAllPaging(int page, int size, out int totalRow)

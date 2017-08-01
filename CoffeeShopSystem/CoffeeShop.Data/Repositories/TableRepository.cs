@@ -7,9 +7,10 @@ namespace CoffeeShop.Data.Repositories
 {
     public class TableRepository : RepositoryBase<Table>, ITableRepository
     {
-        //public TableRepository(IDbFactory dbFactory) : base(dbFactory)
-        //{
-        //}
+        public TableRepository(IDbFactory dbFactory)
+            : base(dbFactory)
+        {
+        }
 
         public IEnumerable<Table> GetAllPagingByGroup(int groupTable, int pageIndex, int pageSize, out int totalRow)
         {

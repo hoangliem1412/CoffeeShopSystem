@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Data.Infrastructure
 {
     public class Disposable : IDisposable //interface cuar c#. tự động hủy.
     {
         private bool isDisposed;
+
         ~Disposable()
         {
             Dispose(false);
         }
-        
+
         public void Dispose()
         {
             Dispose(true);
@@ -33,7 +30,6 @@ namespace CoffeeShop.Data.Infrastructure
         //Overide this to dispose custom object
         protected virtual void DisposeCore()
         {
-
         }
     }
 }

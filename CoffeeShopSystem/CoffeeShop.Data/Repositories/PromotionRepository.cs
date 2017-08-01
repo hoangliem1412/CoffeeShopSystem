@@ -5,5 +5,9 @@ namespace CoffeeShop.Data.Repositories
 {
     public class PromotionRepository : RepositoryBase<Promotion>, IPromotionRepository
     {
+        public PromotionRepository(IDbFactory dbFactory)
+            : base(dbFactory)
+        {
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace CoffeeShop.UnitTest.RepositoryTest
         public void Initialize() //test phuong thuc khoi tao. de khoi tao cac khoi tuong test
         {
             dbFactory = new DbFactory();
-            objRepository = new GroupTableRepository();
+            objRepository = new GroupTableRepository(dbFactory);
             unitOfWork = new UnitOfWork(dbFactory);
         }
 

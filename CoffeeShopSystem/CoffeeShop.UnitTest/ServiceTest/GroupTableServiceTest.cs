@@ -4,11 +4,7 @@ using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.UnitTest.ServiceTest
 {
@@ -19,6 +15,7 @@ namespace CoffeeShop.UnitTest.ServiceTest
         private Mock<IUnitOfWork> _mockUnitOfWork;
         private IGroupTableService _groupService;
         private List<GroupTable> listGroupTable;
+
         [TestInitialize]
         public void Initialize()
         {
@@ -33,7 +30,7 @@ namespace CoffeeShop.UnitTest.ServiceTest
                 new GroupTable() {ID = 4, Name= "Test 4", IsDelete = false }
             };
         }
-        
+
         [TestMethod]
         public void GroupTable_Service_GetAll()
         {

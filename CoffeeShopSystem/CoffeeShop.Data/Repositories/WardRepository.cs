@@ -10,8 +10,9 @@ namespace CoffeeShop.Data.Repositories
 {
     public class WardRepository : RepositoryBase<Ward>, IWardRepository
     {
-        //public WardRepository(DbFactory dbFactory) : base(dbFactory)
-        //{
-        //}
+        public WardRepository(IDbFactory dbFactory)
+            : base(dbFactory)
+        {
+        }
     }
 }

@@ -5,5 +5,9 @@ namespace CoffeeShop.Data.Repositories
 {
     public class UserRepository : RepositoryBase<User>, IUserRepository
     {
+        public UserRepository(IDbFactory dbFactory)
+            : base(dbFactory)
+        {
+        }
     }
 }

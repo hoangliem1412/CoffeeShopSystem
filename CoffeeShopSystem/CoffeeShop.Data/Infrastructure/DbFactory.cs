@@ -1,5 +1,4 @@
-﻿
-using CoffeeShop.Model.ModelEntity;
+﻿using CoffeeShop.Model.ModelEntity;
 
 namespace CoffeeShop.Data.Infrastructure
 {

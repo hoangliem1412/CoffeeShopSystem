@@ -23,9 +23,8 @@ namespace CoffeeShop.Data.Infrastructure
             get { return dbContext ?? (dbContext = DbFactory.Init()); }
         }
 
-        protected RepositoryBase()
+        protected RepositoryBase(IDbFactory dbFactory)
         {
-            IDbFactory dbFactory = new DbFactory();
             DbFactory = dbFactory;
             dbSet = DbContext.Set<T>();
         }
@@ -59,7 +58,7 @@ namespace CoffeeShop.Data.Infrastructure
 
         public virtual T GetsingleByCondition(Expression<Func<T, bool>> where, string[] includes = null)
         {
-            if (includes != null && includes.Count() >= 0)
+            if (includes != null && includes.Count() > 0)
             {
                 var query = dbContext.Set<T>().Include(includes.First());
                 foreach (var include in includes.Skip(1))
