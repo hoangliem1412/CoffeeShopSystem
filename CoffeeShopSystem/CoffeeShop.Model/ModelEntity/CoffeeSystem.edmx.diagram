@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d6495ec1f03c4f9baf1501b68db224b2" Name="Diagram1">
+        <EntityTypeShape EntityType="CoffeShopSystemModel.City" Width="1.5" PointX="0.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.District" Width="1.5" PointX="3" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.GroupTable" Width="1.5" PointX="10.5" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Material" Width="1.5" PointX="10.5" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.MaterialCategory" Width="1.5" PointX="8.25" PointY="23.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.MaterialLog" Width="1.5" PointX="12.75" PointY="18.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Order" Width="1.5" PointX="12" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.OrderProduct" Width="1.5" PointX="15.25" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Product" Width="1.5" PointX="9.75" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.ProductCategory" Width="1.5" PointX="7.5" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Promotion" Width="1.5" PointX="9.75" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Role" Width="1.5" PointX="7.5" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Shop" Width="1.5" PointX="7.5" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.ShopUser" Width="1.5" PointX="9.75" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Table" Width="1.5" PointX="12.75" PointY="10" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.User" Width="1.5" PointX="7.5" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.Ward" Width="1.5" PointX="5.25" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.MaterialView" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__District__CityID__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Ward__DistrictID__571DF1D5" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Table__GroupTabl__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK_Material_MaterialCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK_MaterialLog_Material" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK_MaterialLog_User" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Order__Promotion__398D8EEE" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Order__TableID__3A81B327" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Order__UserID__3B75D760" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__OrderProd__Order__3C69FB99" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK_ORDER_SHOP" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__OrderProd__Produ__4CA06362" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Product__Product__4D94879B" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Product__ShopID__4E88ABD4" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Promotion__ShopI__4F7CD00D" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__ShopUser__RoleID__5165187F" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Shop__WardID__5070F446" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__ShopUser__ShopID__52593CB8" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__Table__ShopID__5535A963" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__ShopUser__UserID__534D60F1" ManuallyRouted="false" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK__User__WardID__5629CD9C" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
