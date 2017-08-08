@@ -23,13 +23,11 @@ namespace CoffeeShop.Model.ModelEntity
         public int ID { get; set; }
         public string Name { get; set; }
         public int GroupTableID { get; set; }
-        public int ShopID { get; set; }
         public string Description { get; set; }
         public Nullable<bool> IsDelete { get; set; }
     
         public virtual GroupTable GroupTable { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual Shop Shop { get; set; }
     }
 }

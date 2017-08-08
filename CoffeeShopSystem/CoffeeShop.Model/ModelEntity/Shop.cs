@@ -17,11 +17,11 @@ namespace CoffeeShop.Model.ModelEntity
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Shop()
         {
+            this.GroupTables = new HashSet<GroupTable>();
             this.Orders = new HashSet<Order>();
             this.Products = new HashSet<Product>();
             this.Promotions = new HashSet<Promotion>();
             this.ShopUsers = new HashSet<ShopUser>();
-            this.Tables = new HashSet<Table>();
         }
     
         public int ID { get; set; }
@@ -32,6 +32,8 @@ namespace CoffeeShop.Model.ModelEntity
         public Nullable<bool> IsDelete { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GroupTable> GroupTables { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
@@ -40,7 +42,5 @@ namespace CoffeeShop.Model.ModelEntity
         public virtual Ward Ward { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopUser> ShopUsers { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Table> Tables { get; set; }
     }
 }

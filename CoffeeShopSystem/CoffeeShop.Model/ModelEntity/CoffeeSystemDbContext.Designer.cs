@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\FPT\Document\CoffeeShopSystem\CoffeeShop.Model\ModelEntity\CoffeeSystem.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\LiemNH\Desktop\LiemNH\CoffeeShopSystem\CoffeeShop.Model\ModelEntity\CoffeeSystemDbContext.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -60,84 +61,84 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="ModelEntity\City.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="ModelEntity\CoffeeSystem.Context.cs">
+    <Compile Include="ModelEntity\CoffeeSystemDbContext.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CoffeeSystem.Context.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="ModelEntity\CoffeeSystem.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="ModelEntity\CoffeeSystem.Designer.cs">
+    <Compile Include="ModelEntity\CoffeeSystemDbContext.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CoffeeSystem.edmx</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelEntity\CoffeeSystemDbContext.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoffeeSystemDbContext.edmx</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\District.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\GroupTable.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Material.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\MaterialCategory.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\MaterialLog.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\MaterialView.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Order.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\OrderProduct.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Product.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\ProductCategory.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Promotion.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Role.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Shop.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\ShopUser.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Table.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\User.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Ward.cs">
-      <DependentUpon>CoffeeSystem.tt</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EntityDeploy Include="ModelEntity\CoffeeSystem.edmx">
+    <EntityDeploy Include="ModelEntity\CoffeeSystemDbContext.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>CoffeeSystem.Designer.cs</LastGenOutput>
+      <LastGenOutput>CoffeeSystemDbContext.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="ModelEntity\CoffeeSystem.edmx.diagram">
-      <DependentUpon>CoffeeSystem.edmx</DependentUpon>
+    <None Include="ModelEntity\CoffeeSystemDbContext.edmx.diagram">
+      <DependentUpon>CoffeeSystemDbContext.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
@@ -151,17 +152,16 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="ModelEntity\CoffeeSystem.Context.tt">
+    <Content Include="ModelEntity\CoffeeSystemDbContext.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>CoffeeSystem.edmx</DependentUpon>
-      <LastGenOutput>CoffeeSystem.Context.cs</LastGenOutput>
+      <DependentUpon>CoffeeSystemDbContext.edmx</DependentUpon>
+      <LastGenOutput>CoffeeSystemDbContext.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="ModelEntity\CoffeeSystem.tt">
+    <Content Include="ModelEntity\CoffeeSystemDbContext.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CoffeeSystem.cs</LastGenOutput>
-      <DependentUpon>CoffeeSystem.edmx</DependentUpon>
+      <DependentUpon>CoffeeSystemDbContext.edmx</DependentUpon>
+      <LastGenOutput>CoffeeSystemDbContext.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

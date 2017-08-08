@@ -33,6 +33,7 @@
           <Property Name="Description" Type="ntext" />
           <Property Name="Surcharge" Type="money" />
           <Property Name="IsDelete" Type="bit" />
+          <Property Name="ShopID" Type="int" />
         </EntityType>
         <EntityType Name="Material">
           <Key>
@@ -41,9 +42,10 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="CategoryID" Type="int" />
-          <Property Name="UnitName" Type="nvarchar" MaxLength="255" />
+          <Property Name="UnitPrice" Type="money" />
           <Property Name="Inventory" Type="int" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsDelete" Type="bit" />
         </EntityType>
         <EntityType Name="MaterialCategory">
@@ -53,6 +55,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsDelete" Type="bit" />
         </EntityType>
         <EntityType Name="MaterialLog">
@@ -61,10 +64,12 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MaterialID" Type="int" />
-          <Property Name="Inventory" Type="int" />
-          <Property Name="PreInventory" Type="nchar" MaxLength="10" />
           <Property Name="EmployeeID" Type="int" />
+          <Property Name="Inventory" Type="int" />
+          <Property Name="UnitPrice" Type="money" />
+          <Property Name="Type" Type="bit" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsDelete" Type="bit" />
         </EntityType>
         <EntityType Name="Order">
@@ -169,7 +174,6 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="GroupTableID" Type="int" Nullable="false" />
-          <Property Name="ShopID" Type="int" Nullable="false" />
           <Property Name="Description" Type="ntext" />
           <Property Name="IsDelete" Type="bit" />
         </EntityType>
@@ -210,9 +214,10 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="CategoryID" Type="int" />
-          <Property Name="UnitName" Type="nvarchar" MaxLength="255" />
+          <Property Name="UnitPrice" Type="money" />
           <Property Name="Inventory" Type="int" />
           <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsDelete" Type="bit" />
           <Property Name="CategoryName" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
@@ -276,7 +281,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__Produ__4CA06362">
+        <Association Name="FK__OrderProd__Produ__4D94879B">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="OrderProduct" Type="Self.OrderProduct" Multiplicity="*" />
           <ReferentialConstraint>
@@ -288,7 +293,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__Product__4D94879B">
+        <Association Name="FK__Product__Product__4E88ABD4">
           <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -300,7 +305,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__ShopID__4E88ABD4">
+        <Association Name="FK__Product__ShopID__4F7CD00D">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -312,7 +317,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Promotion__ShopI__4F7CD00D">
+        <Association Name="FK__Promotion__ShopI__5070F446">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="Promotion" Type="Self.Promotion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -324,7 +329,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Shop__WardID__5070F446">
+        <Association Name="FK__Shop__WardID__5165187F">
           <End Role="Ward" Type="Self.Ward" Multiplicity="0..1" />
           <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
           <ReferentialConstraint>
@@ -336,7 +341,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ShopUser__RoleID__5165187F">
+        <Association Name="FK__ShopUser__RoleID__52593CB8">
           <End Role="Role" Type="Self.Role" Multiplicity="1" />
           <End Role="ShopUser" Type="Self.ShopUser" Multiplicity="*" />
           <ReferentialConstraint>
@@ -348,7 +353,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ShopUser__ShopID__52593CB8">
+        <Association Name="FK__ShopUser__ShopID__534D60F1">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="ShopUser" Type="Self.ShopUser" Multiplicity="*" />
           <ReferentialConstraint>
@@ -360,7 +365,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ShopUser__UserID__534D60F1">
+        <Association Name="FK__ShopUser__UserID__5441852A">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="ShopUser" Type="Self.ShopUser" Multiplicity="*" />
           <ReferentialConstraint>
@@ -372,7 +377,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Table__GroupTabl__5441852A">
+        <Association Name="FK__Table__GroupTabl__5535A963">
           <End Role="GroupTable" Type="Self.GroupTable" Multiplicity="1" />
           <End Role="Table" Type="Self.Table" Multiplicity="*" />
           <ReferentialConstraint>
@@ -381,18 +386,6 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Principal>
             <Dependent Role="Table">
               <PropertyRef Name="GroupTableID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Table__ShopID__5535A963">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
-          <End Role="Table" Type="Self.Table" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shop">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Table">
-              <PropertyRef Name="ShopID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -420,6 +413,18 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GroupTable_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="GroupTable" Type="Self.GroupTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupTable">
+              <PropertyRef Name="ShopID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Material_MaterialCategory">
           <End Role="MaterialCategory" Type="Self.MaterialCategory" Multiplicity="0..1" />
           <End Role="Material" Type="Self.Material" Multiplicity="*" />
@@ -432,11 +437,11 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MaterialLog_Material">
-          <End Role="Material" Type="Self.Material" Multiplicity="0..1" />
+        <Association Name="FK_MaterialLog_MaterialCategory">
+          <End Role="MaterialCategory" Type="Self.MaterialCategory" Multiplicity="0..1" />
           <End Role="MaterialLog" Type="Self.MaterialLog" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Material">
+            <Principal Role="MaterialCategory">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="MaterialLog">
@@ -491,9 +496,10 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
     [MaterialView].[ID] AS [ID], 
     [MaterialView].[Name] AS [Name], 
     [MaterialView].[CategoryID] AS [CategoryID], 
-    [MaterialView].[UnitName] AS [UnitName], 
+    [MaterialView].[UnitPrice] AS [UnitPrice], 
     [MaterialView].[Inventory] AS [Inventory], 
     [MaterialView].[Description] AS [Description], 
+    [MaterialView].[CreatedDate] AS [CreatedDate], 
     [MaterialView].[IsDelete] AS [IsDelete], 
     [MaterialView].[CategoryName] AS [CategoryName]
     FROM [dbo].[MaterialView] AS [MaterialView]</DefiningQuery>
@@ -518,44 +524,40 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             <End Role="Order" EntitySet="Order" />
             <End Role="OrderProduct" EntitySet="OrderProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__Produ__4CA06362" Association="Self.FK__OrderProd__Produ__4CA06362">
+          <AssociationSet Name="FK__OrderProd__Produ__4D94879B" Association="Self.FK__OrderProd__Produ__4D94879B">
             <End Role="Product" EntitySet="Product" />
             <End Role="OrderProduct" EntitySet="OrderProduct" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__Product__4D94879B" Association="Self.FK__Product__Product__4D94879B">
+          <AssociationSet Name="FK__Product__Product__4E88ABD4" Association="Self.FK__Product__Product__4E88ABD4">
             <End Role="ProductCategory" EntitySet="ProductCategory" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__ShopID__4E88ABD4" Association="Self.FK__Product__ShopID__4E88ABD4">
+          <AssociationSet Name="FK__Product__ShopID__4F7CD00D" Association="Self.FK__Product__ShopID__4F7CD00D">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="Product" EntitySet="Product" />
           </AssociationSet>
-          <AssociationSet Name="FK__Promotion__ShopI__4F7CD00D" Association="Self.FK__Promotion__ShopI__4F7CD00D">
+          <AssociationSet Name="FK__Promotion__ShopI__5070F446" Association="Self.FK__Promotion__ShopI__5070F446">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="Promotion" EntitySet="Promotion" />
           </AssociationSet>
-          <AssociationSet Name="FK__Shop__WardID__5070F446" Association="Self.FK__Shop__WardID__5070F446">
+          <AssociationSet Name="FK__Shop__WardID__5165187F" Association="Self.FK__Shop__WardID__5165187F">
             <End Role="Ward" EntitySet="Ward" />
             <End Role="Shop" EntitySet="Shop" />
           </AssociationSet>
-          <AssociationSet Name="FK__ShopUser__RoleID__5165187F" Association="Self.FK__ShopUser__RoleID__5165187F">
+          <AssociationSet Name="FK__ShopUser__RoleID__52593CB8" Association="Self.FK__ShopUser__RoleID__52593CB8">
             <End Role="Role" EntitySet="Role" />
             <End Role="ShopUser" EntitySet="ShopUser" />
           </AssociationSet>
-          <AssociationSet Name="FK__ShopUser__ShopID__52593CB8" Association="Self.FK__ShopUser__ShopID__52593CB8">
+          <AssociationSet Name="FK__ShopUser__ShopID__534D60F1" Association="Self.FK__ShopUser__ShopID__534D60F1">
             <End Role="Shop" EntitySet="Shop" />
             <End Role="ShopUser" EntitySet="ShopUser" />
           </AssociationSet>
-          <AssociationSet Name="FK__ShopUser__UserID__534D60F1" Association="Self.FK__ShopUser__UserID__534D60F1">
+          <AssociationSet Name="FK__ShopUser__UserID__5441852A" Association="Self.FK__ShopUser__UserID__5441852A">
             <End Role="User" EntitySet="User" />
             <End Role="ShopUser" EntitySet="ShopUser" />
           </AssociationSet>
-          <AssociationSet Name="FK__Table__GroupTabl__5441852A" Association="Self.FK__Table__GroupTabl__5441852A">
+          <AssociationSet Name="FK__Table__GroupTabl__5535A963" Association="Self.FK__Table__GroupTabl__5535A963">
             <End Role="GroupTable" EntitySet="GroupTable" />
-            <End Role="Table" EntitySet="Table" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Table__ShopID__5535A963" Association="Self.FK__Table__ShopID__5535A963">
-            <End Role="Shop" EntitySet="Shop" />
             <End Role="Table" EntitySet="Table" />
           </AssociationSet>
           <AssociationSet Name="FK__User__WardID__5629CD9C" Association="Self.FK__User__WardID__5629CD9C">
@@ -566,12 +568,16 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             <End Role="District" EntitySet="District" />
             <End Role="Ward" EntitySet="Ward" />
           </AssociationSet>
+          <AssociationSet Name="FK_GroupTable_Shop" Association="Self.FK_GroupTable_Shop">
+            <End Role="Shop" EntitySet="Shop" />
+            <End Role="GroupTable" EntitySet="GroupTable" />
+          </AssociationSet>
           <AssociationSet Name="FK_Material_MaterialCategory" Association="Self.FK_Material_MaterialCategory">
             <End Role="MaterialCategory" EntitySet="MaterialCategory" />
             <End Role="Material" EntitySet="Material" />
           </AssociationSet>
-          <AssociationSet Name="FK_MaterialLog_Material" Association="Self.FK_MaterialLog_Material">
-            <End Role="Material" EntitySet="Material" />
+          <AssociationSet Name="FK_MaterialLog_MaterialCategory" Association="Self.FK_MaterialLog_MaterialCategory">
+            <End Role="MaterialCategory" EntitySet="MaterialCategory" />
             <End Role="MaterialLog" EntitySet="MaterialLog" />
           </AssociationSet>
           <AssociationSet Name="FK_MaterialLog_User" Association="Self.FK_MaterialLog_User">
@@ -619,7 +625,9 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Surcharge" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="IsDelete" Type="Boolean" />
-          <NavigationProperty Name="Tables" Relationship="Self.FK__Table__GroupTabl__5441852A" FromRole="GroupTable" ToRole="Table" />
+          <Property Name="ShopID" Type="Int32" />
+          <NavigationProperty Name="Tables" Relationship="Self.FK__Table__GroupTabl__5535A963" FromRole="GroupTable" ToRole="Table" />
+          <NavigationProperty Name="Shop" Relationship="Self.FK_GroupTable_Shop" FromRole="GroupTable" ToRole="Shop" />
         </EntityType>
         <EntityType Name="Material">
           <Key>
@@ -628,12 +636,12 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CategoryID" Type="Int32" />
-          <Property Name="UnitName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UnitPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Inventory" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsDelete" Type="Boolean" />
           <NavigationProperty Name="MaterialCategory" Relationship="Self.FK_Material_MaterialCategory" FromRole="Material" ToRole="MaterialCategory" />
-          <NavigationProperty Name="MaterialLogs" Relationship="Self.FK_MaterialLog_Material" FromRole="Material" ToRole="MaterialLog" />
         </EntityType>
         <EntityType Name="MaterialCategory">
           <Key>
@@ -642,8 +650,10 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsDelete" Type="Boolean" />
           <NavigationProperty Name="Materials" Relationship="Self.FK_Material_MaterialCategory" FromRole="MaterialCategory" ToRole="Material" />
+          <NavigationProperty Name="MaterialLogs" Relationship="Self.FK_MaterialLog_MaterialCategory" FromRole="MaterialCategory" ToRole="MaterialLog" />
         </EntityType>
         <EntityType Name="MaterialLog">
           <Key>
@@ -651,12 +661,14 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MaterialID" Type="Int32" />
-          <Property Name="Inventory" Type="Int32" />
-          <Property Name="PreInventory" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="EmployeeID" Type="Int32" />
+          <Property Name="Inventory" Type="Int32" />
+          <Property Name="UnitPrice" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Type" Type="Boolean" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsDelete" Type="Boolean" />
-          <NavigationProperty Name="Material" Relationship="Self.FK_MaterialLog_Material" FromRole="MaterialLog" ToRole="Material" />
+          <NavigationProperty Name="MaterialCategory" Relationship="Self.FK_MaterialLog_MaterialCategory" FromRole="MaterialLog" ToRole="MaterialCategory" />
           <NavigationProperty Name="User" Relationship="Self.FK_MaterialLog_User" FromRole="MaterialLog" ToRole="User" />
         </EntityType>
         <EntityType Name="Order">
@@ -690,7 +702,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="Money" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="isDelete" Type="Boolean" />
           <NavigationProperty Name="Order" Relationship="Self.FK__OrderProd__Order__3C69FB99" FromRole="OrderProduct" ToRole="Order" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__OrderProd__Produ__4CA06362" FromRole="OrderProduct" ToRole="Product" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__OrderProd__Produ__4D94879B" FromRole="OrderProduct" ToRole="Product" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -706,9 +718,9 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="EndDate" Type="DateTime" Precision="3" />
           <Property Name="Discount" Type="Int32" />
           <Property Name="IsDelete" Type="Boolean" />
-          <NavigationProperty Name="OrderProducts" Relationship="Self.FK__OrderProd__Produ__4CA06362" FromRole="Product" ToRole="OrderProduct" />
-          <NavigationProperty Name="ProductCategory" Relationship="Self.FK__Product__Product__4D94879B" FromRole="Product" ToRole="ProductCategory" />
-          <NavigationProperty Name="Shop" Relationship="Self.FK__Product__ShopID__4E88ABD4" FromRole="Product" ToRole="Shop" />
+          <NavigationProperty Name="OrderProducts" Relationship="Self.FK__OrderProd__Produ__4D94879B" FromRole="Product" ToRole="OrderProduct" />
+          <NavigationProperty Name="ProductCategory" Relationship="Self.FK__Product__Product__4E88ABD4" FromRole="Product" ToRole="ProductCategory" />
+          <NavigationProperty Name="Shop" Relationship="Self.FK__Product__ShopID__4F7CD00D" FromRole="Product" ToRole="Shop" />
         </EntityType>
         <EntityType Name="ProductCategory">
           <Key>
@@ -718,7 +730,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDelete" Type="Boolean" />
-          <NavigationProperty Name="Products" Relationship="Self.FK__Product__Product__4D94879B" FromRole="ProductCategory" ToRole="Product" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Product__Product__4E88ABD4" FromRole="ProductCategory" ToRole="Product" />
         </EntityType>
         <EntityType Name="Promotion">
           <Key>
@@ -734,7 +746,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="IsDelete" Type="Boolean" />
           <NavigationProperty Name="Orders" Relationship="Self.FK__Order__Promotion__398D8EEE" FromRole="Promotion" ToRole="Order" />
-          <NavigationProperty Name="Shop" Relationship="Self.FK__Promotion__ShopI__4F7CD00D" FromRole="Promotion" ToRole="Shop" />
+          <NavigationProperty Name="Shop" Relationship="Self.FK__Promotion__ShopI__5070F446" FromRole="Promotion" ToRole="Shop" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -744,7 +756,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDelete" Type="Boolean" />
-          <NavigationProperty Name="ShopUsers" Relationship="Self.FK__ShopUser__RoleID__5165187F" FromRole="Role" ToRole="ShopUser" />
+          <NavigationProperty Name="ShopUsers" Relationship="Self.FK__ShopUser__RoleID__52593CB8" FromRole="Role" ToRole="ShopUser" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
@@ -756,12 +768,12 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="DetailAddress" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="GroupTables" Relationship="Self.FK_GroupTable_Shop" FromRole="Shop" ToRole="GroupTable" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_ORDER_SHOP" FromRole="Shop" ToRole="Order" />
-          <NavigationProperty Name="Products" Relationship="Self.FK__Product__ShopID__4E88ABD4" FromRole="Shop" ToRole="Product" />
-          <NavigationProperty Name="Promotions" Relationship="Self.FK__Promotion__ShopI__4F7CD00D" FromRole="Shop" ToRole="Promotion" />
-          <NavigationProperty Name="Ward" Relationship="Self.FK__Shop__WardID__5070F446" FromRole="Shop" ToRole="Ward" />
-          <NavigationProperty Name="ShopUsers" Relationship="Self.FK__ShopUser__ShopID__52593CB8" FromRole="Shop" ToRole="ShopUser" />
-          <NavigationProperty Name="Tables" Relationship="Self.FK__Table__ShopID__5535A963" FromRole="Shop" ToRole="Table" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Product__ShopID__4F7CD00D" FromRole="Shop" ToRole="Product" />
+          <NavigationProperty Name="Promotions" Relationship="Self.FK__Promotion__ShopI__5070F446" FromRole="Shop" ToRole="Promotion" />
+          <NavigationProperty Name="Ward" Relationship="Self.FK__Shop__WardID__5165187F" FromRole="Shop" ToRole="Ward" />
+          <NavigationProperty Name="ShopUsers" Relationship="Self.FK__ShopUser__ShopID__534D60F1" FromRole="Shop" ToRole="ShopUser" />
         </EntityType>
         <EntityType Name="ShopUser">
           <Key>
@@ -773,9 +785,9 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="RoleID" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="IsDelete" Type="Boolean" />
-          <NavigationProperty Name="Role" Relationship="Self.FK__ShopUser__RoleID__5165187F" FromRole="ShopUser" ToRole="Role" />
-          <NavigationProperty Name="Shop" Relationship="Self.FK__ShopUser__ShopID__52593CB8" FromRole="ShopUser" ToRole="Shop" />
-          <NavigationProperty Name="User" Relationship="Self.FK__ShopUser__UserID__534D60F1" FromRole="ShopUser" ToRole="User" />
+          <NavigationProperty Name="Role" Relationship="Self.FK__ShopUser__RoleID__52593CB8" FromRole="ShopUser" ToRole="Role" />
+          <NavigationProperty Name="Shop" Relationship="Self.FK__ShopUser__ShopID__534D60F1" FromRole="ShopUser" ToRole="Shop" />
+          <NavigationProperty Name="User" Relationship="Self.FK__ShopUser__UserID__5441852A" FromRole="ShopUser" ToRole="User" />
         </EntityType>
         <EntityType Name="Table">
           <Key>
@@ -784,12 +796,10 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="GroupTableID" Type="Int32" Nullable="false" />
-          <Property Name="ShopID" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDelete" Type="Boolean" />
-          <NavigationProperty Name="GroupTable" Relationship="Self.FK__Table__GroupTabl__5441852A" FromRole="Table" ToRole="GroupTable" />
+          <NavigationProperty Name="GroupTable" Relationship="Self.FK__Table__GroupTabl__5535A963" FromRole="Table" ToRole="GroupTable" />
           <NavigationProperty Name="Orders" Relationship="Self.FK__Order__TableID__3A81B327" FromRole="Table" ToRole="Order" />
-          <NavigationProperty Name="Shop" Relationship="Self.FK__Table__ShopID__5535A963" FromRole="Table" ToRole="Shop" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -808,7 +818,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="IsDelete" Type="Boolean" />
           <NavigationProperty Name="MaterialLogs" Relationship="Self.FK_MaterialLog_User" FromRole="User" ToRole="MaterialLog" />
           <NavigationProperty Name="Orders" Relationship="Self.FK__Order__UserID__3B75D760" FromRole="User" ToRole="Order" />
-          <NavigationProperty Name="ShopUsers" Relationship="Self.FK__ShopUser__UserID__534D60F1" FromRole="User" ToRole="ShopUser" />
+          <NavigationProperty Name="ShopUsers" Relationship="Self.FK__ShopUser__UserID__5441852A" FromRole="User" ToRole="ShopUser" />
           <NavigationProperty Name="Ward" Relationship="Self.FK__User__WardID__5629CD9C" FromRole="User" ToRole="Ward" />
         </EntityType>
         <EntityType Name="Ward">
@@ -821,7 +831,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDelete" Type="Boolean" />
           <NavigationProperty Name="District" Relationship="Self.FK__Ward__DistrictID__571DF1D5" FromRole="Ward" ToRole="District" />
-          <NavigationProperty Name="Shops" Relationship="Self.FK__Shop__WardID__5070F446" FromRole="Ward" ToRole="Shop" />
+          <NavigationProperty Name="Shops" Relationship="Self.FK__Shop__WardID__5165187F" FromRole="Ward" ToRole="Shop" />
           <NavigationProperty Name="Users" Relationship="Self.FK__User__WardID__5629CD9C" FromRole="Ward" ToRole="User" />
         </EntityType>
         <EntityType Name="MaterialView">
@@ -833,9 +843,10 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CategoryID" Type="Int32" />
-          <Property Name="UnitName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UnitPrice" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="Inventory" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsDelete" Type="Boolean" />
           <Property Name="CategoryName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
@@ -863,7 +874,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Table__GroupTabl__5441852A">
+        <Association Name="FK__Table__GroupTabl__5535A963">
           <End Role="GroupTable" Type="Self.GroupTable" Multiplicity="1" />
           <End Role="Table" Type="Self.Table" Multiplicity="*" />
           <ReferentialConstraint>
@@ -872,6 +883,18 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Principal>
             <Dependent Role="Table">
               <PropertyRef Name="GroupTableID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupTable_Shop">
+          <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
+          <End Role="GroupTable" Type="Self.GroupTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupTable">
+              <PropertyRef Name="ShopID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -887,11 +910,11 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MaterialLog_Material">
-          <End Role="Material" Type="Self.Material" Multiplicity="0..1" />
+        <Association Name="FK_MaterialLog_MaterialCategory">
+          <End Role="MaterialCategory" Type="Self.MaterialCategory" Multiplicity="0..1" />
           <End Role="MaterialLog" Type="Self.MaterialLog" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Material">
+            <Principal Role="MaterialCategory">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="MaterialLog">
@@ -971,7 +994,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__Produ__4CA06362">
+        <Association Name="FK__OrderProd__Produ__4D94879B">
           <End Role="Product" Type="Self.Product" Multiplicity="1" />
           <End Role="OrderProduct" Type="Self.OrderProduct" Multiplicity="*" />
           <ReferentialConstraint>
@@ -983,7 +1006,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__Product__4D94879B">
+        <Association Name="FK__Product__Product__4E88ABD4">
           <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -995,7 +1018,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Product__ShopID__4E88ABD4">
+        <Association Name="FK__Product__ShopID__4F7CD00D">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="Product" Type="Self.Product" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1007,7 +1030,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Promotion__ShopI__4F7CD00D">
+        <Association Name="FK__Promotion__ShopI__5070F446">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="Promotion" Type="Self.Promotion" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1019,7 +1042,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ShopUser__RoleID__5165187F">
+        <Association Name="FK__ShopUser__RoleID__52593CB8">
           <End Role="Role" Type="Self.Role" Multiplicity="1" />
           <End Role="ShopUser" Type="Self.ShopUser" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1031,7 +1054,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Shop__WardID__5070F446">
+        <Association Name="FK__Shop__WardID__5165187F">
           <End Role="Ward" Type="Self.Ward" Multiplicity="0..1" />
           <End Role="Shop" Type="Self.Shop" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1043,7 +1066,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ShopUser__ShopID__52593CB8">
+        <Association Name="FK__ShopUser__ShopID__534D60F1">
           <End Role="Shop" Type="Self.Shop" Multiplicity="0..1" />
           <End Role="ShopUser" Type="Self.ShopUser" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1055,19 +1078,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Table__ShopID__5535A963">
-          <End Role="Shop" Type="Self.Shop" Multiplicity="1" />
-          <End Role="Table" Type="Self.Table" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shop">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Table">
-              <PropertyRef Name="ShopID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__ShopUser__UserID__534D60F1">
+        <Association Name="FK__ShopUser__UserID__5441852A">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="ShopUser" Type="Self.ShopUser" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1091,7 +1102,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="CoffeShopSystemEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Cities" EntityType="Self.City" />
           <EntitySet Name="Districts" EntityType="Self.District" />
           <EntitySet Name="GroupTables" EntityType="Self.GroupTable" />
@@ -1118,16 +1129,20 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             <End Role="District" EntitySet="Districts" />
             <End Role="Ward" EntitySet="Wards" />
           </AssociationSet>
-          <AssociationSet Name="FK__Table__GroupTabl__5441852A" Association="Self.FK__Table__GroupTabl__5441852A">
+          <AssociationSet Name="FK__Table__GroupTabl__5535A963" Association="Self.FK__Table__GroupTabl__5535A963">
             <End Role="GroupTable" EntitySet="GroupTables" />
             <End Role="Table" EntitySet="Tables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupTable_Shop" Association="Self.FK_GroupTable_Shop">
+            <End Role="Shop" EntitySet="Shops" />
+            <End Role="GroupTable" EntitySet="GroupTables" />
           </AssociationSet>
           <AssociationSet Name="FK_Material_MaterialCategory" Association="Self.FK_Material_MaterialCategory">
             <End Role="MaterialCategory" EntitySet="MaterialCategories" />
             <End Role="Material" EntitySet="Materials" />
           </AssociationSet>
-          <AssociationSet Name="FK_MaterialLog_Material" Association="Self.FK_MaterialLog_Material">
-            <End Role="Material" EntitySet="Materials" />
+          <AssociationSet Name="FK_MaterialLog_MaterialCategory" Association="Self.FK_MaterialLog_MaterialCategory">
+            <End Role="MaterialCategory" EntitySet="MaterialCategories" />
             <End Role="MaterialLog" EntitySet="MaterialLogs" />
           </AssociationSet>
           <AssociationSet Name="FK_MaterialLog_User" Association="Self.FK_MaterialLog_User">
@@ -1154,39 +1169,35 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
             <End Role="Shop" EntitySet="Shops" />
             <End Role="Order" EntitySet="Orders" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__Produ__4CA06362" Association="Self.FK__OrderProd__Produ__4CA06362">
+          <AssociationSet Name="FK__OrderProd__Produ__4D94879B" Association="Self.FK__OrderProd__Produ__4D94879B">
             <End Role="Product" EntitySet="Products" />
             <End Role="OrderProduct" EntitySet="OrderProducts" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__Product__4D94879B" Association="Self.FK__Product__Product__4D94879B">
+          <AssociationSet Name="FK__Product__Product__4E88ABD4" Association="Self.FK__Product__Product__4E88ABD4">
             <End Role="ProductCategory" EntitySet="ProductCategories" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
-          <AssociationSet Name="FK__Product__ShopID__4E88ABD4" Association="Self.FK__Product__ShopID__4E88ABD4">
+          <AssociationSet Name="FK__Product__ShopID__4F7CD00D" Association="Self.FK__Product__ShopID__4F7CD00D">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
-          <AssociationSet Name="FK__Promotion__ShopI__4F7CD00D" Association="Self.FK__Promotion__ShopI__4F7CD00D">
+          <AssociationSet Name="FK__Promotion__ShopI__5070F446" Association="Self.FK__Promotion__ShopI__5070F446">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="Promotion" EntitySet="Promotions" />
           </AssociationSet>
-          <AssociationSet Name="FK__ShopUser__RoleID__5165187F" Association="Self.FK__ShopUser__RoleID__5165187F">
+          <AssociationSet Name="FK__ShopUser__RoleID__52593CB8" Association="Self.FK__ShopUser__RoleID__52593CB8">
             <End Role="Role" EntitySet="Roles" />
             <End Role="ShopUser" EntitySet="ShopUsers" />
           </AssociationSet>
-          <AssociationSet Name="FK__Shop__WardID__5070F446" Association="Self.FK__Shop__WardID__5070F446">
+          <AssociationSet Name="FK__Shop__WardID__5165187F" Association="Self.FK__Shop__WardID__5165187F">
             <End Role="Ward" EntitySet="Wards" />
             <End Role="Shop" EntitySet="Shops" />
           </AssociationSet>
-          <AssociationSet Name="FK__ShopUser__ShopID__52593CB8" Association="Self.FK__ShopUser__ShopID__52593CB8">
+          <AssociationSet Name="FK__ShopUser__ShopID__534D60F1" Association="Self.FK__ShopUser__ShopID__534D60F1">
             <End Role="Shop" EntitySet="Shops" />
             <End Role="ShopUser" EntitySet="ShopUsers" />
           </AssociationSet>
-          <AssociationSet Name="FK__Table__ShopID__5535A963" Association="Self.FK__Table__ShopID__5535A963">
-            <End Role="Shop" EntitySet="Shops" />
-            <End Role="Table" EntitySet="Tables" />
-          </AssociationSet>
-          <AssociationSet Name="FK__ShopUser__UserID__534D60F1" Association="Self.FK__ShopUser__UserID__534D60F1">
+          <AssociationSet Name="FK__ShopUser__UserID__5441852A" Association="Self.FK__ShopUser__UserID__5441852A">
             <End Role="User" EntitySet="Users" />
             <End Role="ShopUser" EntitySet="ShopUsers" />
           </AssociationSet>
@@ -1200,7 +1211,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="CoffeShopSystemModelStoreContainer" CdmEntityContainer="CoffeShopSystemEntities">
+        <EntityContainerMapping StorageEntityContainer="CoffeShopSystemModelStoreContainer" CdmEntityContainer="Entities">
           <EntitySetMapping Name="Cities">
             <EntityTypeMapping TypeName="CoffeShopSystemModel.City">
               <MappingFragment StoreEntitySet="City">
@@ -1230,6 +1241,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Surcharge" ColumnName="Surcharge" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1239,9 +1251,10 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="UnitName" ColumnName="UnitName" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
                 <ScalarProperty Name="Inventory" ColumnName="Inventory" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1252,6 +1265,7 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1261,10 +1275,12 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
               <MappingFragment StoreEntitySet="MaterialLog">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="MaterialID" ColumnName="MaterialID" />
-                <ScalarProperty Name="Inventory" ColumnName="Inventory" />
-                <ScalarProperty Name="PreInventory" ColumnName="PreInventory" />
                 <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="Inventory" ColumnName="Inventory" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1378,7 +1394,6 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="GroupTableID" ColumnName="GroupTableID" />
-                <ScalarProperty Name="ShopID" ColumnName="ShopID" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
               </MappingFragment>
@@ -1418,9 +1433,10 @@ warning 6002: The table/view 'CoffeShopSystem.dbo.MaterialView' does not have a 
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="UnitName" ColumnName="UnitName" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
                 <ScalarProperty Name="Inventory" ColumnName="Inventory" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
               </MappingFragment>

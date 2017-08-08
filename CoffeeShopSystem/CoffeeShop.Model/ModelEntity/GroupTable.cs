@@ -25,8 +25,10 @@ namespace CoffeeShop.Model.ModelEntity
         public string Description { get; set; }
         public Nullable<decimal> Surcharge { get; set; }
         public Nullable<bool> IsDelete { get; set; }
+        public Nullable<int> ShopID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Table> Tables { get; set; }
+        public virtual Shop Shop { get; set; }
     }
 }
