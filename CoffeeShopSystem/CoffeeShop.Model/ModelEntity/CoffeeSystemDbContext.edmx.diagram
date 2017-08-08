@@ -22,7 +22,6 @@
         <EntityTypeShape EntityType="CoffeShopSystemModel.Table" Width="1.5" PointX="12" PointY="6.375" IsExpanded="true" />
         <EntityTypeShape EntityType="CoffeShopSystemModel.User" Width="1.5" PointX="7.5" PointY="13.5" IsExpanded="true" />
         <EntityTypeShape EntityType="CoffeShopSystemModel.Ward" Width="1.5" PointX="5.25" PointY="10.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="CoffeShopSystemModel.MaterialView" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="CoffeShopSystemModel.FK__District__CityID__440B1D61" ManuallyRouted="false" />
         <AssociationConnector Association="CoffeShopSystemModel.FK__Ward__DistrictID__571DF1D5" ManuallyRouted="false" />
         <AssociationConnector Association="CoffeShopSystemModel.FK__Table__GroupTabl__5535A963" ManuallyRouted="false" />
@@ -44,6 +43,8 @@
         <AssociationConnector Association="CoffeShopSystemModel.FK__ShopUser__ShopID__534D60F1" ManuallyRouted="false" />
         <AssociationConnector Association="CoffeShopSystemModel.FK__ShopUser__UserID__5441852A" ManuallyRouted="false" />
         <AssociationConnector Association="CoffeShopSystemModel.FK__User__WardID__5629CD9C" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="CoffeShopSystemModel.sysdiagram" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="CoffeShopSystemModel.FK_MaterialLog_Material" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

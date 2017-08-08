@@ -14,6 +14,12 @@ namespace CoffeeShop.Model.ModelEntity
     
     public partial class Material
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Material()
+        {
+            this.MaterialLogs = new HashSet<MaterialLog>();
+        }
+    
         public int ID { get; set; }
         public string Name { get; set; }
         public Nullable<int> CategoryID { get; set; }
@@ -24,5 +30,7 @@ namespace CoffeeShop.Model.ModelEntity
         public Nullable<bool> IsDelete { get; set; }
     
         public virtual MaterialCategory MaterialCategory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MaterialLog> MaterialLogs { get; set; }
     }
 }

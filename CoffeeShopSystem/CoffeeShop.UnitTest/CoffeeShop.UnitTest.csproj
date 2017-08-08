@@ -67,6 +67,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="MaterialLogServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryTest\GroupTableRepositoryTest.cs" />
     <Compile Include="ServiceTest\GroupTableServiceTest.cs" />

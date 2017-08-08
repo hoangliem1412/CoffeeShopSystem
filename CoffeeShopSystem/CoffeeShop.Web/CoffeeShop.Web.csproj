@@ -161,6 +161,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MaterialLogController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\OrderProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -171,13 +174,36 @@
     <Content Include="Asserts\JS\Script.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\custom.min.css" />
+    <Content Include="Content\dist\css\bootstrap-theme.css" />
+    <Content Include="Content\dist\css\bootstrap-theme.min.css" />
+    <Content Include="Content\dist\css\bootstrap.css" />
+    <Content Include="Content\dist\css\bootstrap.min.css" />
+    <Content Include="Content\dist\css\style.css" />
+    <Content Include="Content\dist\js\bootstrap.js" />
+    <Content Include="Content\dist\js\bootstrap.min.js" />
+    <Content Include="Content\dist\js\npm.js" />
+    <Content Include="Content\images\user.png" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\font-awesome\.gitignore" />
+    <Content Include="fonts\font-awesome\HELP-US-OUT.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\ai.0.22.9-build00167.js" />
+    <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="Scripts\bootstrap-progressbar.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="fonts\font-awesome\.bower.json" />
+    <Content Include="fonts\font-awesome\.npmignore" />
+    <Content Include="fonts\font-awesome\bower.json" />
+    <Content Include="Content\dist\css\bootstrap-theme.css.map" />
+    <Content Include="Content\dist\css\bootstrap-theme.min.css.map" />
+    <Content Include="Content\dist\css\bootstrap.css.map" />
+    <Content Include="Content\dist\css\bootstrap.min.css.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\custom.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -205,9 +231,20 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Login\Test.cshtml" />
+    <Content Include="Views\MaterialLog\Create.cshtml" />
+    <Content Include="Views\MaterialLog\Delete.cshtml" />
+    <Content Include="Views\MaterialLog\Details.cshtml" />
+    <Content Include="Views\MaterialLog\Edit.cshtml" />
+    <Content Include="Views\MaterialLog\Index.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\dist\fonts\" />
+    <Folder Include="fonts\font-awesome\css\" />
+    <Folder Include="fonts\font-awesome\fonts\" />
+    <Folder Include="fonts\font-awesome\less\" />
+    <Folder Include="fonts\font-awesome\scss\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

@@ -41,7 +41,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GroupTableService.cs" />
+    <Compile Include="IMaterialLogService.cs" />
+    <Compile Include="IMaterialService.cs" />
+    <Compile Include="IOrderProductService.cs" />
+    <Compile Include="IOrderService.cs" />
+    <Compile Include="IService.cs" />
+    <Compile Include="MaterialLogService.cs" />
+    <Compile Include="MaterialService.cs" />
+    <Compile Include="OrderProductService.cs" />
+    <Compile Include="OrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="TableService.cs" />
   </ItemGroup>
   <ItemGroup>

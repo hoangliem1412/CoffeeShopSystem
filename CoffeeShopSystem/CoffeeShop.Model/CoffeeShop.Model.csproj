@@ -93,9 +93,6 @@
     <Compile Include="ModelEntity\MaterialLog.cs">
       <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="ModelEntity\MaterialView.cs">
-      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
-    </Compile>
     <Compile Include="ModelEntity\Order.cs">
       <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
@@ -118,6 +115,15 @@
       <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\ShopUser.cs">
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelEntity\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelEntity\sp_helpdiagrams_Result.cs">
+      <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModelEntity\sysdiagram.cs">
       <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelEntity\Table.cs">

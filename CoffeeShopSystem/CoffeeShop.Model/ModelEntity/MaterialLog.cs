@@ -26,5 +26,6 @@ namespace CoffeeShop.Model.ModelEntity
     
         public virtual MaterialCategory MaterialCategory { get; set; }
         public virtual User User { get; set; }
+        public virtual Material Material { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace CoffeeShop.Web.App_Start
             builder.RegisterType<CoffeeSystemDbContext>().AsSelf().InstancePerRequest();
             //khoi tao cac doi tuong co hau to repository va service
             //repository
-            builder.RegisterAssemblyTypes(typeof(GroupTableRepository).Assembly)
+            builder.RegisterAssemblyTypes(typeof(UserRepository).Assembly)
                 .Where(r => r.Name.EndsWith("Repository"))
                 .AsImplementedInterfaces().InstancePerRequest();
 
