@@ -129,7 +129,7 @@ namespace CoffeeShop.Data.Infrastructure
 
             _resetSet = skipCount == 0 ? _resetSet.Take(size) : _resetSet.Skip(skipCount).Take(size);
             total = _resetSet.Count();
-            return _resetSet.AsQueryable();
+            return _resetSet.AsEnumerable();
         }
 
         public bool CheckContains(Expression<Func<T, bool>> predicate)

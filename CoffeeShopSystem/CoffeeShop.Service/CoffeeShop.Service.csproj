@@ -41,11 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GroupTableService.cs" />
+    <Compile Include="IMaterialCategoryService.cs" />
     <Compile Include="IMaterialLogService.cs" />
     <Compile Include="IMaterialService.cs" />
     <Compile Include="IOrderProductService.cs" />
     <Compile Include="IOrderService.cs" />
     <Compile Include="IService.cs" />
+    <Compile Include="MaterialCategoryService.cs" />
     <Compile Include="MaterialLogService.cs" />
     <Compile Include="MaterialService.cs" />
     <Compile Include="OrderProductService.cs" />

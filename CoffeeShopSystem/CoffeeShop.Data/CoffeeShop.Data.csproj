@@ -63,6 +63,7 @@
     <Compile Include="Repositories\ICityRepository.cs" />
     <Compile Include="Repositories\IDistrictRepository.cs" />
     <Compile Include="Repositories\IGroupTableRepository.cs" />
+    <Compile Include="Repositories\IMaterialCategoryRepository.cs" />
     <Compile Include="Repositories\IMaterialRepository.cs" />
     <Compile Include="Repositories\IMaterialLogRepository.cs" />
     <Compile Include="Repositories\IOrderProductRepository.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Repositories\ITableRepository.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
     <Compile Include="Repositories\IWardRepository.cs" />
+    <Compile Include="Repositories\MaterialCategoryRepository.cs" />
     <Compile Include="Repositories\MaterialLogRepository.cs" />
     <Compile Include="Repositories\MaterialRepository.cs" />
     <Compile Include="Repositories\OrderProductRepository.cs" />

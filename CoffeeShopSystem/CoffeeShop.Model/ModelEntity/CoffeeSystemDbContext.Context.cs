@@ -18,8 +18,9 @@ namespace CoffeeShop.Model.ModelEntity
     public partial class CoffeeSystemDbContext : DbContext
     {
         public CoffeeSystemDbContext()
-            : base("name=Entities")
+            : base("name=CoffeeSystemConnection")
         {
+            Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
