@@ -34,6 +34,51 @@ namespace CoffeeShop.Data.Infrastructure
             return dbSet.Add(entity);
         }
 
+        public virtual IEnumerable<Shop> GetMultiPagingForShop(Expression<Func<Shop, bool>> predicate, out int total, int curPage = 1, int pageSize = 20, string sort = "", string type = "")
+        {
+            int skipCount = (curPage - 1) * pageSize;
+            IQueryable<Shop> _resetSet;
+
+
+            _resetSet = predicate != null ? dbContext.Set<Shop>().Where<Shop>(predicate).AsQueryable() : dbContext.Set<Shop>().AsQueryable();
+
+
+            switch (sort)
+            {
+                case "ID":
+                    if (type == "asc")
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderBy(s => s.ID).Take(pageSize) : _resetSet.OrderBy(s => s.ID).Skip(skipCount).Take(pageSize);
+
+
+                    }
+                    else
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderByDescending(s => s.ID).Take(pageSize) : _resetSet.OrderByDescending(s => s.ID).Skip(skipCount).Take(pageSize);
+
+                    }
+                    break;
+                case "Name":
+                    if (type == "asc")
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderBy(s => s.Name).Take(pageSize) : _resetSet.OrderBy(s => s.Name).Skip(skipCount).Take(pageSize);
+
+                    }
+                    else
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderByDescending(s => s.Name).Take(pageSize) : _resetSet.OrderByDescending(s => s.Name).Skip(skipCount).Take(pageSize);
+
+                    }
+                    break;
+
+
+                default:
+                    break;
+            }
+
+            total = _resetSet.Count();
+            return _resetSet.AsQueryable();
+        }
         public virtual void Update(T entity)
         {
             dbSet.Attach(entity);
@@ -53,6 +98,15 @@ namespace CoffeeShop.Data.Infrastructure
 
         public virtual T GetSingleById(int id)
         {
+            return dbSet.Find(id);
+        }
+
+
+        public virtual T GetSingleById(int? id)
+        {   if (id.HasValue == false)
+            {
+                return null;
+            }
             return dbSet.Find(id);
         }
 
@@ -129,7 +183,7 @@ namespace CoffeeShop.Data.Infrastructure
 
             _resetSet = skipCount == 0 ? _resetSet.Take(size) : _resetSet.Skip(skipCount).Take(size);
             total = _resetSet.Count();
-            return _resetSet.AsEnumerable();
+            return _resetSet.AsQueryable();
         }
 
         public bool CheckContains(Expression<Func<T, bool>> predicate)

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace CoffeeShop.Web.Models
 {
@@ -17,9 +14,9 @@ namespace CoffeeShop.Web.Models
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<bool> IsDelete { get; set; }
 
-        //public string CategoryName { get; set; }
-        public virtual MaterialCategoryViewModel MaterialCategory { get; set; }
+        public string CategoryName { get; set; }
+        //public virtual MaterialCategoryViewModel MaterialCategory { get; set; }
         
-        public virtual ICollection<MaterialLogViewModel> MaterialLogs { get; set; }
+        //public virtual ICollection<MaterialLogViewModel> MaterialLogs { get; set; }
     }
 }

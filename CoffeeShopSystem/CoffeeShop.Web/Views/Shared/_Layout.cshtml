@@ -8,11 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gentelella Alela! | </title>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="~/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->
@@ -53,6 +50,16 @@
                                             <li><a href="index2.html">Dashboard2</a></li>
                                             <li><a href="index3.html">Dashboard3</a></li>
                                         </ul>*@
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "ShopUser")"><i class="fa fa-user"></i> Quản lý nhân viên</a>
+                                </li>
+								<li>
+                                    <a><i class="fa fa-desktop"></i> Quản lý bàn <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="@Url.Action("Search", "GroupTable")">Quản lý nhóm bàn</a></li>
+                                        <li><a href="@Url.Action("Search", "Table")">Quản lý bàn</a></li>
+                                    </ul>
                                 </li>
                                 <li>
                                     <a><i class="fa fa-edit"></i> Quản lý món <span class="fa fa-chevron-down"></span></a>
@@ -100,6 +107,26 @@
 
                                     </ul>
                                 </li>
+
+                                <!-- Quản lý khuyến mãi -->
+                                <li>
+                                    <a href="@Url.Action("Index","Promotion")"><i class="fa fa-money"></i> Quản Lý Khuyến Mãi <span></span></a>   
+                                    @*<ul class="nav child_menu">
+                                        <li><a href="@Url.Action("Index","Promotion")">Khuyến mãi</a></li>
+
+                                    </ul>*@                                 
+                                </li>
+
+                                <!-- Quản lý cửa hàng -->
+                                @*<li>
+                                    <a><i class="fa fa-university"></i> Quản Lý Cửa Hàng <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="@Url.Action('Index','ShopManagement')">Cửa Hàng</a></li>
+
+                                    </ul>
+                                </li>*@
+
+
                             </ul>
                         </div>
                     </div>
@@ -133,7 +160,7 @@
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <img src="images/img.jpg" alt="">John Doe
-                                    <span class=" fa fa-angle-down"></span>
+                                    <span class="fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
                                     <li><a href="javascript:;"> Profile</a></li>
@@ -168,14 +195,13 @@
         </div>
     </div>
     <!-- jQuery -->
-    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- bootstrap-progressbar -->
-    <script src="~/scripts/bootstrap-progressbar.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- Custom Theme Scripts -->
-    <script src="~/scripts/custom.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="~/Scripts/custom.min.js"></script>
+    <!-- jQuery Validate Scripts -->
+    <script src="~/Scripts/jquery.validate.min.js"></script>
     @RenderSection("js", false)
 
 </body>

@@ -10,8 +10,7 @@
 namespace CoffeeShop.Model.ModelEntity
 {
     using System;
-    using System.Collections.Generic;
-    
+
     public partial class ShopUser
     {
         public int ID { get; set; }

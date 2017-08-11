@@ -13,20 +13,18 @@ namespace CoffeeShop.Model.ModelEntity
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Core.Objects;
-    using System.Linq;
-    
+
     public partial class CoffeeSystemDbContext : DbContext
     {
         public CoffeeSystemDbContext()
-            : base("name=CoffeeSystemConnection")
+            : base("name=Entities")
         {
-            //Configuration.ProxyCreationEnabled = false;
-            this.Configuration.LazyLoadingEnabled = false;
+            //Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            throw new UnintentionalCodeFirstException();
+            //throw new UnintentionalCodeFirstException();
         }
     
         public virtual DbSet<City> Cities { get; set; }

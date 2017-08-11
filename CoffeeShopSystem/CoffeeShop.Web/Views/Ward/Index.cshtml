@@ -1,0 +1,390 @@
+﻿@model IEnumerable<CoffeeShop.Model.ModelEntity.Ward>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>QUẢN LÝ DANH SÁCH PHƯỜNG - XÃ</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li style="float:right">
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <table id="myTable" class="table table-striped table-responsive jambo_table bulk_action" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên phường - xã</th>
+                    <th>Mô tả</th>
+                    <th>Thuộc quận - huyện</th>
+                    <th>Đã xóa</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+        </table>
+        <div class="row">
+            <button type="button" id="btnAddNew" class="btn btn-primary" style="float:right">Thêm mới</button>
+        </div>
+    </div>
+</div>
+
+@*create popup*@
+<div class="modal fade" id="MyModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:rgba(52,73,94,.94); color:white">
+                <a href="#" class="close" style="color:white; font-weight:bold" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <fieldset id="SubmitForm">
+                        <div class="form-group">
+                            <label>Tên phường - xã:</label>
+                            <input type="text" class="form-control" id="txtName" name="" placeholder="Nhập tên phường - xã" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <label>Mô tả:</label>
+                            <input type="text" class="form-control" id="txtDescription" name="" placeholder="Nhập mô tả" />
+                        </div>
+                        <div class="form-group">
+                            <label>Chọn thành phố:</label>
+                            <select class="form-control" id="txtNameCity" name="">
+                                @Html.Action("PartialListCity", "City")
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Chọn quận - huyện:</label>
+                            <select class="form-control" id="txtNameDistrict" name="">
+                                @*@Html.Action("PartialListCity", "City")*@
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Đã xóa:</label>
+                            <select class="form-control" id="txtIsDelete" name="">
+                                <option value="false">False</option>
+                                <option value="true">True</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <a href="#" class="btn btn-block btn-primary" data-dismiss="modal" id="btnAdd">Lưu</a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="#" class="btn btn-block btn-info" data-dismiss="modal" id="btnCancel">Hủy</a>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@*/create popup*@
+
+@*Create A PopUp Modal For DeleteConfirmation*@
+
+<div class="modal fade" id="DeleteConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:rgba(52,73,94,.94); color:white">
+                <a href="#" class="close" style="color:white; font-weight:bold" data-dismiss="modal">&times;</a>
+                <h4>THÔNG BÁO</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Bạn có chắc muốn xóa "<label id="lblName"></label>" ?</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" data-dismiss="modal">Hủy bỏ</a>
+                <a href="#" class="btn btn-danger" id="btnConfirmDelete" data-dismiss="modal">Đồng ý</a>
+            </div>
+        </div>
+    </div>
+</div>
+@*/Create A PopUp Modal For DeleteConfirmation*@
+
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.12.4.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+@*<script src="~/scripts/jquery-1.10.2.min.js"></script>*@
+<script>
+    $(document).ready(function () {
+        //default load list district with id = 1(TPHCM) in popup insert + update
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetDistrictByCityID", "District")',
+            data: '{id: ' + 1 + '}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $('#txtNameDistrict').html('');
+                data.forEach(function (item) {
+                    var listOption = '<option value="' + item.ID + '">' + item.Name + '</option>';
+                    $('#txtNameDistrict').append(listOption);
+                });
+            }
+
+        });
+
+        //event select change name city in popup
+        $('#txtNameCity').change(function () {
+            var cityID = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetDistrictByCityID", "District")',
+                data: '{id: ' + cityID + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $('#txtNameDistrict').html('');
+                    data.forEach(function (item) {
+                        var listOption = '<option value="' + item.ID + '">' + item.Name + '</option>';
+                        $('#txtNameDistrict').append(listOption);
+                    });
+                }
+
+            });
+        });
+
+        //======================start datatables===========================
+        let table = $('#myTable').DataTable({
+            language: {
+                lengthMenu: "Hiện _MENU_ kết quả trên 1 trang",
+                info: "Hiện trang _PAGE_ trên _PAGES_ trang",
+                infoEmpty: "Không tìm thấy kết quả nào",
+                infoFiltered: "(Trên _MAX_ kết quả)",
+                search: "_INPUT_",
+                searchPlaceholder: "Tìm kiếm...",
+                paginate: {
+                    'previous': '<span class="">&laquo;</span>',
+                    'next': '<span class="">&raquo;</span>'
+                }
+            },
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "ajax": {
+                "url": '@Url.Action("LoadData", "Ward")',
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                    { className: 'ID', data: "ID", autoWidth: true },
+                    { className: 'Name', data: "Name", autoWidth: true },
+                    { className: 'Description', data: "Description", autoWidth: true },
+                    { className: 'DistrictID', data: "DistrictID", autoWidth: true },
+                    { className: 'IsDelete', data: "IsDelete", autoWidth: true },
+                    {
+                        "targets": -1,
+                        "data": null,
+                        "defaultContent": '<a href="#" class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
+                                        '<a href="#" class="btn btn-danger btn-xs btnDelete" title="Xóa"><i class="fa fa-trash-o"></i></a>'
+                    }
+            ],
+            "columnDefs": [
+                       { "display": 'block', "targets": [0, 3] }
+            ]
+        });
+        //======================end datatables===========================
+        let checkClickAddNew = false;
+        //event click Thêm mới
+        $("#btnAddNew").click(function () {
+
+            checkClickAddNew = true;
+            $("#form")[0].reset();
+            $("#MyModal").modal();
+            $('#ModalTitle').html("THÊM PHƯỜNG - XÃ");
+        });
+
+        //event click button 'Sua' in list city
+        let idUpdate;
+        let rowTemp;
+        $('#myTable tbody').on('click', '.btnEdit', function () {
+            checkClickAddNew = false;
+            $("#form")[0].reset();
+            $("#MyModal").modal();
+            $('#ModalTitle').html("SỬA PHƯỜNG - XÃ");
+
+            var row = $(this).closest("tr");
+            rowTemp = row; // lấy biến row temp để phục vụ cho việc update + insert
+            idUpdate = row.find(".ID").html();
+            var name = row.find(".Name").html();
+            var description = row.find(".Description").html();
+            var isDelete = row.find(".IsDelete").html();
+
+            $('#txtName').val(name);
+            $('#txtDescription').val(description);
+            $('#txtIsDelete').val(isDelete);
+        });
+
+        //event click button Thêm in popup
+        $('#btnAdd').click(function () {
+            //checkClickAddNew == true => insert
+            if (checkClickAddNew == true) {
+                var name = $('#txtName').val();
+                var description = $('#txtDescription').val();
+                var districtID = $('#txtNameDistrict').val();
+                var isDelete = $('#txtIsDelete').val();
+
+                var ward = new Object();
+                ward.Name = name;
+                ward.Description = description;
+                ward.DistrictID = districtID;
+                ward.IsDelete = isDelete;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Insert", "Ward")',
+                    data: JSON.stringify(ward),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (rs) {
+                        if (rs != 0) {
+                            //eventSuccess("Đã thêm");
+                            //AppendRow(rs, name, description, isDelete);
+                            //ShowWithIsDelete();
+                            table.ajax.reload(null, false);
+                        } else {
+                            //eventError('Error!');
+                            alert("Lỗi");
+                        }
+                    }
+                });
+
+            }//checkClickAddNew == false => update
+            else {
+                var name = $('#txtName').val();
+                var description = $('#txtDescription').val();
+                var districtID = $('#txtNameDistrict').val();
+                var isDelete = $('#txtIsDelete').val();
+
+                var ward = new Object();
+                ward.ID = idUpdate;
+                ward.Name = name;
+                ward.Description = description;
+                ward.DistrictID = districtID;
+                ward.IsDelete = isDelete;
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Update", "Ward")',
+                    data: JSON.stringify(ward),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (rs) {
+                        if (rs != 0) {
+                            rowTemp.find(".Name").html(name);
+                            rowTemp.find(".Description").html(description);
+                            rowTemp.find(".IsDelete").html(isDelete);
+                            table.ajax.reload(null, false);
+                            //ShowWithIsDelete();
+                            //eventSuccess("Đã sửa");
+                        } else {
+                            //eventError("Lỗi!");
+                        }
+                    }
+                });
+            }
+        });
+
+        //event click delete
+        let idDelete;
+        $('#myTable tbody').on('click', '.btnDelete', function () {
+            $("#DeleteConfirmation").modal("show");
+            var row = $(this).closest("tr");
+            rowTemp = row;
+            idDelete = row.find(".ID").html();
+            var name = row.find(".Name").html();
+            $('#lblName').html(name);
+        });
+
+        $('#btnConfirmDelete').click(function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete", "Ward")',
+                data: '{id: ' + idDelete + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (rs) {
+                    if (rs != 0) {
+                        //eventSuccess('Đã xóa');
+                        //rowTemp.find(".IsDelete").html("True");
+                        rowTemp.remove();
+                        table.ajax.reload(null, false);
+                        //ShowWithIsDelete();
+                    } else {
+                        //eventError('Error!')
+                    }
+                }
+
+            });
+        });
+
+        //event click delete
+        $('.btnRestore').click(function () {
+            var row = $(this).closest("tr");
+            var id = row.find(".ID").html();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Restore", "Ward")',
+                data: '{id: ' + id + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (rs) {
+                    if (rs != 0) {
+                        row.find(".IsDelete").html("False");
+                        ShowWithIsDelete();
+                    } else {
+                        //eventError('Error!')
+                    }
+                }
+            });
+        });
+    });
+
+    //event keyup txtSearch
+    function FuncSearch() {
+        var input, filter, table, tr, tdName, i, isDelete, tdIsDelete;
+        input = document.getElementById("txtSearch");
+        filter = input.value.toUpperCase();
+
+        isDelete = document.querySelector('input[name="optradio"]:checked').value
+
+        table = document.getElementById("listTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            tdName = tr[i].getElementsByTagName("td")[1];
+            if (tdName) {
+                if (tdName.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    //event select show with isdelete
+    function ShowWithIsDelete() {
+        var isDelete, filter, table, tr, td, i;
+        isDelete = document.querySelector('input[name="optradio"]:checked').value
+        //input = document.getElementByName('optradio');
+        filter = isDelete.toUpperCase();
+        table = document.getElementById("listTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[3];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

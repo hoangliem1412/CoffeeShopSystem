@@ -3,50 +3,432 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style type="text/css">
+    #tbOrderProduct tr {
+        width: 100%;
+        display: inline-table;
+        table-layout: fixed;
+    }
+
+    #tbOrderProduct {
+        height: 240px;
+        display: -moz-groupbox;
+    }
+
+        #tbOrderProduct tbody {
+            overflow-y: scroll;
+            height: 200px;
+            /*width: 100%;*/
+            position: absolute;
+        }
+
+    /*https://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap*/
+</style>
 @section js{
+
+    <script>
+        $(document).ready(function () {
+
+
+            //Xem chi tiet
+            $("#bodyOrder").on('click', '.btnDetail', function () {
+                var id = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetListOrderProductByOrderID", "Order")',
+                    type: 'post',
+                    data: { 'id': id },
+                    dataType: 'json',
+                    timeout: 30 * 1000,
+
+                })
+                            .done(function (data) {
+                                $('#Detailbody').empty();
+                                $.each(data, function (idx, item) {
+                                    var html =
+                                        '<tr>' +
+                                            '<td>' + item.name + '</td>' +
+                                             '<td>' + item.price + '</td>' +
+                                              '<td>' + item.quantity + '</td>' +
+                                            '<td>' + item.money + '</td>' +
+                                        '</tr>';
+                                    $('#Detailbody').append(html);
+                                });
+                                $('#modalDetail').modal('show');
+                            })
+                            .fail(function (jqXHR, status, error) {
+                                console.log(jqXHR);
+                                alert('fail');
+                            });
+            });
+
+
+            //EditOrder
+
+            $('#bodyOrder').on('click', '.btnEdit', function () {
+                var id = $(this).data('id');
+
+                $('#modalEdit [name=txtID]').val($(this).data('id'));
+                $('#modalEdit [name=txtName]').val($(this).data('user'));
+                $('#modalEdit [name=txtPromotion').val($(this).data('promo'));
+                $('#modalEdit [name=txtTable]').val($(this).data('table'));
+                $('#modalEdit [name=txtSetDate]').val($(this).data('date'));
+                $('#modalEdit [name=txtStatus]').val($(this).data('status'));
+                $('#modalEdit [name=lbMonney]').html($(this).data('money'));
+
+                //Lấy dữ liệu và gán vào modal
+                $.ajax({
+                    url: '@Url.Action("GetListOrderProductByOrderID", "Order")',
+                    type: 'post',
+                    data: { 'id': id },
+                    dataType: 'json',
+                    //   timeout: 30 * 1000,
+
+                })
+                        .done(function (data) {
+                            $('#tbEdit').empty();
+                            $.each(data, function (idx, item) {
+                                var html =
+                                    '<tr class="tr-' + item.id + '">' +
+                                        '<td>' + item.name + '</td>' +
+                                        '<td id="eprice-' + item.id + '" data-eprice="' + item.price + '">' + item.price + '</td>' +
+                                        '<td>' + '<input type="number" min="0" id="eq-' + item.id + '"value="' + item.quantity + '"class="form-control txtEQuantityPro"/> ' + '</td>' +
+                                        '<td id="eamount' + item.id + '">' + item.money + '</td>' +
+                                        '<td>' + '<a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnEProEdit" title="Sửa"><i class="fa fa-pencil"></i></a>'
+                                         + '<a href="javascript:;" data-id="' + item.id + '" class="btn btn-danger btn-xs btnEProRemove" title="Xóa"><i class="fa fa-trash-o"></i></a></td>'
+                                '</tr>';
+                                $('#tbEdit').append(html);
+                            });
+
+                        })
+                        .fail(function (jqXHR, status, error) {
+                            console.log(jqXHR);
+                            alert('fail');
+                        });
+                $('#modalEdit').modal('show');
+
+
+                //Gán session
+                $.ajax({
+                    url: '@Url.Action("SetOrderToSession", "Order")',
+                    type: 'post',
+                    data: { 'id': id },
+                    dataType: 'json',
+                    // timeout: 30 * 1000,
+
+                })
+                 .done(function (data) {
+                 })
+                  .fail(function (jqXHR, status, error) {
+                      console.log(jqXHR);
+                      alert('fail');
+                  });
+            });
+
+
+            //Cập nhật lại sản phẩm trong session
+            $('#tbEdit').on('click', '.btnEProEdit', function () {
+
+                var id = $(this).data('id');
+                var quantity = $('#tbEdit #eq-' + id).val();
+
+                $.ajax({
+                    url: '@Url.Action("UpdateOrderProduct", "Order")',
+                    type: 'post',
+                    data: { 'id': id, 'q': quantity },
+                    dataType: 'json',
+                    // timeout: 30 * 1000,
+                })
+                .done(function (data) {
+
+                    //cập nhật lại dữ liệu trên modal
+                    $('#tbEdit #eq-' + id).val(quantity);
+                    $('#tbEdit #eprice-' + id).data('eprice');
+                    $('#tbEdit #eamount' + id).html($('#tbEdit #eprice-' + id).data('eprice') * quantity)
+                    $('#modalEdit [name=lbMonney]').html(data);
+
+                })
+                 .fail(function (jqXHR, status, error) {
+                     console.log(jqXHR);
+                     alert('fail');
+                 });
+
+            });
+
+
+            //Xóa sản phẩm khỏi session
+            $('#tbEdit').on('click', '.btnEProRemove', function () {
+
+                $('#confirmDelete').modal('show');
+            });
+
+            $('#btnConfirmDelete').on('click', function () {
+                var id = $('#tbEdit .btnEProRemove').data('id');
+
+                $.ajax({
+                    url: '@Url.Action("RemoveOrderProduct", "Order")',
+                    type: 'post',
+                    data: { 'id': id },
+                    dataType: 'json',
+                    // timeout: 30 * 1000,
+                })
+                .done(function (data) {
+
+                    $('#confirmDelete').modal('hide'); //Đóng form xác nhận
+                    $('#tbEdit .tr-' + id).remove(); //Xóa item khỏi table
+                    $('#modalEdit [name=lbMonney]').html(data);//cập nhật lại tiền
+
+                })
+                 .fail(function (jqXHR, status, error) {
+                     console.log(jqXHR);
+                     alert('fail');
+                 });
+            });
+
+
+
+            //Cập nhật lại db từ session khi khi người dùng nhấn "Lưu"
+
+            $('#btnSaveChanges').on('click', function () {
+
+                var id = $('#modalEdit [name=txtID]').val();
+                var status = $('#modalEdit [name=txtStatus]').val();
+                var tableID = $('#modalEdit [name=txtTable]').val();
+
+                $.ajax({
+                    url: '@Url.Action("UpdateOrder", "Order")',
+                    type: 'post',
+                    data: { 'id': id, 'tableID': tableID, 'status': status },
+                    dataType: 'json',
+                    // timeout: 30 * 1000,
+                })
+                .done(function (data) {
+
+                    var id = $('#modalEdit [name=txtID]').val();
+
+                    //Cập nhật lại thay đổi hóa đơn trong table
+                    $('#bodyOrder #bodyTotalMoney-' + id).html($('#modalEdit [name=lbMonney]').html());
+                    $('#bodyOrder #bodyTableName-' + id).html($('#modalEdit [name=txtTable] option:selected').text());
+                    $('#bodyOrder #bodyStatus-' + id).html($('#modalEdit [name=txtStatus] option:selected').text());
+
+                    $('#modalEdit').modal('hide');//ẩn modal
+
+                })
+                 .fail(function (jqXHR, status, error) {
+                     console.log(jqXHR);
+                     alert('fail');
+                 });
+            });
+
+
+
+            //Tìm kiếm
+            $('#txtSearch').on('input', function () {
+                var keyword = $(this).val();
+                var status;
+                var boolStatus;
+
+                $.ajax({
+                    url: '@Url.Action("Search", "Order")',
+                    type: 'post',
+                    data: { 'keyword': keyword },
+                    dataType: 'json',
+                    // timeout: 30 * 1000,
+                })
+                .done(function (data) {
+
+                    $('#bodyOrder').empty();
+                    var html = '';
+
+                    if (data == 0) {
+                        html = '<h4>Không có kết quả tìm kiếm</h4>';
+                    }
+                    else {
+                        $.each(data, function (idx, item) {
+
+                            //parse ngày tháng từ chuỗi trong json
+                            var currentTime = new Date(parseInt(item.setDate.replace('/Date(', '')));
+                            var month = currentTime.getMonth() + 1;
+                            var day = currentTime.getDate();
+                            var year = currentTime.getFullYear();
+                            var date = day + "-" + month + "-" + year;
+
+                            if (item.status == false) {
+                                status = "Chưa thanh toán";
+                                boolStatus = "False";
+                            }
+                            else if (item.status == true) {
+                                status = "Đã thanh toán";
+                                boolStatus = "True";
+                            }
+
+                            //show data table
+                            html +=
+                                 '<tr class="trbody-' + item.id + '">' +
+                                        '<td>' + item.id + '</td>' +
+                                        '<td id="bodyTableName-' + item.id + '">' + item.tableName + '</td>' +
+                                        '<td>' + item.userName + '</td>' +
+                                        '<td>' + item.promoName + '</td>' +
+                                        '<td>' + date + '</td>' +
+                                        '<td id="bodyTotalMoney-' + item.id + '">' + item.totalMoney + '</td>' +
+                                        '<td id="bodyStatus-' + item.id + '">' + status + '</td>' +
+                                        '<td>' +
+                                         ' <a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnDetail" title="Xem chi tiết">' +
+                                             '<i class="fa fa-folder"></i>' +
+                                         '</a>' +
+                                         '</td>' +
+                                      '<td>' +
+                                          '<a href="javascript:;" data-id="' + item.id + '"data-table="' + item.tableID + '" data-promo="' + item.promoName + '" data-user="' + item.userName + '" data-date="' + date + '" data-status="' + boolStatus + '" data-money="' + item.totalMoney + '"class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
+                                      '</td>' +
+                                 '</tr>';
+                        })
+                    }
+                    $('#bodyOrder').html(html);
+
+                })
+                 .fail(function (jqXHR, status, error) {
+                     console.log(jqXHR);
+                     alert('fail');
+                 });
+            });
+
+
+
+            //Filter theo tình trạng hóa đơn
+            $('#frmView [name=optradio]').change(function () {
+                var status = $('input[name=optradio]:checked', '#frmView').val();
+                $.ajax({
+                    url: '@Url.Action("FilterStatus", "Order")',
+                    type: 'post',
+                    data: { 'status': status },
+                    dataType: 'json',
+                    // timeout: 30 * 1000,
+                })
+                .done(function (data) {
+
+                    $('#bodyOrder').empty();
+
+                    var html = '';
+
+                    $.each(data, function (idx, item) {
+
+                        var currentTime = new Date(parseInt(item.setDate.replace('/Date(', '')));
+                        var month = currentTime.getMonth() + 1;
+                        var day = currentTime.getDate();
+                        var year = currentTime.getFullYear();
+                        var date = day + "-" + month + "-" + year;
+
+                        if (item.status == false) {
+                            status = "Chưa thanh toán";
+                            boolStatus = "False";
+                        }
+                        else if (item.status == true) {
+                            status = "Đã thanh toán";
+                            boolStatus = "True";
+                        }
+                        //show data table
+                        html +=
+                             '<tr class="trbody-' + item.id + '">' +
+                                    '<td>' + item.id + '</td>' +
+                                    '<td id="bodyTableName-' + item.id + '">' + item.tableName + '</td>' +
+                                    '<td>' + item.userName + '</td>' +
+                                    '<td>' + item.promoName + '</td>' +
+                                    '<td>' + date + '</td>' +
+                                    '<td id="bodyTotalMoney-' + item.id + '">' + item.totalMoney + '</td>' +
+                                    '<td id="bodyStatus-' + item.id + '">' + status + '</td>' +
+                                    '<td>' +
+                                     ' <a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnDetail" title="Xem chi tiết">' +
+                                         '<i class="fa fa-folder"></i>' +
+                                     '</a>' +
+                                     '</td>' +
+                                  '<td>' +
+                                      '<a href="javascript:;" data-id="' + item.id + '"data-table="' + item.tableID + '" data-promo="' + item.promoName + '" data-user="' + item.userName + '" data-date="' + date + '" data-status="' + boolStatus + '" data-money="' + item.totalMoney + '"class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
+                                  '</td>' +
+                             '</tr>';
+                    })
+
+                    $('#bodyOrder').html(html);
+                })
+                 .fail(function (jqXHR, status, error) {
+                     console.log(jqXHR);
+                     alert('fail');
+                 });
+            });
+        });
+    </script>
+
+
+    <!--Sort table-->
     <script>
 
-    $(document).ready(function () {
-        $(".btnDetail").on('click', function () {
-            var id = $(this).data('id');
-            var url2 = '/Order/GetListOrderProductByOrderID/';
+        //https://www.w3schools.com/howto/howto_js_sort_table.asp
 
-            $.ajax({
-                url: '@Url.Action("GetListOrderProductByOrderID", "Order")',
-                type: 'post',
-                data:{'id':id},
-                dataType: 'json',
-                timeout: 30 * 1000,
-
-            })
-                    .done(function (data) {
-                       
-                        $.each(data, function (idx, item) {
-                            var html =
-                                '<tr>' +
-                                    '<td>' + item.name + '</td>' +
-                                     '<td>' + item.price + '</td>' +
-                                      '<td>' + item.quantity + '</td>' +
-                                    '<td>' + item.money + '</td>' +
-                                '</tr>';
-                            $('#Detailbody').append(html);
-                        });
-                        $('#modalDetail').modal('show');
-                    })
-                    .fail(function (jqXHR, status, error) {
-                        console.log(jqXHR);
-                        alert('fail');
-                    });
-
-        });
-    });
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("listTable");
+            switching = true;
+            dir = "asc";
+            while (switching) {
+                switching = false;
+                rows = table.getElementsByTagName("TR");
+                for (i = 1; i < (rows.length - 1) ; i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
     </script>
-}
+    <!--Search in table-->
+    <script>
+        function Search() {
+            var input, filter, table, tr, td, tdTableName, tdID, i;
+            input = document.getElementById("txtSearch2");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("listTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[2];
+                tdTableName = tr[i].getElementsByTagName("td")[1];
+                tdID = tr[i].getElementsByTagName("td")[0];
 
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1 || tdTableName.innerHTML.toUpperCase().indexOf(filter) > -1 || tdID.innerHTML.toUpperCase().indexOf(filter) > -1 || tdID.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+
+}
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
-            <h2>Table design <small>Custom design</small></h2>
+            <h2>Quản lý hóa đơn <small></small></h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li style="float:right">
                     <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -58,25 +440,25 @@
         <div class="x_content" style="display: block;">
             <div class="row">
                 <div class="col-sm-4">
-                    <label>Hiện</label>
-                    <select>
-                        <option value="value">5</option>
-                        <option value="value">10</option>
-                        <option value="value">50</option>
-                        <option value="value">100</option>
-                    </select>
-                    <label>Trên</label>
+                    @*<label>Hiện</label>
+                        <select>
+                            <option value="value">5</option>
+                            <option value="value">10</option>
+                            <option value="value">50</option>
+                            <option value="value">100</option>
+                        </select>
+                        <label>Trên</label>*@
                 </div>
                 <div class="col-sm-8">
-                    <form>
+                    <form id="frmView">
                         <label class="radio-inline">
-                            <input type="radio" name="optradio">Hiển thị tất cả
+                            <input type="radio" name="optradio" value="1">Tất cả
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="optradio" checked="checked">Đang quản lý
+                            <input type="radio" name="optradio" value="2" checked="checked">Chưa thanh toán
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="optradio">Đã xóa
+                            <input type="radio" name="optradio" value="3">Đã thanh toán
                         </label>
                     </form>
                 </div>
@@ -85,54 +467,64 @@
             <div class="panel panel-default panel-table" style="margin-top: 20px">
                 <div class="panel-heading clearfix">
                     <div class="col-sm-8">
-                        <a href="javascript:;" id="btnAddNew" title="Thêm mới" class="panel-title"><i class="glyphicon glyphicon-plus"></i></a>
+                        <a href="javascript:;" id="btnAddNew" title="Thêm mới" class="panel-title"></a>
                     </div>
 
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" placeholder="Từ khóa...">
+                    @*<div class="col-sm-4">
+                            <input type="text" id="txtSearch" class="form-control" placeholder="Nhập từ khóa">
+                        </div>*@
+                    <div class="col-sm-4" >
+                        <input type="text" id="txtSearch2" onkeyup="Search()" class="form-control" placeholder="Từ khóa">
                     </div>
                 </div>
 
                 <div class="panel-body clearfix">
-                    <table class="table table-striped table-responsive jambo_table bulk_action" id="listTable">
+                    <table id="listTable" class="table table-striped table-responsive jambo_table bulk_action">
                         <thead>
                             <tr>
-                                <th>Mã hóa đơn</th>
-                                <th>Tên bàn</th>
-                                <th>Tên khách hàng</th>
-                                <th>Khuyến mãi</th>
-                                <th>Ngày tạo</th>
-                                <th>Thành tiền</th>
-                                <th>Tình trạng</th>
-                                <th>&nbsp;</th>
+                                <th style="cursor:pointer" onclick="sortTable(0)">Mã hóa đơn &nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
+                                <th style="cursor:pointer" onclick="sortTable(1)">Tên bàn&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
+                                <th style="cursor:pointer" onclick="sortTable(2)">Tên khách hàng&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
+                                <th style="cursor:pointer" onclick="sortTable(3)">Khuyến mãi&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
+                                <th style="cursor:pointer" onclick="sortTable(4)">Ngày tạo&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
+                                <th style="cursor:pointer" onclick="sortTable(5)">Thành tiền&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
+                                <th style="cursor:pointer" onclick="sortTable(6)">Tình trạng&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
                                 <th>&nbsp;</th>
                                 <th>&nbsp;</th>
                             </tr>
                         </thead>
 
                         <tbody id="bodyOrder">
-                           @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.ID</td>
-                    <td>@item.Table.Name</td>
-                    <td>@item.User.Name</td>
-                    <td>a@*@item.Promotion.Name*@</td>
-                    <td>@item.SetDate</td>
-                    <td>@item.TotalMoney</td>
-                    @if (item.Status == true)
-                    {
-                        <td>Đã thanh toán</td>
-                    }
-                    else
-                    {
-                        <td>Chưa thanh toán</td>
-                    }
-                    <td><button class="btnDetail" data-id="@item.ID"><i class="glyphicon glyphicon-list"></i></button></td>
-                    <td><button id="btnEdit"><i class="glyphicon glyphicon-edit"></i></button></td>
-                    <td><button id="btnDelete"><i class="glyphicon glyphicon-remove"></i></button></td>
-                </tr>
-            }
+                            @foreach (var item in Model)
+                            {
+                                <tr class="trbody-@item.ID">
+                                    <td>@item.ID</td>
+                                    <td id="bodyTableName-@item.ID">@item.Table.Name</td>
+                                    <td>@item.User.Name</td>
+                                    <td>@(item.Promotion == null ? "" : item.Promotion.Name)</td>
+                                    <td>@item.SetDate</td>
+                                    <td id="bodyTotalMoney-@item.ID">@item.TotalMoney</td>
+                                    <td id="bodyStatus-@item.ID">
+                                        @if (item.Status == true)
+                                        {
+                                            <p> Đã thanh toán</p>
+                                        }
+                                        else
+                                        {
+                                            <p>Chưa thanh toán</p>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="javascript:;" data-id="@item.ID" class="btn btn-primary btn-xs btnDetail" title="Xem chi tiết">
+                                            <i class="fa fa-folder"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:;" data-id="@item.ID" data-table="@item.TableID" data-promo="@(item.Promotion == null ? "" : item.Promotion.Name)" data-user="@item.User.Name" data-date="@item.SetDate" data-status="@item.Status" data-money="@item.TotalMoney" class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>
+                                    </td>
+
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -161,32 +553,137 @@
     </div>
 </div>
 
-@*create popup*@
-<div class="modal fade" id="modalDetail">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
-                <h4 id="ModalTitle">TIÊU ĐỀ</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <table class="table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Tên sản phẩm</th>
-                                <th>Giá</th>
-                                <th>Số lượng</th>
-                                <th>Thành tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody id="Detailbody"></tbody>
-                    </table>
+<!--Modal detail-->
+<div>
+    <div id="modalDetail" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Danh sách sản phẩm</h4>
                 </div>
-                
+                <div class="modal-body">
+                    <div>
+                        <table class="table table-responsive table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Detailbody"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-@*/create popup*@
 
+<!--Modal edit-->
+<div>
+    <div id="modalEdit" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Chi tiết hóa đơn</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Mã hóa đơn</label>
+                                <input class="form-control" readonly="readonly" type="text" name="txtID" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên khách hàng</label>
+                                <input class="form-control" readonly="readonly" type="text" name="txtName" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tình trạng hóa đơn</label>
+                                <select class="form-control" name="txtStatus">
+                                    <option value="True">Đã thanh toán</option>
+                                    <option value="False">Chưa thanh toán</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Bàn</label>
+                                <select class="form-control" name="txtTable">
+                                    <option value="1">Bàn 1</option>
+                                    <option value="5">Bàn 5</option>
+                                    <option value="3">Bàn 3</option>
+                                    <option value="4">Bàn 4</option>
+                                    <option value="6">Bàn 6</option>
+                                    <option value="7">Bàn 7</option>
+                                    <option value="9">Bàn 9</option>
+                                    <option value="2">Bàn 2</option>
+                                    <option value="10">Bàn 10</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Khuyến mãi</label>
+                                <input type="text" name="txtPromotion" readonly="readonly" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Ngày tạo</label>
+                                <input class="form-control" readonly="readonly" name="txtSetDate" type="text" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Danh sách các sản phẩm</label>
+                        <table id="tbOrderProduct" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbEdit"></tbody>
+                        </table>
+
+                    </div>
+                    <div class="form-group">
+                        <label>Tổng tiền:&nbsp</label>
+                        <label name="lbMonney"></label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" id="btnSaveChanges" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal confirm delete-->
+
+<div id="confirmDelete" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">Xác nhận xóa</div>
+            <div class="modal-body">
+                <h3>Bạn có chắc chắn xóa?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                <button id="btnConfirmDelete" type="button" class="btn btn-danger">Đồng ý</button>
+            </div>
+        </div>
+
+    </div>
+</div>

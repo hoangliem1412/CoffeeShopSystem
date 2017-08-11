@@ -27,5 +27,7 @@ namespace CoffeeShop.Service
         int Count(Expression<Func<T, bool>> where);
 
         bool CheckContains(Expression<Func<T, bool>> predicate);
+
+        void Save();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CoffeeShop.Data.Infrastructure;
-using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
 
 namespace CoffeeShop.Service

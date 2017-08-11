@@ -3,7 +3,7 @@ using CoffeeShop.Model.ModelEntity;
 
 namespace CoffeeShop.Data.Repositories
 {
-    public interface IMaterialLogRepository : IRepository<MaterialLog>
+    interface IMaterialLogRepository : IRepository<MaterialLog>
     {
 
     }

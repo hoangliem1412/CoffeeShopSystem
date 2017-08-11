@@ -1,38 +1,38 @@
-﻿using System;
-using CoffeeShop.Data.Infrastructure;
-using CoffeeShop.Model.ModelEntity;
-using CoffeeShop.Data.Repositories;
+﻿using CoffeeShop.Model.ModelEntity;
+using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Linq;
+using CoffeeShop.Data.Infrastructure;
+using CoffeeShop.Data.Repositories;
+using System.Linq.Expressions;
 
 namespace CoffeeShop.Service
 {
     public class MaterialService : IMaterialService
     {
         IMaterialRepository materialRepository;
-        IMaterialLogRepository materialLogRepository;
+        //IMaterialLogRepository materialLogRepository;
         IUnitOfWork unitOfWork;
-        public MaterialService(IMaterialRepository repoMate, IMaterialLogRepository repoMateLog,IUnitOfWork unit)
+        public MaterialService(IMaterialRepository repoMate, IUnitOfWork unit)
         {
             this.materialRepository = repoMate;
-            materialLogRepository = repoMateLog;
+            //materialLogRepository = repoMateLog;
             this.unitOfWork = unit;
         }
         public Material Add(Material material)
         {
             var rs = materialRepository.Add(material);
-            MaterialLog mateLog = new MaterialLog()
-            {
-                MaterialID = rs.ID,
-                Inventory = rs.Inventory,
-                UnitPrice = rs.UnitPrice,
-                CreatedDate = DateTime.Now,
-                IsDelete = false,
-                Type = false,
-                //EmployeeID
-            };
-            materialLogRepository.Add(mateLog);
+            //MaterialLog mateLog = new MaterialLog()
+            //{
+            //    MaterialID = rs.ID,
+            //    Inventory = rs.Inventory,
+            //    UnitPrice = rs.UnitPrice,
+            //    CreatedDate = DateTime.Now,
+            //    IsDelete = false,
+            //    Type = false,
+            //    //EmployeeID
+            //};
+            //materialLogRepository.Add(mateLog);
             return rs;
         }
 
@@ -41,17 +41,17 @@ namespace CoffeeShop.Service
             var mate = GetSingleByID(id);
             mate.IsDelete = !mate.IsDelete;
             materialRepository.Update(mate);
-            MaterialLog mateLog = new MaterialLog()
-            {
-                MaterialID = mate.ID,
-                Inventory = mate.Inventory,
-                UnitPrice = mate.UnitPrice,
-                CreatedDate = DateTime.Now,
-                IsDelete = false,
-                Type = true,
-                //EmployeeID
-            };
-            materialLogRepository.Add(mateLog);
+            //MaterialLog mateLog = new MaterialLog()
+            //{
+            //    MaterialID = mate.ID,
+            //    Inventory = mate.Inventory,
+            //    UnitPrice = mate.UnitPrice,
+            //    CreatedDate = DateTime.Now,
+            //    IsDelete = false,
+            //    Type = true,
+            //    //EmployeeID
+            //};
+            //materialLogRepository.Add(mateLog);
         }
 
         public Material GetSingleByID(int id)
@@ -85,10 +85,10 @@ namespace CoffeeShop.Service
         }
 
         public IEnumerable<Material> GetSearchStatusPaging(string keyword, int status, int index, int size, out int total)
-        { 
+        {
 
             Expression<Func<Material, bool>> func;
-            switch(status)
+            switch (status)
             {
                 case 2:
                     func = x => x.IsDelete == false && (x.Name.Contains(keyword) || x.Description.Contains(keyword) || x.CreatedDate.ToString().Contains(keyword) || x.UnitPrice.ToString().Contains(keyword));
@@ -105,7 +105,7 @@ namespace CoffeeShop.Service
             query = query.OrderByDescending(x => x.CreatedDate)
               .Skip((index - 1) * size)
               .Take(size).AsEnumerable();
-            
+
             return query;
         }
     }

@@ -1,9 +1,13 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Model.ModelEntity;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace CoffeeShop.Data.Repositories
 {
-    interface IDistrictRepository : IRepository<District>
+    public interface IDistrictRepository : IRepository<District>
     {
+        IEnumerable<District> GetByCityID(Expression<Func<District, bool>> expression);
     }
 }

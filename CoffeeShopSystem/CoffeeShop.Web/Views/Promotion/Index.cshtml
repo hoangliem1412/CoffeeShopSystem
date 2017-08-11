@@ -1,0 +1,831 @@
+﻿@using CoffeeShop.Model.ModelEntity;
+@model IEnumerable<Promotion>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section css{
+    @*<link href="~/Asserts/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />*@
+
+}
+
+
+@section js{
+
+    <script src="~/Asserts/jquery-validation-1.16.0/jquery.validate.min.js"></script>
+
+
+
+
+    <!-- GetPromotionById-->
+    <script>
+        $('.EditItem').on('click', function () {
+
+            var id = $(this).data('proid');
+            $('#ProIDText').val(id);
+
+            var form = $('#GetEditForm');
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+
+                dataType: 'json',
+                data: form.serialize(),
+                timeout: 30 * 1000,
+
+            })
+
+                 .done(function (result) {
+
+                     $('#EIDtext').val(result.ID);
+                     $('#EShoptext').val(result.ShopID);
+                     $('#Enametext').val(result.Name);
+
+                     //alert(result.StartDate);
+                     var date = new Date(parseInt(result.StartDate.replace('/Date(', '')));
+                     //alert(currentTime);
+                     var month = date.getMonth() + 1;
+                     if (month < 10) month = '0' + month;
+                     var day = date.getDate();
+                     if (day < 10) month = '0' + day;
+                     var year = date.getFullYear();
+                     var StartDate = year + "-" + month + "-" + day;
+                     //alert(date);
+                     $('#EStartDate').val(StartDate);
+
+                     // Gán textbox
+                     var date = new Date(parseInt(result.EndDate.replace('/Date(', '')));
+                     var month = date.getMonth() + 1;
+                     if (month < 10) month = '0' + month;
+                     var day = date.getDate();
+                     if (day < 10) month = '0' + day;
+                     var year = date.getFullYear();
+                     var EndDate = year + "-" + month + "-" + day;
+                     $('#EEndDate').val(EndDate);
+
+
+                     $('#Epurchasenumber').val(result.BasePurchase);
+                     $('#Ediscountnumer').val(result.Discount);
+                     $('#Ediscriptiontextarea').val(result.Description);
+
+                 })
+
+                 .fail(function (jqXHR, status, error) {
+                     console.log(jqXHR);
+                     alert('Thêm thất bại!');
+
+                 });
+
+        })
+    </script>
+
+
+    <!-- AddModal -->
+    <script>
+        $('#AddModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+        })
+    </script>
+
+    <!-- EditModal -->
+    <script>
+        $('#EditModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+        })
+    </script>
+
+    <!-- DeleteModal -->
+    <script>
+        $('#DeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+        })
+    </script>
+
+
+    <!-- Validate AddForm -->
+    <script type="text/javascript">
+    $('#AddForm').validate({
+        rules: {
+            Name: {
+                required: true,
+            },
+            StartDate: {
+                required: true,
+            },
+            // 2. Enddate > StartDate, Today
+            EndDate: {
+                required: true,
+            },
+
+            BasePurchase: {
+                required: true,
+            },
+
+
+            Discount: {
+                required: true,
+            },
+
+        },
+
+        messages: {
+            Name: {
+                required: 'Vui lòng nhập tên',
+            },
+            StartDate: {
+                required: 'Please enter Start Date',
+            },
+            EndDate: {
+                required: 'Please enter End Date',
+            },
+
+            BasePurchase: {
+                required: 'Please enter BasePurchase',
+            },
+
+            Discount: {
+                required: 'Please enter Discount',
+            },
+        },
+
+        errorElement: "span",
+        errorClass: "help-block",
+
+        highlight: function (elements) {
+            $(elements).closest('.form-group').removeClass('has-success');
+            $(elements).closest('.form-group').addClass('has-error');
+
+        },
+        success: function (label) {
+            $(label).closest('.form-group')
+            .removeClass('has-error');
+
+            $(label).closest('.form-group')
+           .addClass('has-success');
+
+            label.remove();
+
+        },
+    });
+
+    </script>
+
+
+    <!-- Validate EditForm -->
+    <script type="text/javascript">
+    $('#EditForm').validate({
+        rules: {
+            Name: {
+                required: true,
+            },
+            StartDate: {
+                required: true,
+            },
+            // 2. Enddate > StartDate, Today
+            EndDate: {
+                required: true,
+            },
+
+            BasePurchase: {
+                required: true,
+            },
+
+
+            Discount: {
+                required: true,
+            },
+
+        },
+
+        messages: {
+            Name: {
+                required: 'Vui lòng nhập tên',
+            },
+            StartDate: {
+                required: 'Please enter Start Date',
+            },
+            EndDate: {
+                required: 'Please enter End Date',
+            },
+
+            BasePurchase: {
+                required: 'Please enter BasePurchase',
+            },
+
+            Discount: {
+                required: 'Please enter Discount',
+            },
+        },
+
+        errorElement: "span",
+        errorClass: "help-block",
+
+        highlight: function (elements) {
+            $(elements).closest('.form-group').removeClass('has-success');
+            $(elements).closest('.form-group').addClass('has-error');
+
+        },
+        success: function (label) {
+            $(label).closest('.form-group')
+            .removeClass('has-error');
+
+            $(label).closest('.form-group')
+           .addClass('has-success');
+
+            label.remove();
+
+        },
+    });
+
+    </script>
+
+
+
+
+    <!-- Search in table: name, des-->
+    <script>
+    function myFunction() {
+        $('#paging').hide();
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("SearchText");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("listTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1]; // name
+            des = tr[i].getElementsByTagName("td")[6]; // description
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1 || des.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    </script>
+
+    <!-- Submit Add -->
+    <script>
+        $(document).ready(function () {
+            $('#submitAdd').on('click', function () {
+
+                //// Check validate
+                var form = $('#AddForm');
+                form.validate();
+
+
+                if (form.valid() == true) {
+                    $('#AddForm').submit();
+                    $('#AddModal').modal('hide');
+                    }
+
+                else {
+                }
+                })
+        })
+    </script>
+
+    <!-- Ajax: Submit Edit-->
+    <script>
+        $(document).ready(function () {
+            $('#submitEdit').on('click', function () {
+                // Check validate
+                var form = $('#EditForm');
+                form.validate();
+                if (form.valid() == true) {
+
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: form.attr('method'),
+
+                        dataType: 'json',
+                        data: form.serialize(),
+                        timeout: 30 * 1000,
+
+                    })
+                        .done(function (n) {
+                            var id = form.find('[name=ID]').val();//?form > result
+                            var name = form.find('[name=Name]').val();
+                            var basepurchase = form.find('[name=BasePurchase]').val();//?val();
+                            var discount = form.find('[name=Discount]').val();
+                            var startdate = form.find('[name=StartDate]').val();
+                            var enddate = form.find('[name=EndDate]').val();
+                            var description = form.find('[name=Description]').val();
+
+
+                            var table = $('#BodyTable');
+                            table.find('#ID-' + id).html(id);
+                            table.find('#Name-' + id).html(name);
+                            table.find('#BasePurchase-' + id).html(basepurchase);
+                            table.find('#Discount-' + id).html(discount);
+                            table.find('#StartDate-' + id).html(startdate);
+                            table.find('#EndDate-' + id).html(enddate);
+                            table.find('#Description-' + id).html(description);
+
+
+                            $('#EditModal').modal('hide');
+                        })
+
+
+                     .fail(function (jqXHR, status, error) {
+                         console.log(jqXHR);
+                         alert('Cập nhật thất bại!');
+                     });
+                }
+                else { }
+            })
+
+        })
+    </script>
+
+
+    <!-- Ajax: Submit Delete-->
+    <script>
+    $('.DeleteItem').on('click', function () {
+
+        var iddel = $(this).data('proid');
+        $('#DeleteIDText').val(iddel);
+
+        $('#DeleteModal').modal('show');
+        $('#submitDelete').on('click', function () {
+
+            $.ajax({
+                url: '@Url.Action("Delete","Promotion")',
+                type: 'post',
+                data: {'IdToDelete': iddel},
+                dataType: 'json',
+                timeout: 30 * 1000,
+
+            })
+
+             .done(function (result) {
+                 if (result == true) {
+                     $('#DeleteModal').modal('hide');
+                     $('#BodyTable #item-' + iddel).remove();
+                 }
+                 else {
+                     alert("Không được xóa khuyến mãi đang trong hóa đơn !!!");
+                     $('#DeleteModal').modal('hide');
+                 }
+
+
+             })
+
+
+
+
+             .fail(function (jqXHR, status, error) {
+                 console.log(jqXHR);
+                 alert('Xóa thất bại!');
+             });
+
+        })
+
+
+    })
+    </script>
+
+
+    <!-- Sort -->
+<script>
+function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("listTable");
+  switching = true;
+  //Set the sorting direction to ascending:
+  dir = "asc";
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.getElementsByTagName("TR");
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /*check if the two rows should switch place,
+      based on the direction, asc or desc:*/
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      //Each time a switch is done, increase this count by 1:
+      switchcount ++;
+    } else {
+      /*If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again.*/
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+
+}
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Danh Sách Khuyến Mãi</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li style="float:right">
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="x_content" style="display: block;">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label>Hiện</label>
+                    <select>
+                        <option value="value">5</option>
+                        <option value="value">10</option>
+                        <option value="value">50</option>
+                        <option value="value">100</option>
+                    </select>
+                    <label>Trên</label>
+                </div>
+                <div class="col-sm-8">
+                    <form id="ListView" action="">
+                        <label class="radio-inline">
+                            <input type="radio" value="all" onclick="handleClick(this);">Hiển thị tất cả
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="action" checked="checked">Đang quản lý
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" value="delete">Đã xóa
+                        </label>
+                    </form>
+                </div>
+
+            </div>
+            <div class="panel panel-default panel-table" style="margin-top: 20px">
+                <div class="panel-heading clearfix">
+                    <div class="col-sm-8">
+                        <a href="javascript:;" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="panel-title"><i class="glyphicon glyphicon-plus"></i></a>
+                    </div>
+
+                    <!-- Search -->
+                    @*<form id = "SearchForm" action="@Url.Action("Search", "Promotion")">*@
+                    <div class="col-sm-4">
+                        <input id="SearchText" onkeyup="myFunction()" name="keyword" type="text" class="form-control" placeholder="Từ khóa...">
+                    </div>
+                    @*</form>*@
+
+                </div>
+
+                <div class="panel-body clearfix">
+                    <table class="table table-striped table-responsive jambo_table bulk_action" id="listTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">ID <i class="fa fa-sort" ></i></th>
+                                <th onclick="sortTable(1)">Khuyến Mãi <i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(2)">Giảm Giá <i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(3)">Chiết Khấu <i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(4)">Ngày Bắt Đầu <i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(5)">Ngày Kết Thúc <i class="fa fa-sort"></i></th>
+                                <th onclick="sortTable(6)">Mô Tả <i class="fa fa-sort"></i></th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="BodyTable">
+                            @foreach (var i in Model)
+                            {
+                                <!-- item : for Delete (Ajax)-->
+                                <tr id="item-@i.ID">
+                                    <!-- i: for Edit (Edit)-->
+                                    <td id="ID-@i.ID">@i.ID</td>
+
+                                    <td id="Name-@i.ID">@i.Name</td>
+
+                                    <td id="BasePurchase-@i.ID">@i.BasePurchase</td>
+
+                                    <td id="Discount-@i.ID">@i.Discount</td>
+
+                                    <td id="StartDate-@i.ID">@string.Format("{0:dd.MM.yyyy}", i.StartDate)</td>
+
+                                    <td id="EndDate-@i.ID">@string.Format("{0:dd.MM.yyyy}", i.EndDate)</td>
+
+                                    <td id="Description-@i.ID">@i.Description</td>
+
+                                    <!-- 4. Edit, Delete-->
+                                    <td>
+                                        <a href="javascript:;" class="EditItem btn btn-primary btn-xs" data-toggle="modal" data-target="#EditModal" data-proid="@i.ID" title="Sửa">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+
+                                        <a href="javascript:;" class="DeleteItem btn btn-danger btn-xs" data-toggle="modal" data-proid="@i.ID" title="Xóa">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer" id="paging">
+                    <div class="row">
+                        <div class="col col-xs-4">
+                            Page @ViewBag.CurPage of @ViewBag.Pages
+                        </div>
+                        <nav aria-label="Page navigation" style="margin-left:5px">
+                            <ul class="pagination">
+                                <!-- Ẩn hiện nút Previous-->
+                                @if (ViewBag.CurPage == 1)
+                                {
+                                    <li>
+                                        <a href="?page=1" aria-label="Previous" hidden>
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="?page=@(ViewBag.CurPage - 1)" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                <!-- Bật active trang hiện tại-->
+                                @for (int i = 1; i <= ViewBag.Pages; i++)
+                                {
+                                    if (ViewBag.CurPage == i)
+                                    {
+                                        <li class="active">
+                                            <a href="?page=@i">@i</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a href="?page=@i">@i</a>
+                                        </li>
+                                    }
+                                }
+
+                                <!-- Ẩn hiện nút Next-->
+                                @if (ViewBag.CurPage == ViewBag.Pages)
+                                {
+                                    <li>
+                                        <a href="?page=@ViewBag.Pages" aria-label="Next" hidden>
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="?page=@(ViewBag.CurPage + 1)" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </nav>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Add Modal -->
+<div class="modal fade" id="AddModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <!-- AddFrom -->
+            <form id="AddForm" method="post" action="@Url.Action("Create","Promotion")">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h2 style="text-align: center">Thêm Khuyến Mãi</h2>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group has-feedback">
+                        <label for="nametext" class="form-control-label">Tên Khuyến Mãi:</label>
+                        <input type="text" class="form-control" id="nametext" name="Name">
+                    </div>
+
+
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" id="Ashoptext" name="ShopID" value=1>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stardatetext" class="form-control-label">Bắt Đầu:</label>
+                        <input type="date" name="StartDate" class="form-control datepicker" id="stardatetext" placeholder="mm/dd/yyyy">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enddatetext" class="form-control-label">Kết Thúc:</label>
+                        <input type="date" name="EndDate" class="form-control datepicker" id="enddatetext" placeholder="mm/dd/yyyy">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purchasenumber">Mức Giá:</label>
+                        <div class="input-group col-sm-5">
+                            <input id="purchasenumber" name="BasePurchase" type="number" min="1000" step="1000" required="required" class="form-control" placeholder="Giảm giá">
+                            @*<div class="input-group-addon">VNĐ</div>*@
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discountnumber">Chiết Khấu:</label>
+                        <div class="input-group col-sm-5">
+                            <input id="discountnumer" name="Discount" type="number" min="0" step="1" required="required" class="form-control" placeholder="Chiết khấu">
+                            @*<div class="input-group-addon">%</div>*@
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="discriptiontextarea" class="form-control-label">Mô Tả:</label>
+                        <textarea class="form-control" id="discriptiontextarea" name="Description"></textarea>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Hủy</button>
+                    <button type="button" id="submitAdd" class="btn btn-success">Lưu</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- GetEditForm-->
+<form id="GetEditForm" action="@Url.Action("GetById", "Promotion")" method="get">
+    <input id="ProIDText" type="hidden" name="idToGet" />
+</form>
+
+<!-- EditModal -->
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <!-- EditFrom -->
+            <form id="EditForm" method="post" action="@Url.Action("Edit","Promotion")">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                    <h2 style="text-align: center">Cập Nhật Khuyến Mãi</h2>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" name="ID" class="form-control" id="EIDtext">
+                    <input type="hidden" name="ShopID" class="form-control" id="EShoptext">
+
+
+                    <div class="form-group">
+                        <label for="Enametext" class="form-control-label">Tên Khuyến Mãi:</label>
+                        <input type="text" name="Name" class="form-control" id="Enametext">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="EStartDate" class="form-control-label">Bắt Đầu:</label>
+                        <input type="date" name="StartDate" class="form-control datepicker" id="EStartDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="EEndDate" class="form-control-label">Kết Thúc:</label>
+                        <input type="date" name="EndDate" class="form-control datepicker" id="EEndDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Epurchasenumber">Mức Giá:</label>
+                        <div class="input-group col-sm-5">
+                            <input id="Epurchasenumber" name="BasePurchase" type="number" min="1000" step="1000" required="required" class="form-control" placeholder="Giảm giá">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Ediscountnumber">Chiết Khấu:</label>
+                        <div class="input-group col-sm-5">
+                            <input id="Ediscountnumer" name="Discount" type="number" min="0" step="1" required="required" class="form-control" placeholder="Chiết khấu">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Ediscriptiontextarea" class="form-control-label">Mô Tả:</label>
+                        <textarea name="Description" class="form-control" id="Ediscriptiontextarea"></textarea>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+                    <button type="button" id="submitEdit" class="btn btn-success">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- DeleteModal -->
+<div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <!-- DeleteFrom -->
+            <form id="DeleteForm" method="post" action="@Url.Action("Delete","Promotion")">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                    <h2 style="text-align: center">Xóa Khuyến Mãi</h2>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" name="IdToDelete" class="form-control" id="DeleteIDText">
+
+
+                    <div class="form-group">
+                        <label class="form-control-label">Bạn chắc chắn muốn xóa khuyến mãi này ?</label>
+                    </div>
+
+                </div>
+
+                <!-- Button -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+                    <button type="button" id="submitDelete" class="btn btn-success">Đồng Ý</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- Search-->

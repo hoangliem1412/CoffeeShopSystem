@@ -1,6 +1,8 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Model.ModelEntity;
-
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 namespace CoffeeShop.Data.Repositories
 {
     public class WardRepository : RepositoryBase<Ward>, IWardRepository
@@ -8,6 +10,10 @@ namespace CoffeeShop.Data.Repositories
         public WardRepository(IDbFactory dbFactory)
             : base(dbFactory)
         {
+        }
+        public IEnumerable<Ward> GetByDistrictID(Expression<Func<Ward, bool>> expression)
+        {
+            return GetMany(expression);
         }
     }
 }

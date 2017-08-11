@@ -1,0 +1,453 @@
+﻿@model IEnumerable<CoffeeShop.Model.ModelEntity.GroupTable>
+
+@{
+    ViewBag.Title = "Searchd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section css {
+    <link href="~/Asserts/DataTables-1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Asserts/DuyVM2.css" rel="stylesheet" />
+}
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>DANH SÁCH NHÓM BÀN</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li style="float:right">
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content" style="display: block;">
+            <div class="row">
+                <div class="col-sm-8">
+                    <form>
+                        <label class="radio-inline">
+                            <input type="radio" name="option" value="manage" checked="checked">Đang quản lý
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" id="check" name="option" value="delete">Đã xóa
+                        </label>
+                    </form>
+                </div>
+            </div>
+            <div class="panel panel-default panel-table" style="margin-top: 20px">
+                <div class="addbtn">
+                    <a href="javascript:;" id="AddButton" title="Thêm mới" class="panel-title btn btn-success"><i class="glyphicon glyphicon-plus"></i></a>
+                </div>
+                <div class="lengthpage">
+                    <label class="control-label float-left">Hiển thị</label>
+                    <div class="float-left">
+                        <select class="form-control" id="lengthpage">
+                            <option value="5">5</option>
+                            <option selected value="10">10</option>
+                            <option value="20">50</option>
+                            <option value="-1">Tất cả</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="searchbox">
+                    <input type="text" id="search" class="form-control" placeholder="Từ khóa...">
+                </div>
+                <div class="panel-body clearfix">
+                    <table id="Table" class="table table-striped table-responsive jambo_table bulk_action">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên</th>
+                                <th>Phụ thu</th>
+                                <th>Số lượng bàn</th>
+                                <th>Mô tả</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="BodyTable">
+                            @foreach (var item in Model)
+                            {
+                                <tr id="item-@item.ID">
+                                    <td>@item.ID</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Surcharge</td>
+                                    <td>@item.Tables.Count</td>
+                                    <td>@item.Description</td>
+                                    <td>
+                                        <a href="javascript:;" class="_edit btn btn-info btn-xs" data-id="@item.ID" data-name="@item.Name" data-surcharge="@item.Surcharge" data-description="@item.Description" data-shopid="@item.ShopID" title="Sửa"><i class="fa fa-pencil"></i></a>
+                                        <a href="javascript:;" class="_delete btn btn-danger btn-xs" data-id="@item.ID" data-toggle="modal" data-target="#DeleteModal" title="Xóa"><i class="fa fa-trash-o"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Add-->
+<div class="modal fade" id="AddModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="AddForm" method="post" action="@Url.Action("Add", "GroupTable")" class="form-horizontal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Thêm Nhóm Bàn Mới</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Tên:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Name" placeholder="Tên">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Phụ thu:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="Surcharge" placeholder="Phụ thu">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Mô tả:</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="3" name="Description" placeholder="Mô tả"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton">Lưu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit-->
+<div class="modal fade" id="EditModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="EditForm" method="post" action="@Url.Action("Edit", "GroupTable")" class="form-horizontal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">Chỉnh Sửa Nhóm Bàn</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="ID">
+                    <input type="hidden" name="ShopID">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Tên:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Name" placeholder="Tên">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Phụ thu:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="Surcharge" placeholder="Phụ thu">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Mô tả:</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="3" name="Description" placeholder="Mô tả"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton">Lưu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Delete Modal-->
+<div class="modal fade" id="DeleteModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="DeleteForm" method="post" action="@Url.Action("Delete", "GroupTable")">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Xác Nhận</h4>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-center">Bạn chắc chắn xóa?</h5>
+                    <input type="hidden" name="ID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton" data-dismiss="modal">Đồng ý</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Recover Modal-->
+<div class="modal fade" id="RecoverModal" role="dialog">
+    <div class="modal-dialog" style="width:700px">
+        <div class="modal-content">
+            <form id="RecoverForm" method="post" action="@Url.Action("Recover", "GroupTable")">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 style="text-align: center">Xác Nhận</h4>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-center">Bạn chắc chắn phục hồi?</h5>
+                    <input type="hidden" name="ID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton" data-dismiss="modal">Đồng ý</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section js{
+    <script src="~/Asserts/DataTables-1.10.15/js/jquery.dataTables.min.js"></script>
+    <!--js-->
+    <script>
+        $(document).ready(function () {
+            var datatable = $('#Table').DataTable({
+                "language": {
+                    "lengthMenu": 'Display <select>' +
+                    '<option value="5">5</option>' +
+                    '<option value="10">10</option>' +
+                    '<option value="20">20</option>' +
+                    '<option value="30">30</option>' +
+                    '<option value="40">40</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="-1">All</option>' +
+                    '</select> records',
+                    "zeroRecords": "Không tìm thấy!",
+                    "info": "",
+                    "infoEmpty": "",
+                    "infoFiltered": "",
+                    "search": "",
+                    "paginate": {
+                        "next": '<i class="fa fa-angle-right" aria-hidden="true"></i>',
+                        "previous": '<i class="fa fa-angle-left" aria-hidden="true"></i>'
+                    }
+                },
+                "sDom": 'tipr',
+            });
+
+            $('#lengthpage').on('change', function () {
+                var s = $(this).val();
+                datatable.page.len(s).draw(false);
+            });
+
+            $("#search").keyup(function () {
+                datatable.search(this.value).draw();
+            });
+
+            //Option search
+            $('[name=option]').on('change', function () {
+                var value = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("SearchCondition", "GroupTable")',
+                    data: { 'option': value },
+                    type: 'post',
+                    timeout: 10000,
+                })
+                    .done(function (results) {
+
+                        //Clear old data
+                        $('#Table').DataTable().clear().draw();
+
+                        $.each(results.data, function (idx, result) {
+                            var html = '<a href="javascript:;" class="_edit btn btn-info btn-xs" data-id="' + result.ID + '" data-name="' + result.Name + '" data-surcharge="' + result.Surcharge + '" data-description="' + result.Description + '" data-shopid="' + result.ShopID + '" title="Sửa"><i class="fa fa-pencil"></i></a>'
+                                + '<a href="javascript:;" class="_delete btn btn-danger btn-xs" data-id="' + result.ID + '" data-toggle="modal" data-target="#DeleteModal" title="Xóa"><i class="fa fa-trash-o"></i></a>';
+                            if (results.option == 'delete') {
+                                html = '<a href="javascript:;" class="_recover btn btn-primary btn-xs" data-id="' + result.ID + '" data-toggle="modal" data-target="#RecoverModal" title="Phục hồi"><i class="fa fa-reply-all" aria-hidden="true"></i></i></a>';
+                            }
+                            else {
+
+                            }
+
+                            //Add row to datatable
+                            var rowNode = datatable.row.add([
+                                result.ID,
+                                result.Name,
+                                result.Surcharge,
+                                result.TableCount,
+                                result.Description,
+                                html,
+                            ]).draw(false).node();
+
+                            //Add attribute for this row <tr>
+                            $(rowNode)
+                                .attr('id', 'item-' + result.ID);
+                        });
+
+                    })
+                    .fail(function (data) {
+                        alert('Tải dữ liệu thất bại! Vui lòng thử lại.');
+                    })
+            });
+
+            //Add
+            $('#AddButton').on('click', function () {
+                $('#AddForm')[0].reset();
+                $('#AddModal').modal('show');
+            });
+
+            $('#AddForm .savebutton').on('click', function () {
+                var form = $('#AddForm');
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                })
+                    .done(function (result) {
+                        
+                        if ($('#check').is(':checked')) {
+                            $('#AddModal').modal('hide');
+                            return;
+                        }
+                        else {
+
+                        }
+
+                        //Create new row
+                        var rowNode = datatable.row.add([
+                            result.ID,
+                            result.Name,
+                            result.Surcharge,
+                            result.TableCount,
+                            result.Description,
+                            '<a href="javascript:;" class="_edit btn btn-info btn-xs" data-id="' + result.ID + '" data-name="' + result.Name + '" data-surcharge="' + result.Surcharge + '" data-description="' + result.Description + '" data-shopid="' + result.ShopID + '" title="Sửa"><i class="fa fa-pencil"></i></a>'
+                            + '<a href="javascript:;" style="margin-left: 4px;" class="_delete btn btn-danger btn-xs" data-id="' + result.ID + '" data-toggle="modal" data-target="#DeleteModal" title="Xóa"><i class="fa fa-trash-o"></i></a>',
+                        ]).draw(false).node();
+
+                        //Add attribute for this row <tr>
+                        $(rowNode).attr('id', 'item-' + result.ID);
+
+                        //Hide popup add
+                        $('#AddModal').modal('hide');
+                    })
+                    .fail(function (data) {
+                        alert('Thêm thất bại! Vui lòng kiểm tra lại.');
+                    })
+            });
+
+            //Edit
+            $('#BodyTable').on('click', '._edit', function () {
+                var form = $('#EditForm');
+                form.find('[name=ID]').val($(this).data('id'));
+                form.find('[name=Name]').val($(this).data('name'));
+                form.find('[name=Surcharge]').val($(this).data('surcharge'));
+                form.find('[name=Description]').val($(this).data('description'));
+                form.find('[name=ShopID]').val($(this).data('shopid'));
+
+                $('#EditModal').modal('show');
+            });
+
+
+            $('#EditForm .savebutton').on('click', function () {
+                var form = $('#EditForm');
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    timeout: 10000,
+                })
+                    .done(function (data) {
+                        var id = form.find('[name=ID]').val();
+                        var name = form.find('[name=Name]').val();
+                        var surcharge = form.find('[name=Surcharge]').val();
+                        var description = form.find('[name=Description]').val();
+                        var shopid = form.find('[name=ShopID]').val();
+
+                        var table = $('#BodyTable');
+
+                        //Set data to a element
+                        var element = table.find('#item-' + id).find('._edit');
+                        element.data('id', id);
+                        element.data('name', name);
+                        element.data('surcharge', surcharge);
+                        element.data('description', description);
+                        element.data('shopid', shopid);
+
+                        //Update data (of form to row selecting) to datatable
+                        var row = datatable.row('#item-' + id);
+                        datatable.cell(row, 1).data(name).draw(false);
+                        datatable.cell(row, 2).data(surcharge).draw(false);
+                        datatable.cell(row, 4).data(description).draw(false);
+
+                        //Hide popup
+                        $('#EditModal').modal('hide');
+                    })
+                    .fail(function (data) {
+                        alert('Cập nhật thất bại! Vui lòng kiểm tra lại.');
+                    })
+            });
+
+            //Delete
+            $('#BodyTable').on('click', '._delete', function () {
+
+                //Set ID to input of form
+                var form = $('#DeleteForm');
+                form.find('[name=ID]').val($(this).data('id'));
+                $('#DeleteModal').css('display', 'block');
+            });
+
+
+            $('#DeleteForm .savebutton').on('click', function () {
+                var form = $('#DeleteForm');
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                })
+                    .done(function (data) {
+                        if (data == false) {
+                            alert('Xóa thất bại! Vui lòng kiểm tra lại.');
+                            return;
+                        }
+
+                        //Remove row
+                        datatable.row('#item-' + form.find('[name=ID]').val()).remove().draw(false);
+
+                    })
+                    .fail(function (data) {
+                        alert('Xóa thất bại! Vui lòng kiểm tra lại.');
+                    })
+            });
+
+            //Recover
+            $('#BodyTable').on('click', '._recover', function () {
+
+                //Set ID to input of form
+                var form = $('#RecoverForm');
+                form.find('[name=ID]').val($(this).data('id'));
+                $('#RecoverModal').css('display', 'block');
+            });
+
+
+            $('#RecoverForm .savebutton').on('click', function () {
+                var form = $('#RecoverForm');
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                })
+                    .done(function (data) {
+                        if (data == false) {
+                            alert('Phục hồi thất bại! Vui lòng kiểm tra lại.');
+                            return;
+                        }
+
+                        //Remove row
+                        datatable.row('#item-' + form.find('[name=ID]').val()).remove().draw(false);
+                    })
+                    .fail(function (data) {
+                        alert('Phục hồi thất bại! Vui lòng kiểm tra lại');
+                    })
+            });
+        });
+    </script>
+}

@@ -18,7 +18,7 @@ function pagination_LoadTable(data, tableHolder) {
         row += "<td>" + item.UnitPrice + "</td>";
         row += "<td>" + (item.IsDelete == true ? 'Đã xóa' : 'Chưa xóa') + "</td>";
         row += "<td>" + item.Description + "</td>";
-        row += "<td>" + item.CategoryID + "</td>";
+        row += "<td>" + item.CategoryName + "</td>";
         row += "<td>";
         row += "<a class='btn btn-info btn-xs btnEditMaterial' data-id='" + item.ID + "' title='Chỉnh sửa'><i class='fa fa-pencil'></i></a>";
         row += "<a class='btn btn-danger btn-xs' data-id='" + item.ID + "' title='Xóa'><i class='fa fa-trash-o'></i></a>";
@@ -89,16 +89,16 @@ var material = {
 
         $("#SubmitFrmMaterial").off('click').on('click', function () {
             //if ($('#frmMaterialLogInfo').valid()) {
-                material.submitFromSaveData();
+            material.submitFromSaveData();
             //}
         });
 
         $("#btn-deleteMaterial").off('click').on('click', function () {
             var id = $(this).data('id');
             material.deleteMaterial(id);
-        }); 
+        });
     },
-    submitFromSaveData: function(){
+    submitFromSaveData: function () {
         var name = $('#txtName').val();
         var categoryID = $('#slCategory').val();
         var unitPrice = $('#txtUnitPrice').val();
@@ -126,17 +126,17 @@ var material = {
             success: function (response) {
                 if (response.status == true) {
                     if (response.action) {
-                        var dialog = bootbox.dialog({
-                            message: 'Thêm thành công',
-                            closeButton: false
-                        });
+                        //var dialog = bootbox.dialog({
+                        //    message: 'Thêm thành công',
+                        //    closeButton: false
+                        //});
 
                     }
                     else {
-                        var dialog = bootbox.dialog({
-                            message: 'Sua thanh cong',
-                            closeButton: false
-                        });
+                        //var dialog = bootbox.dialog({
+                        //    message: 'Sua thanh cong',
+                        //    closeButton: false
+                        //});
                     }
                     $('#infoModal').modal('hide');
                     dialog.modal('hide');
@@ -153,7 +153,7 @@ var material = {
         });
     },
 
-    deleteMaterial: function(id){
+    deleteMaterial: function (id) {
         $.ajax({
             type: 'GET',
             url: '/Material/Delete',
@@ -161,13 +161,13 @@ var material = {
             data: { id: id },
             success: function (response) {
                 if (response.status) {
-                    var dialog = bootbox.dialog({
-                        message: 'Xóa thành công',
-                        closeButton: false
-                    });
+                    //var dialog = bootbox.dialog({
+                    //    message: 'Xóa thành công',
+                    //    closeButton: false
+                    //});
                 }
-                else {
-                    alert(response.message);
+                else { alert(response.message);
+                   
                 }
                 $('#DeleteConfirmation').modal('hide');
                 dialog.modal('hide');
@@ -175,7 +175,7 @@ var material = {
             }
         })
     },
-    resetForm: function(){
+    resetForm: function () {
         $('#txtName').val("");
         $('#slCategory').reset();
         $('#txtUnitPrice').val("");
@@ -187,7 +187,7 @@ var material = {
     loadData: function (changePageSize) {
         var keyword = $('#text-search').val();
         var status = $('input[name=optradio]:checked').val();
-        var pageSize = $('#comboPageSize').val();   
+        var pageSize = $('#comboPageSize').val();
         $.ajax({
             url: '/Material/LoadData',
             type: 'GET',
@@ -199,7 +199,7 @@ var material = {
             },
             dataType: 'json',
             success: function (response) {
-                
+
                 if (response.status) {
                     var data = response.data;
                     var html = '';

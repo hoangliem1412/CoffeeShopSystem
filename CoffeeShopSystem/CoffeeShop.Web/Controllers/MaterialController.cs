@@ -1,16 +1,9 @@
-﻿using AutoMapper;
-using CoffeeShop.Model.ModelEntity;
+﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
 using CoffeeShop.Web.Models;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 
@@ -39,10 +32,13 @@ namespace CoffeeShop.Web.Controllers
         public ActionResult LoadData(string keyword, int status, int page, int pageSize = 5)
         {
             int totalRow = 0;
-            var listMaterial = materialService.GetSearchStatusPaging(keyword, status, page, pageSize, out totalRow);
+ 
+ 
+            var listMaterial = materialService.GetSearchStatusPaging(keyword, status, page, pageSize, out totalRow).Select(x => new MaterialViewModel { ID = x.ID, CategoryID = x.CategoryID, CategoryName = x.MaterialCategory.Name, Name = x.Name, CreatedDate = x.CreatedDate, Description = x.Description, Inventory = x.Inventory, IsDelete = x.IsDelete, UnitPrice = x.UnitPrice }); 
+
             //var listMaterialVm = Mapper.Map<List<MaterialViewModel>>(listMaterial);
             //var json = JsonConvert.SerializeObject(listMaterial, Formatting.Indented, new JsonSerializerSettings {
-            //    PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            //    MetadataPropertyHandling = MetadataPropertyHandling.Ignore
             //});
             //var rs = JsonConvert.DeserializeObject(json);
             //data.Data = listMaterial;
@@ -54,6 +50,7 @@ namespace CoffeeShop.Web.Controllers
                 status = true //trạng thái
             }, JsonRequestBehavior.AllowGet);
         }
+
         //Action được ajax gọi khi click submid trên popup
         public JsonResult SubmitForm(string strMaterial)
         {
@@ -98,7 +95,7 @@ namespace CoffeeShop.Web.Controllers
                 action = action
             });
         }
-   
+
         public JsonResult GetDetailEdit(int id)
         {
             Material material = materialService.GetSingleByID(id);

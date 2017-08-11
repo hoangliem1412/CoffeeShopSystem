@@ -2,56 +2,57 @@
 using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoffeeShop.Service
 {
-    public interface IGroupTableService
+    
+
+    public class GroupTableService : Service<GroupTable>, IGroupTableService
     {
-        GroupTable Add(GroupTable group);
-
-        void Update(GroupTable group);
-
-        GroupTable Delete(int id);
-
-        IEnumerable<GroupTable> GetAll();
-
-        GroupTable GetByID(int id);
-    }
-
-    public class GroupTableService : IGroupTableService
-    {
-        private IGroupTableRepository _groupTableRepository;
-        private IUnitOfWork _unitOfWork;
-
-        public GroupTableService(IGroupTableRepository groupTableRepository, IUnitOfWork unitOfWork)
+        public GroupTableService(IRepository<GroupTable> repo, IUnitOfWork unitOfWork) : base(repo, unitOfWork)
         {
-            this._groupTableRepository = groupTableRepository;
-            this._unitOfWork = unitOfWork;
         }
 
-        public GroupTable Add(GroupTable group)
+        public IEnumerable<GroupTable> GetByShop(int id)
         {
-            return _groupTableRepository.Add(group);
+            return base.GetMulti(gt => gt.ShopID == id); //select duoc group table tuong ung.
+        }
+        
+        public IEnumerable<dynamic> SearchCondition(string option)
+        {
+            var key = option.ToLower();
+            IEnumerable<GroupTable> result;
+            if (key == "delete")
+            {
+                result = base.GetMulti(t => t.IsDelete == true && t.ShopID == 1);
+            }
+            else if (key == "manage")
+            {
+                result = base.GetMulti(t => t.IsDelete != true && t.ShopID == 1);
+            }
+            else
+            {
+                result = GetByShop(1);
+            }
+            return result.Select(gt => new { ID = gt.ID, Name = gt.Name, Surcharge = gt.Surcharge, TableCount = gt.Tables.Count, Description = gt.Description }); ;
+
         }
 
-        public GroupTable Delete(int id)
+        public bool Recover(int id)
         {
-            return _groupTableRepository.Delete(id);
-        }
-
-        public IEnumerable<GroupTable> GetAll()
-        {
-            return _groupTableRepository.GetAll();
-        }
-
-        public GroupTable GetByID(int id)
-        {
-            return _groupTableRepository.GetSingleById(id);
-        }
-
-        public void Update(GroupTable group)
-        {
-            _groupTableRepository.Update(group);
+            var toRecover = base.GetSingleById(id);
+            if (toRecover == null)
+            {
+                return false;
+            }
+            else
+            {
+                toRecover.IsDelete = false;
+                Update(toRecover);
+                Save();
+                return true;
+            }
         }
     }
 }

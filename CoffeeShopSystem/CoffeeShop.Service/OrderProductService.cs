@@ -1,11 +1,8 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Service
 {
@@ -24,11 +21,16 @@ namespace CoffeeShop.Service
         }
         public void Update(OrderProduct table)
         {
-            _tableRepository.Update(table);
+           var op= _tableRepository.GetSingleById(table.ID);
+            op.Quantity = table.Quantity;
+            op.Money = op.Quantity * op.Price;
+            _tableRepository.Update(op);
         }
         public void Delete(int id)
         {
-            _tableRepository.Delete(id);
+            var orderUpdate = _tableRepository.GetSingleById(id);
+            orderUpdate.isDelete = true;
+            _tableRepository.Update(orderUpdate);
         }
 
         public IEnumerable<OrderProduct> GetAll()
@@ -48,21 +50,7 @@ namespace CoffeeShop.Service
 
         public List<OrderProduct> GetListOrderProductByOrderID(int id)
         {
-
-            return _tableRepository.GetListOrderProductByOrderID(id).ToList();
-            //var list =_tableRepository.GetListOrderProductByOrderID(id);
-            //var result = new List<OrderProduct>();
-            //foreach(var item in list)
-            //{
-            //    var od = new OrderProduct();
-            //    od.ID = item.ID;
-            //    od.Money = item.Money;
-            //    od.OrderID = item.OrderID;
-            //    od.Quantity = item.Quantity;
-            //    od.Price = item.Price;
-            //    result.Add(od);
-            //}
-            //return result;
+            return _tableRepository.GetListOrderProductByOrderID(id).Where(od=>od.isDelete==false).ToList();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<CoffeeShop.Model.ModelEntity.Material>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Material";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var mateCateList = ViewBag.MateCateList as IEnumerable<CoffeeShop.Model.ModelEntity.MaterialCategory>;
@@ -106,37 +106,37 @@
 
                         <tbody id="bodyTable">
                             @*@foreach (var item in Model)
-                            {
-                                <tr class="even pointer">
-                                    <td></td>
-                                    <td>
-                                        @item.CreatedDate
-                                    </td>
-                                    <td>
-                                        @item.MaterialCategory.Name
-                                    </td>
-                                    <td>
-                                        @item.Inventory
-                                    </td>
-                                    <td>
-                                        @item.UnitPrice
-                                    </td>
-                                    <td>
-                                        @item.Name
-                                    </td>
-                                    <td>
-                                        @item.IsDelete
-                                    </td>
-                                    <td>
-                                        @item.Description
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-primary btn-xs" title="Xem chi tiết"><i class="fa fa-folder"></i></a>
-                                        <a href="#" class="btn btn-info btn-xs" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>
-                                        <a href="#" class="btn btn-danger btn-xs" title="Xóa"><i class="fa fa-trash-o"></i></a>
-                                    </td>
-                                </tr>
-                            }*@
+                                {
+                                    <tr class="even pointer">
+                                        <td></td>
+                                        <td>
+                                            @item.CreatedDate
+                                        </td>
+                                        <td>
+                                            @item.MaterialCategory.Name
+                                        </td>
+                                        <td>
+                                            @item.Inventory
+                                        </td>
+                                        <td>
+                                            @item.UnitPrice
+                                        </td>
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                            @item.IsDelete
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-primary btn-xs" title="Xem chi tiết"><i class="fa fa-folder"></i></a>
+                                            <a href="#" class="btn btn-info btn-xs" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>
+                                            <a href="#" class="btn btn-danger btn-xs" title="Xóa"><i class="fa fa-trash-o"></i></a>
+                                        </td>
+                                    </tr>
+                                }*@
                         </tbody>
                     </table>
                 </div>
@@ -159,7 +159,7 @@
 
 @*create popup*@
 <div id="infoModal" class="modal fade" role="dialog" style="margin:auto;">
-    <div class="modal-dialog" >
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>

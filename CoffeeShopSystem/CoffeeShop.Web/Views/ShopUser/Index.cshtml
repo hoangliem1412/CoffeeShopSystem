@@ -1,0 +1,949 @@
+﻿@model IEnumerable<CoffeeShop.Model.ModelEntity.ShopUser>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var mateList = ViewBag.MateList as IEnumerable<CoffeeShop.Model.ModelEntity.Material>;
+}
+@section css{
+    <link href="~/Asserts/DataTables-1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+    <style type="text/css">
+        .help-clock {
+            color: #a94442;
+        }
+    </style>
+
+}
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Bản ghi nhập - xuất nguyên vật liệu</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li style="float:right">
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="x_content" style="display: block;">
+            <div class="row">
+                @*<div class="col-sm-4">
+                        <label>Hiện</label>
+                        <select>
+                            <option value="value">5</option>
+                            <option value="value">10</option>
+                            <option value="value">50</option>
+                            <option value="value">100</option>
+                        </select>
+                        <label>dòng mỗi trang</label>
+                    </div>*@
+                @*<div class="col-sm-8">
+                        <form>
+                            <label class="radio-inline">
+                                <input type="radio" name="optradio">Hiển thị tất cả
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="optradio" checked="checked">Đang quản lý
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="optradio">Đã xóa
+                            </label>
+                        </form>
+                    </div>*@
+
+            </div>
+            <div class="panel panel-default panel-table" style="margin-top: 20px">
+                @*<div class="panel-heading clearfix">
+                        <div class="col-sm-8">
+                            <a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="panel-title"><i class="glyphicon glyphicon-plus"></i></a>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" placeholder="Từ khóa...">
+                        </div>
+                    </div>*@
+
+                <div class="panel-body clearfix">
+                    <table class="display table table-striped table-bordered table-responsive jambo_table bulk_action" id="mainTable">
+                        <thead>
+                            <tr class="headings">
+                                <th>#</th>
+                                <th>Họ tên</th>
+                                <th>Tài khoản</th>
+                                <th>Email</th>
+                                <th>Địa chỉ</th>
+                                <th style="text-align:center"><i class="fa fa-cog"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody" class="tbody">
+                            @foreach (var item in Model)
+                            {
+                                <tr class="even pointer" id="tr-@item.ID">
+                                    <td>@item.ID</td>
+                                    <td>@item.User.Name</td>
+                                    <td>@item.User.Username</td>
+                                    <td>@item.User.Email</td>
+                                    <td>@item.User.DetailAddress - @item.User.Ward.Name - @item.User.Ward.District.Name - @item.User.Ward.District.City.Name</td>
+                                    <td align="center">
+                                        <a class="btn btn-info btn-xs edit" data-shopuserid="@item.ID" data-shopid="@item.ShopID"><i class="fa fa-pencil"></i></a>
+                                        @*<a class="btn btn-info btn-xs edit" data-shopuserid="@item.ID" data-shopid="@item.ShopID" data-userid="@item.UserID"
+                                            data-roleid="@item.RoleID" data-roledescription="@item.Description" data-name="@item.User.Name" data-username="@item.User.Username"
+                                            data-password="@item.User.Password" data-email="@item.User.Email" data-ward="@item.User.WardID" data-district="@item.User.Ward.DistrictID"
+                                            data-city="@item.User.Ward.District.CityID" data-detailaddress="@item.User.DetailAddress" data-birthday="@Convert.ToDateTime(item.User.BirthDay).ToString("yyyy-MM-dd")"
+                                            data-sex="@item.User.Sex" data-userdescription="@item.User.Description"><i class="fa fa-pencil"></i></a>*@
+                                        <a class="btn btn-danger btn-xs delete" data-id="@item.ID" data-shopid="@item.ShopID" data-userid="@item.UserID"
+                                           data-roleid="@item.RoleID" data-description="@item.Description" data-isdelete="true"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @*<div class="panel-footer">
+                        <div class="row">
+                            <div class="col col-xs-4">
+                                Page 1 of 5
+                            </div>
+                            <div class="col col-xs-8">
+                                <ul class="pagination hidden-xs pull-right">
+                                    <li><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                </ul>
+                                <ul class="pagination visible-xs pull-right">
+                                    <li><a href="#">«</a></li>
+                                    <li><a href="#">»</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+@*create popup Add shopuser*@
+<div id="AddModal" class="modal fade" role="dialog" style="margin:auto;">
+    <div class="modal-dialog" style="width:700px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thông tin bản ghi</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="AddForm">
+                    <fieldset id="SubmitForm">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="IsDeleteTextbox" name="IsDelete" value="false">
+                        </div>
+                        <div class="form-group">
+                            <label for="NameTextbox" class="col-sm-4 control-label">Họ tên (*)</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="NameTextbox" placeholder="Họ tên" name="Name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="UsernameTextbox" class="col-sm-4 control-label">Tên tài khoản (*)</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="UsernameTextbox" placeholder="Username" name="Username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EmailTextbox" class="col-sm-4 control-label">Email (*)</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="EmailTextbox" placeholder="Email" name="Email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="PasswordTextbox" class="col-sm-4 control-label">Mật khẩu (*)</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="PasswordTextbox" placeholder="Mật khẩu" name="Password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="RePasswordTextbox" class="col-sm-4 control-label">Nhập lại mật khẩu (*)</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="RePasswordTextbox" placeholder="Mật khẩu" name="RePassword">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="Role" class="col-sm-4 control-label">Vị trí (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="role" id="Role">
+                                    <option value="0">Vị trí</option>
+                                    @foreach (var item in ViewBag.RoleList)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="RoleDescriptionTextbox" class="col-sm-4 control-label">Mô tả vị trí</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="RoleDescriptionTextbox" placeholder="Nhân viên cửa hàng A,B,C...." name="roleDescription">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="CityList" class="col-sm-4 control-label">Thành phố (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="CityList">
+                                    <option value="0">Thành phố</option>
+                                    @foreach (var item in ViewBag.CityList)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="DistrictList" class="col-sm-4 control-label">Quận (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="DistrictList">
+                                    <option value="0">Quận</option>
+                                    @*@foreach (var item in ViewBag.DistrictList)
+                                        {
+                                            <option value="@item.ID">@item.Name</option>
+                                        }*@
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="WardList" class="col-sm-4 control-label">Phường (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="WardList" name="WardID">
+                                    <option value="0">Phường</option>
+                                    @*@foreach (var item in ViewBag.WardList)
+                                        {
+                                            <option value="@item.ID">@item.Name</option>
+                                        }*@
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="DetailAddressTextbox" class="col-sm-4 control-label">Địa chỉ chi tiết</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="DetailAddressTextbox" placeholder="Ví dụ: Số 10 đường 5" name="DetailAddress">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="BirthDayTextbox" class="col-sm-4 control-label">Ngày sinh (*)</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control" id="BirthDayTextbox" placeholder="MM/DD/YYYY" name="BirthDay">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="GenderList" class="col-sm-4 control-label">Giới tính (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="GenderList" name="Sex">
+                                    <option value="0">GIới tính</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="DescriptionTextbox" class="col-sm-4 control-label">Thông tin thêm</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="DescriptionTextbox" placeholder="Thông tin thêm" name="Description">
+                            </div>
+                        </div>
+                    </fieldset>
+                    @*<div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-8">
+                                <button type="button" id="SubmitAdd" class="btn btn-default">Submit</button>
+                            </div>
+                        </div>*@
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button href="#" class="btn btn-primary" id="SubmitAdd">Submit</button>
+                <button href="#" class="btn btn-default" id="" data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*/ endcreate popup*@
+
+@*create popup Edit shopuser*@
+<div id="EditModal" class="modal fade" role="dialog" style="margin:auto;">
+    <div class="modal-dialog" style="width:700px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thông tin bản ghi</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="EditForm">
+                    <fieldset id="SubmitForm">
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="IsDeleteTextbox" name="IsDelete" value="false">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="EditUserIDTextbox" name="ID">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="EditShopUserIDTextbox" name="shopUserID">
+                        </div>
+                        <div class="form-group">
+                            <label for="EditNameTextbox" class="col-sm-4 control-label">Họ tên (*)</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="EditNameTextbox" placeholder="Họ tên" name="Name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditUsernameTextbox" class="col-sm-4 control-label">Tên tài khoản (*)</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="EditUsernameTextbox" placeholder="Username" name="Username">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditEmailTextbox" class="col-sm-4 control-label">Email (*)</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="EditEmailTextbox" placeholder="Email" name="Email">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditPasswordTextbox" class="col-sm-4 control-label">Mật khẩu (*)</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="EditPasswordTextbox" placeholder="Mật khẩu" name="Password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditRePasswordTextbox" class="col-sm-4 control-label">Nhập lại mật khẩu (*)</label>
+                            <div class="col-sm-8">
+                                <input type="password" class="form-control" id="EditRePasswordTextbox" placeholder="Mật khẩu" name="RePassword">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditRole" class="col-sm-4 control-label">Vị trí (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="role" id="EditRole">
+                                    <option value="0">Vị trí</option>
+                                    @foreach (var item in ViewBag.RoleList)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditRoleDescriptionTextbox" class="col-sm-4 control-label">Mô tả vị trí</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="EditRoleDescriptionTextbox" placeholder="Nhân viên cửa hàng A,B,C...." name="roleDescription">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditCityList" class="col-sm-4 control-label">Thành phố (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="EditCityList">
+                                    <option value="0">Thành phố</option>
+                                    @foreach (var item in ViewBag.CityList)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditDistrictList" class="col-sm-4 control-label">Quận (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="EditDistrictList">
+                                    <option value="0">Quận</option>
+                                    @*@foreach (var item in ViewBag.DistrictList)
+                                        {
+                                            <option value="@item.ID">@item.Name</option>
+                                        }*@
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditWardList" class="col-sm-4 control-label">Phường (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="EditWardList" name="WardID">
+                                    <option value="0">Phường</option>
+                                    @*@foreach (var item in ViewBag.WardList)
+                                        {
+                                            <option value="@item.ID">@item.Name</option>
+                                        }*@
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditDetailAddressTextbox" class="col-sm-4 control-label">Địa chỉ chi tiết</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="EditDetailAddressTextbox" placeholder="Ví dụ: Số 10 đường 5" name="DetailAddress">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditBirthDayTextbox" class="col-sm-4 control-label">Ngày sinh (*)</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control" id="EditBirthDayTextbox" placeholder="MM/DD/YYYY" name="BirthDay">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditGenderList" class="col-sm-4 control-label">Giới tính (*)</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="EditGenderList" name="Sex">
+                                    <option value="0">Giới tính</option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditDescriptionTextbox" class="col-sm-4 control-label">Thông tin thêm</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="EditDescriptionTextbox" placeholder="Thông tin thêm" name="Description">
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" id="SubmitEdit">Submit</a>
+                <a href="#" class="btn btn-default" id="" data-dismiss="modal">Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>
+@*end create popup*@
+
+@*Create A PopUp Modal For DeleteConfirmation*@
+
+<div class="modal fade" id="DeleteConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4>THÔNG BÁO</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Bạn có chắc muốn xóa ""?</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" data-dismiss="modal" id="r">Cancel</a>
+                <a href="#" class="btn btn-danger" id="btnConfirm" data-id="">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+@*/Create A PopUp Modal For DeleteConfirmation*@
+
+@section js{
+    <script src="~/Asserts/DataTables-1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="~/Asserts/DataTables-1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery-validation-1.17.0/jquery.validate.min.js"></script>
+    <script>
+        //$(document).ready(function () {
+        //    $('#mainTable').DataTable()({
+        //        "language": {
+        //            "lengthMenu": "Display _MENU_ records per page",
+        //            "zeroRecords": "Nothing found - sorry",
+        //            "info": "Showing page _PAGE_ of _PAGES_",
+        //            "infoEmpty": "No records available",
+        //            "infoFiltered": "(filtered from _MAX_ total records)"
+        //        }
+        //    });
+        //});
+        $(document).ready(function () {
+            var mainTable = $('#mainTable').DataTable({
+                "language": {
+                    "lengthMenu": '<a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="btn btn-info"><i class="fa fa-plus" aria-hidden="true"></i></a> Hiển thị _MENU_',
+                    "zeroRecords": "Không tìm thấy!",
+                    "info": "",
+                    "infoEmpty": "",
+                    "infoFiltered": "",
+                    "search": "",
+                    "searchPlaceholder": "Từ khóa",
+                    "paginate": {
+                        "next": '<i class="fa fa-angle-right" aria-hidden="true"></i>',
+                        "previous": '<i class="fa fa-angle-left" aria-hidden="true"></i>'
+                    },
+                    //"sDom": 'tipr',
+                }
+            });
+            //AddForm validation
+            $('#AddForm').validate({
+                highlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error');
+                },
+                errorElement: 'span',
+                errorClass: 'help-clock',
+                rules: {
+                    Name: {
+                        required: true,
+                    },
+                    Username: {
+                        required: true,
+                        minlength: 5,
+                        //UniqueUser: true,
+                    },
+                    Email: {
+                        required: true,
+                        email: true,
+                        //UniqueEmail: true,
+                    },
+                    Password: {
+                        required: true,
+                    },
+                    RePassword: {
+                        required: true,
+                        equalTo: '#PasswordTextbox'
+                    },
+                    role: {
+                        required: true,
+                    },
+                    WardID: {
+                        required: true,
+                    },
+                    BirthDay: {
+                        required: true,
+                    },
+                    Sex: {
+                        required: true
+                    },
+                },
+
+                messages: {
+                    Name: {
+                        required: "Vui lòng nhập họ tên",
+                    },
+                    Username: {
+                        required: "Vui lòng nhập username",
+                        minlength: "Username tối thiểu 5 kí tự",
+                        //UniqueUser: "Username đã tồn tại"
+                    },
+                    Email: {
+                        required: "Vui lòng nhập email",
+                        email: "Email không hợp lệ",
+                        //UniqueEmail: "Email đã tồn tại"
+                    },
+                    Password: {
+                        required: "Vui lòng nhập mật khẩu",
+                    },
+                    RePassword: {
+                        required: "Vui lòng nhập lại mật khẩu",
+                        equalTo: "Sai mật khẩu nhập lại"
+                    },
+                    role: {
+                        required: "Vui lòng chọn vị trí",
+                    },
+                    WardID: {
+                        required: "Vui lòng chọn quận",
+                    },
+                    BirthDay: {
+                        required: "Vui lòng chọn ngày sinh"
+                    },
+                    Sex: {
+                        required: "Vui lòng chọn giới tính",
+                    },
+                }
+            });
+
+            //AddForm validation
+            $('#EditForm').validate({
+                highlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error');
+                },
+                errorElement: 'span',
+                errorClass: 'help-clock',
+                rules: {
+                    Name: {
+                        required: true,
+                    },
+                    Username: {
+                        required: true,
+                        minlength: 5,
+                        //UniqueUser: true,
+                    },
+                    Email: {
+                        required: true,
+                        email: true,
+                        //UniqueEmail: true,
+                    },
+                    Password: {
+                        required: true,
+                    },
+                    RePassword: {
+                        required: true,
+                        equalTo: '#EditPasswordTextbox'
+                    },
+                    role: {
+                        required: true,
+                    },
+                    WardID: {
+                        required: true,
+                    },
+                    BirthDay: {
+                        required: true,
+                    },
+                    Sex: {
+                        required: true
+                    },
+                },
+
+                messages: {
+                    Name: {
+                        required: "Vui lòng nhập họ tên",
+                    },
+                    Username: {
+                        required: "Vui lòng nhập username",
+                        minlength: "Username tối thiểu 5 kí tự",
+                        //UniqueUser: "Username đã tồn tại"
+                    },
+                    Email: {
+                        required: "Vui lòng nhập email",
+                        email: "Email không hợp lệ",
+                        //UniqueEmail: "Email đã tồn tại"
+                    },
+                    Password: {
+                        required: "Vui lòng nhập mật khẩu",
+                    },
+                    RePassword: {
+                        required: "Vui lòng nhập lại mật khẩu",
+                        equalTo: "Sai mật khẩu nhập lại"
+                    },
+                    role: {
+                        required: "Vui lòng chọn vị trí",
+                    },
+                    WardID: {
+                        required: "Vui lòng chọn quận",
+                    },
+                    BirthDay: {
+                        required: "Vui lòng chọn ngày sinh"
+                    },
+                    Sex: {
+                        required: "Vui lòng chọn giới tính",
+                    },
+                }
+            });
+            $("#CityList").change(function () {
+                var selectedCity = this.value;
+                $('#DistrictList').empty();
+                $('#WardList').empty();
+                $.ajax({
+                    url: '@Url.Action("DistrictListByCityID","ShopUser")',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: { 'cityID': selectedCity },
+                })
+                .done(function (result) {
+                    $('#DistrictList').append(new Option('Quận', 0));
+                    $.each(result, function (index, data) {
+                        $('#DistrictList').append(new Option(data.Name, data.ID));
+                    });
+                    //alert("ok");
+                })
+                .fail(function (data) {
+                    alert('Load district fail');
+                });
+            });
+            $("#DistrictList").change(function () {
+                var selectedDistrict = this.value;
+                $('#WardList').empty();
+                $.ajax({
+                    url: '@Url.Action("WardListByDistrictID", "ShopUser")',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: { 'districtID': selectedDistrict },
+                })
+                .done(function (result) {
+                    $('#WardList').append(new Option('Phường', 0));
+                    $.each(result, function (index, data) {
+                        $('#WardList').append(new Option(data.Name, data.ID));
+                    });
+                    //alert("ok");
+                })
+                .fail(function (data) {
+                    alert('Load wardfail');
+                });
+            });
+
+            //Edit combobox change
+            $("#EditCityList").change(function () {
+                var selectedCity = this.value;
+                $('#EditDistrictList').empty();
+                $('#EditWardList').empty();
+                $.ajax({
+                    url: '@Url.Action("DistrictListByCityID","ShopUser")',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: { 'cityID': selectedCity },
+                })
+                .done(function (result) {
+                    $('#EditDistrictList').append(new Option('Quận', 0));
+                    $.each(result, function (index, data) {
+                        $('#EditDistrictList').append(new Option(data.Name, data.ID));
+                    });
+                    //alert("ok");
+                })
+                .fail(function (data) {
+                    alert('Load district fail');
+                });
+            });
+            $("#EditDistrictList").change(function () {
+                var selectedDistrict = this.value;
+                $('#EditWardList').empty();
+                $.ajax({
+                    url: '@Url.Action("WardListByDistrictID", "ShopUser")',
+                    type: 'GET',
+                    datatype: 'json',
+                    data: { 'districtID': selectedDistrict },
+                })
+                .done(function (result) {
+                    $('#EditWardList').append(new Option('Phường', 0));
+                    $.each(result, function (index, data) {
+                        $('#EditWardList').append(new Option(data.Name, data.ID));
+                    });
+                    //alert("ok");
+                })
+                .fail(function (data) {
+                    alert('Load city fail');
+                });
+            });
+            $('#SubmitAdd').on('click', function () {
+                //var addform = $("AddForm");
+                //addform.valididate();
+                ////addform.valid();
+                //alert("Valid: " + addform.valid());
+                //if (addform.valid() == false)
+                //{
+                //    alert("Các trường (*) không được để trống");
+                //    return;
+                //}
+                $.ajax({
+                    url: '@Url.Action("Add", "ShopUser")',
+                    type: 'POST',
+                    datatype: 'json',
+                    data: $('#AddForm').serialize(),
+                })
+                .done(function (result) {
+                    //$('#tbody').empty();
+                    //var html = "";
+                    //$.each(result, function (index, data) {
+                    //        html += '<tr><td>' + data.ID + '</td>'
+                    //            + '<td>' + data.Name + '</td>'
+                    //            + '<td>' + data.Username + '</td>'
+                    //            + '<td>' + data.Email + '</td>'
+                    //            + '<td>' + data.DetailAddress + ' - '+ data.Ward + ' - ' + data.District + ' - ' + data.City + '</td>'
+                    //            + '<td align="center"><a class="btn btn-info btn-xs edit data-shopuserid="' + data.ID + '><i class="fa fa-pencil edit"></i></a>'
+                    //            + '<a class="btn btn-danger btn-xs delete"><i class="fa fa-trash delete"></i></a></td>'
+                    //            + '</tr>';
+                    //    });
+                    var rownode= mainTable.row.add([
+                            result.ID,
+                            result.Name,
+                            result.Username,
+                            result.Email,
+                            result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City,
+                            '<a class="btn btn-info btn-xs edit" data-shopuserid="' + result.ID + '"><i class="fa fa-pencil"></i></a>'
+                            + '<a class="btn btn-danger btn-xs delete" data-id="' + result.ID + '"><i class="fa fa-trash"></i></a>',
+                     ]).draw(false).node();
+                    $(rownode).attr('id', 'tr-' + result.ID);
+                    $(rownode).find('td:eq(5)')
+                        .attr('align', 'center');
+                    $('#AddForm')[0].reset();
+                    $('#AddModal').modal('hide');
+                    //$('#tbody').html(html);
+                    alert("Thêm thành công");
+                })
+                .fail(function (data) {
+                    $('#AddModal').modal('hide');
+                    alert('Thêm thất bại');
+                });
+            });
+            //$('#btnAddNew').on('click', function () {
+            //    $('#AddForm')[0].reset();
+            //});
+            //Nhấn nút xác nhận xóa trên form
+            $('#tbody').on('click', '.delete', function () {
+                $('#DeleteConfirmation').modal('show');
+                var btn = $(this);
+                var id = btn.data('id');
+                $('#btnConfirm').data('id', id);
+            });
+            $('#btnConfirm').on('click', function () {
+                var btn = $(this);
+                var id = btn.data('id');
+                $('#DeleteID').val(id);
+                //$('#IsDelete').val('True');
+                $.ajax({
+                    url: '@Url.Action("Delete","ShopUser")',
+                    type: 'POST',
+                    //dataType: 'json',
+                    data: { 'shopUserID': id },
+                })
+                .done(function (data) {
+                    var trid = "#tr-" + id;
+                    $(trid).addClass("selected");
+                    //mainTable.row(btn.closest('tr')).remove().draw(false);
+                    var rows = mainTable
+                        .rows('.selected')
+                        .remove()
+                        .draw();
+                    $('#DeleteConfirmation').modal('hide');
+                    alert('Xóa thành công');
+
+                })
+                .fail(function (data) {
+                    $('#DeleteConfirmation').modal('hide');
+                    alert('Xóa thất bại');
+                });
+            });
+            //Nhấn nút edit trên table
+            $('#tbody').on('click', '.edit', function () {
+                $('#EditModal').modal('show');
+                var btn = $(this);
+                var id = btn.data('shopuserid');
+                var selectedCity = /*btn.data('city')*/0;
+                var selectedDistrict = /*btn.data('district')*/0;
+                var selectedWard = /*btn.data('ward')*/0;
+                $('#EditDistrictList').empty();
+                $('#EditWardList').empty();
+                $.ajax({
+                    url: '@Url.Action("Detail", "ShopUser")',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { 'shopUserID': id },
+                })
+                .done(function (data) {
+                    //var trid = "#tr-" + id;
+                    //$(trid).hide();
+                    //$('#DeleteConfirmation').modal('hide');
+                    selectedCity = data.City;
+                    selectedDistrict = data.District;
+                    selectedWard = data.Ward;
+                    {
+                        $.ajax({
+                            url: '@Url.Action("DistrictListByCityID","ShopUser")',
+                            type: 'GET',
+                            datatype: 'json',
+                            data: { 'cityID': selectedCity },
+                        })
+                        .done(function (result) {
+                            $('#EditDistrictList').append(new Option('Quận', 0));
+                            $.each(result, function (index, data) {
+                                $('#EditDistrictList').append(new Option(data.Name, data.ID));
+                            });
+                            $('#EditDistrictList').val(selectedDistrict);
+                        })
+                        .fail(function (data) {
+                            alert('Set disitrct fail');
+                        });
+                    }
+                    //
+                    {
+                        $.ajax({
+                            url: '@Url.Action("WardListByDistrictID", "ShopUser")',
+                            type: 'GET',
+                            datatype: 'json',
+                            data: { 'districtID': selectedDistrict },
+                        })
+                        .done(function (result) {
+                            $('#EditWardList').append(new Option('Phường', 0));
+                            $.each(result, function (index, data) {
+                                $('#EditWardList').append(new Option(data.Name, data.ID));
+                            });
+                            $('#EditWardList').val(selectedWard);
+                            //alert("ok");
+                        })
+                        .fail(function (data) {
+                            alert('Set ward fail');
+                        });
+                    }
+                    //
+
+                    //$('#EditUserIDTextbox').val(btn.data('userid'));
+                    //$('#EditShopUserIDTextbox').val(btn.data('shopuserid'));
+                    //$('#EditNameTextbox').val(btn.data('name'));
+                    //$('#EditUsernameTextbox').val(btn.data('username'));
+                    //$('#EditEmailTextbox').val(btn.data('email'));
+                    //$('#EditPasswordTextbox').val(btn.data('password'));
+                    //$('#EditRole').val(btn.data('roleid')).prop('selected', true);
+                    //$('#EditRoleDescriptionTextbox').val(btn.data('roledescription'));
+                    //$('#EditCityList').val(btn.data('city'));
+                    //$('#EditDetailAddressTextbox').val(btn.data('detailaddress'));
+                    //$('#EditBirthDayTextbox').val(btn.data('birthday'));
+                    //$('#EditGenderList').val(btn.data('sex')).prop('selected', true);
+                    //$('#EditDescriptionTextbox').val(btn.data('userdescription'));
+
+                    $('#EditUserIDTextbox').val(data.UserID);
+                    $('#EditShopUserIDTextbox').val(data.ShopUserID);
+                    $('#EditNameTextbox').val(data.Name);
+                    $('#EditUsernameTextbox').val(data.Username);
+                    $('#EditEmailTextbox').val(data.Email);
+                    $('#EditPasswordTextbox').val(data.Password);
+                    $('#EditRole').val(data.RoleID);
+                    $('#EditRoleDescriptionTextbox').val(data.RoleDescription);
+                    $('#EditCityList').val(data.City);
+                    $('#EditDetailAddressTextbox').val(data.DetailAddress);
+                    $('#EditBirthDayTextbox').val(data.BirthDay);
+                    $('#EditGenderList').val(data.Sex);
+                    $('#EditDescriptionTextbox').val(data.UserDescription);
+                })
+                .fail(function (data) {
+                    alert('Lấy detail thất bại');
+                });
+
+            });
+            //
+            $('#SubmitEdit').on('click', function () {
+                //var editform = $("EditForm");
+                //editform.valididate();
+                //editform.valid();
+                //if (editform.valid() == false) {
+                //    alert("Các trường (*) không được để trống");
+                //    return;
+                //}
+                $.ajax({
+                    url: '@Url.Action("Edit", "ShopUser")',
+                    type: 'POST',
+                    //datatype: 'json',
+                    data: $('#EditForm').serialize(),
+                })
+                .done(function (result) {
+                    //$('#tbody').empty();
+                    //var html = "";
+                    //$.each(result, function (index, data) {
+                    //    html += '<tr><td>' + data.ID + '</td>'
+                    //        + '<td>' + data.Name + '</td>'
+                    //        + '<td>' + data.Username + '</td>'
+                    //        + '<td>' + data.Email + '</td>'
+                    //        + '<td>' + data.DetailAddress + ' - ' + data.Ward + ' - ' + data.District + ' - ' + data.City + '</td>'
+                    //        + '<td align="center"><a class="btn btn-info btn-xs edit data-shopuserid="' + data.ID + '"><i class="fa fa-pencil"></i></a>'
+                    //        + '<a class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a></td>'
+                    //        + '</tr>';
+                    //});
+                    var row = mainTable.row('#tr-' + result.ID);
+                    mainTable.cell(row, 1).data(result.Name).draw(false);
+                    mainTable.cell(row, 2).data(result.Username).draw(false);
+                    mainTable.cell(row, 3).data(result.Email).draw(false);
+                    mainTable.cell(row, 4).data(result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City).draw(false);
+
+                    $('#EditForm')[0].reset();
+                    $('#EditModal').modal('hide');
+                    //$('#tbody').html(html);
+                    alert("Sửa thành công");
+                })
+                .fail(function (data) {
+                    $('#EditModal').modal('hide');
+                    alert('Sửa thất bại');
+                });
+            });
+        });
+
+
+    </script>
+}

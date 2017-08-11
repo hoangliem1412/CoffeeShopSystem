@@ -1,10 +1,7 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Model.ModelEntity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Data.Repositories
 {
@@ -22,5 +19,16 @@ namespace CoffeeShop.Data.Repositories
             return query;
         }
 
+
+        /// <summary>
+        /// Tìm kiếm theo ID hoặc Tên bàn  hoặc tên khách hàng
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <returns> IEnumerable<Order></returns>
+        public IEnumerable<Order> SearchByIDandTable(string keyword)
+        {
+            var query = DbContext.Orders.Where(o => o.ID.ToString().ToLower().Contains(keyword.ToLower()) || o.Table.Name.ToString().ToLower().Contains(keyword.ToLower()) || o.User.Name.ToLower().Contains(keyword.ToLower())).AsEnumerable();
+            return query;
+        }
     }
 }

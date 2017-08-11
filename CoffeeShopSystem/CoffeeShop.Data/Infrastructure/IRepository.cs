@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using CoffeeShop.Model.ModelEntity;
 
 namespace CoffeeShop.Data.Infrastructure
 {
@@ -16,6 +17,10 @@ namespace CoffeeShop.Data.Infrastructure
 
         T GetSingleById(int id);
 
+        T GetSingleById(int? id);
+
+        IEnumerable<Shop> GetMultiPagingForShop(Expression<Func<Shop, bool>> filter, out int total, int curPage = 0, int pageSize = 50, string sort = "", string type = "");
+        IEnumerable<T> GetMany(Expression<Func<T, bool>> where);
         T GetsingleByCondition(Expression<Func<T, bool>> expression, string[] includes = null);
 
         IEnumerable<T> GetAll(string[] includes = null);
