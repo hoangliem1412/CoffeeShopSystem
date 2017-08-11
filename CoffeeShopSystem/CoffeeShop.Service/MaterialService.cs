@@ -91,13 +91,13 @@ namespace CoffeeShop.Service
             switch(status)
             {
                 case 2:
-                    func = x => x.IsDelete == false && x.Name.Contains(keyword);
+                    func = x => x.IsDelete == false && (x.Name.Contains(keyword) || x.Description.Contains(keyword) || x.CreatedDate.ToString().Contains(keyword) || x.UnitPrice.ToString().Contains(keyword));
                     break;
                 case 3:
-                    func = x => x.IsDelete == true && x.Name.Contains(keyword);
+                    func = x => x.IsDelete == true && (x.Name.Contains(keyword) || x.Description.Contains(keyword) || x.CreatedDate.ToString().Contains(keyword) || x.UnitPrice.ToString().Contains(keyword));
                     break;
                 default:
-                    func = x => x.Name.Contains(keyword);
+                    func = x => (x.Name.Contains(keyword) || x.Description.Contains(keyword) || x.CreatedDate.ToString().Contains(keyword) || x.UnitPrice.ToString().Contains(keyword));
                     break;
             }
             var query = materialRepository.GetMulti(func);

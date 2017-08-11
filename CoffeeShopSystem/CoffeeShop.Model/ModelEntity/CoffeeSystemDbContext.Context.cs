@@ -20,7 +20,8 @@ namespace CoffeeShop.Model.ModelEntity
         public CoffeeSystemDbContext()
             : base("name=CoffeeSystemConnection")
         {
-            Configuration.ProxyCreationEnabled = false;
+            //Configuration.ProxyCreationEnabled = false;
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

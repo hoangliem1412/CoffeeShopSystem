@@ -11,13 +11,14 @@ function pagination_LoadTable(data, tableHolder) {
     var row = "";
     data.forEach(function (item) {
         row += "<tr><td></td>";
+        row += "<td>" + item.ID + "</td>";
+        row += "<td>" + item.Name + "</td>";
         row += "<td>" + (item.CreatedDate != null ? convertDateJson(item.CreatedDate) : null) + "</td>";
-        row += "<td>" + item.CategoryID + "</td>";
         row += "<td>" + item.Inventory + "</td>";
         row += "<td>" + item.UnitPrice + "</td>";
-        row += "<td>" + item.Name + "</td>";
-        row += "<td>" + item.IsDelete + "</td>";
+        row += "<td>" + (item.IsDelete == true ? 'Đã xóa' : 'Chưa xóa') + "</td>";
         row += "<td>" + item.Description + "</td>";
+        row += "<td>" + item.CategoryID + "</td>";
         row += "<td>";
         row += "<a class='btn btn-info btn-xs btnEditMaterial' data-id='" + item.ID + "' title='Chỉnh sửa'><i class='fa fa-pencil'></i></a>";
         row += "<a class='btn btn-danger btn-xs' data-id='" + item.ID + "' title='Xóa'><i class='fa fa-trash-o'></i></a>";
@@ -95,8 +96,7 @@ var material = {
         $("#btn-deleteMaterial").off('click').on('click', function () {
             var id = $(this).data('id');
             material.deleteMaterial(id);
-        });
-        
+        }); 
     },
     submitFromSaveData: function(){
         var name = $('#txtName').val();
