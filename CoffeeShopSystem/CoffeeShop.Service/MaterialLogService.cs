@@ -4,6 +4,7 @@ using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Model.ModelEntity;
 using System.Linq;
 using CoffeeShop.Model;
+using System.Data.SqlClient;
 
 namespace CoffeeShop.Service
 {
@@ -15,7 +16,7 @@ namespace CoffeeShop.Service
 
         public IEnumerable<MaterialLog> GetAvailable()
         {
-            return base.GetAll().Where(x => x.IsDelete == false).ToList();
+            return base.GetMulti(x => x.IsDelete == false).ToList();
         }
 
         public IEnumerable<MaterialLog> GetByStatus(IEnumerable<MaterialLog> list, int status)
@@ -37,7 +38,7 @@ namespace CoffeeShop.Service
 
                     if (result.Count() == 0)
                     {
-                        result = GetAll().Where(x => x.IsDelete == false).ToList();
+                        result = GetMulti(x => x.IsDelete == false).ToList();
                     }
                 }
                 else if (status == 1)
@@ -46,7 +47,7 @@ namespace CoffeeShop.Service
 
                     if (result.Count() == 0)
                     {
-                        result = GetAll().Where(x => x.IsDelete == true).ToList();
+                        result = GetMulti(x => x.IsDelete == true).ToList();
                     }
                 }
             }
@@ -56,7 +57,7 @@ namespace CoffeeShop.Service
 
         public IEnumerable<MaterialLog> GetDeleted()
         {
-            return base.GetAll().Where(x => x.IsDelete == true).ToList();
+            return base.GetMulti(x => x.IsDelete == true).ToList();
         }
 
         public dynamic Flat(MaterialLog buf)
@@ -85,16 +86,59 @@ namespace CoffeeShop.Service
             return null;
         }
 
-        public new void Delete(int id)
+        public new bool Delete(int id)
         {
             var item = base.GetSingleById(id);
+            var result = true;
 
-            if (item != null)
+            try
             {
-                item.IsDelete = true;
-                base.Update(item);
+                if (item != null)
+                {
+                    item.IsDelete = true;
+                    base.Update(item);
+                    Save();
+                }
+            }
+            catch (SqlException ex)
+            {
+                result = false;
+            }
+
+            return result;
+        }
+
+        public new MaterialLog Add(MaterialLog item)
+        {
+            var newItem = base.Add(item);
+
+            try
+            {
                 Save();
             }
+            catch (SqlException ex)
+            {
+                newItem = null;
+            }
+            
+            return item;
+        }
+
+        public new bool Update(MaterialLog item)
+        {
+            base.Update(item);
+            var result = true;
+
+            try
+            {
+                Save();
+            }
+            catch (SqlException ex)
+            {
+                result = false;
+            }
+
+            return result;
         }
 
         public IEnumerable<MaterialLog> SearchByName(string keyword)
@@ -118,19 +162,6 @@ namespace CoffeeShop.Service
             }
 
             return new List<MaterialLog>();
-        }
-
-        public override MaterialLog Add(MaterialLog group)
-        {
-            var item = base.Add(group);
-            Save();
-            return item;
-        }
-
-        public override void Update(MaterialLog group)
-        {
-            base.Update(group);
-            Save();
         }
 
         public IEnumerable<MaterialLog> Search(MaterialLogSearchViewModel model)

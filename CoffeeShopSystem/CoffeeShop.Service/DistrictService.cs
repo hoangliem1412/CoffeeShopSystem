@@ -15,6 +15,50 @@ namespace CoffeeShop.Service
         {
         }
 
+        public int Insert(District district)
+        {
+            var list = base.GetAll();
+            bool check = false;
+            foreach (var item in list)
+            {
+                if (district.Name == item.Name && district.CityID == item.CityID)
+                {
+                    check = true;
+                }
+            }
+            if (!check)
+            {
+                base.Add(district);
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public int Edit(District district)
+        {
+            base.Update(district);
+            var list = base.GetAll();
+            int count = 0;
+            foreach (var item in list)
+            {
+                if (district.Name == item.Name && district.CityID == item.CityID)
+                {
+                    count++;
+                }
+            }
+            if (count >= 2)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
         public IEnumerable<District> GetDistrictByCityID(int id)
         {
 
@@ -31,6 +75,13 @@ namespace CoffeeShop.Service
         {
 
             return base.GetMulti(x => x.Name.Contains(keyword));
+        }
+
+        public void Delete1(int id)
+        {
+            var district = base.GetSingleById(id);
+            district.IsDelete = true;
+            base.Update(district);
         }
 
         public void Restore(int id)

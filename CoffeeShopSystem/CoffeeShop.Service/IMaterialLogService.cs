@@ -12,8 +12,11 @@ namespace CoffeeShop.Service
         dynamic Paging(IEnumerable<MaterialLog> list, int rowPerPage, int currentPage);
         dynamic Flat(MaterialLog buf);
         dynamic Flat(IEnumerable<MaterialLog> buf);
-        new void Delete(int id);
+        new bool Delete(int id);
+        new MaterialLog Add(MaterialLog item);
+        new bool Update(MaterialLog item);
         IEnumerable<MaterialLog> SearchByName(string keyword);
         IEnumerable<MaterialLog> Search(MaterialLogSearchViewModel model);
+
     }
 }

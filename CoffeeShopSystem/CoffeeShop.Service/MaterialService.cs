@@ -11,28 +11,15 @@ namespace CoffeeShop.Service
     public class MaterialService : IMaterialService
     {
         IMaterialRepository materialRepository;
-        //IMaterialLogRepository materialLogRepository;
         IUnitOfWork unitOfWork;
         public MaterialService(IMaterialRepository repoMate, IUnitOfWork unit)
         {
             this.materialRepository = repoMate;
-            //materialLogRepository = repoMateLog;
             this.unitOfWork = unit;
         }
         public Material Add(Material material)
         {
             var rs = materialRepository.Add(material);
-            //MaterialLog mateLog = new MaterialLog()
-            //{
-            //    MaterialID = rs.ID,
-            //    Inventory = rs.Inventory,
-            //    UnitPrice = rs.UnitPrice,
-            //    CreatedDate = DateTime.Now,
-            //    IsDelete = false,
-            //    Type = false,
-            //    //EmployeeID
-            //};
-            //materialLogRepository.Add(mateLog);
             return rs;
         }
 
@@ -41,17 +28,6 @@ namespace CoffeeShop.Service
             var mate = GetSingleByID(id);
             mate.IsDelete = !mate.IsDelete;
             materialRepository.Update(mate);
-            //MaterialLog mateLog = new MaterialLog()
-            //{
-            //    MaterialID = mate.ID,
-            //    Inventory = mate.Inventory,
-            //    UnitPrice = mate.UnitPrice,
-            //    CreatedDate = DateTime.Now,
-            //    IsDelete = false,
-            //    Type = true,
-            //    //EmployeeID
-            //};
-            //materialLogRepository.Add(mateLog);
         }
 
         public Material GetSingleByID(int id)

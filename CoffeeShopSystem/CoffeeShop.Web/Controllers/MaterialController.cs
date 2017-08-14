@@ -35,14 +35,7 @@ namespace CoffeeShop.Web.Controllers
  
  
             var listMaterial = materialService.GetSearchStatusPaging(keyword, status, page, pageSize, out totalRow).Select(x => new MaterialViewModel { ID = x.ID, CategoryID = x.CategoryID, CategoryName = x.MaterialCategory.Name, Name = x.Name, CreatedDate = x.CreatedDate, Description = x.Description, Inventory = x.Inventory, IsDelete = x.IsDelete, UnitPrice = x.UnitPrice }); 
-
-            //var listMaterialVm = Mapper.Map<List<MaterialViewModel>>(listMaterial);
-            //var json = JsonConvert.SerializeObject(listMaterial, Formatting.Indented, new JsonSerializerSettings {
-            //    MetadataPropertyHandling = MetadataPropertyHandling.Ignore
-            //});
-            //var rs = JsonConvert.DeserializeObject(json);
-            //data.Data = listMaterial;
-            //return data;
+            
             return Json(new
             {
                 data = listMaterial, //danh sach Material
