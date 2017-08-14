@@ -1,7 +1,9 @@
 ﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
@@ -88,13 +90,58 @@ namespace CoffeeShop.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateNew(Shop s)
+        public ActionResult CreateNew(Shop s, string sort = "ID", string type = "asc", int curPage = 1, int pageSize = 5, string option = "Managing")
         {
-            
+            int total;
             bool result = _shopService.CreateNew(s);
             if (result)
             {
-                return RedirectToAction("Index", "ShopManagement", new { result = "AddSuccess" });
+
+                ViewBag.result = "AddSuccess";
+
+                if(s.IsDelete == false)
+                {
+                   var list = _shopService.GetAllNonDelete();
+                   int nPages = list.Count() / pageSize;
+
+                if (list.Count() % pageSize > 0)
+                {
+                    nPages++;
+                }
+
+                    ViewBag.Pages = nPages;
+                    ViewBag.curPage = nPages;
+                    ViewBag.Sort = sort;
+                    ViewBag.MyStyle = type;
+                    ViewBag.Option = "Managing";
+                    ViewBag.PrevPage = ViewBag.curPage - 1;
+                    ViewBag.NextPage = ViewBag.curPage + 1;
+                    var listPaging = _shopService.GetAllNonDeleteWithPaginationAndSort(sort,type,out total,nPages,pageSize);
+                    return PartialView("SearchByNameOrDescription", listPaging);
+                }
+
+                else //option = Deleted
+                {
+                    var list = _shopService.GetAllDeleted();
+                    int nPages = list.Count() / pageSize;
+
+                    if (list.Count() % pageSize > 0)
+                    {
+                        nPages++;
+                    }
+
+                    ViewBag.Pages = nPages;
+                    ViewBag.curPage = nPages;
+                    ViewBag.Sort = sort;
+                    ViewBag.MyStyle = type;
+                    ViewBag.Option = "Deleted";
+                    ViewBag.PrevPage = ViewBag.curPage - 1;
+                    ViewBag.NextPage = ViewBag.curPage + 1;
+                    var listPaging = _shopService.GetAllDeletedWithPaginationAndSort(sort, type, out total, nPages, pageSize);
+                    return PartialView("SearchByNameOrDescription", listPaging);
+                }
+              
+               // return RedirectToAction("Index", "ShopManagement", new { result = "AddSuccess" });
             }
 
             return RedirectToAction("Index", "ShopManagement", new { result = "AddFailed" });
@@ -139,7 +186,7 @@ namespace CoffeeShop.Web.Controllers
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
-            var lstDist = _districtService.GetByCityID(cityID.GetValueOrDefault(-1)).ToList();
+            var lstDist = _districtService.DistrictListByCityID(cityID);
 
             if (lstDist == null)
             {
@@ -161,7 +208,7 @@ namespace CoffeeShop.Web.Controllers
             {
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
-            List<Ward> lstWard = _wardService.GetByDistrictID(districtID.GetValueOrDefault(-1)).ToList();
+            List<Ward> lstWard = _wardService.WardListByDistrictID(districtID);
 
             if (lstWard == null)
             {
@@ -261,18 +308,18 @@ namespace CoffeeShop.Web.Controllers
 
 
 
-        public ActionResult PartialViewListCity(int? wardID)
+        public ActionResult PartialViewListCity(int? WardID)
         {
             List<City> lstCity;
-            if (wardID == null)
+            if (WardID == null)
             {
                 lstCity = _cityService.GetAll().ToList();
             }
 
             else
             {
-                Ward w = _wardService.GetSingleById(wardID.GetValueOrDefault(-1));
-                District d = _districtService.GetByID(w.DistrictID);
+                Ward w = _wardService.GetWardByID(WardID);
+                District d = _districtService.GetDistrictByID(w.DistrictID);
                 lstCity = _cityService.GetAll().ToList();
                 ViewBag.CityID = d.CityID;
             }
@@ -288,13 +335,13 @@ namespace CoffeeShop.Web.Controllers
             {
                 District firstDistrict = _districtService.GetAll().FirstOrDefault();
 
-                lstWard = _wardService.GetByDistrictID(firstDistrict.ID).ToList();
+                lstWard = _wardService.WardListByDistrictID(firstDistrict.ID);
             }
 
             else {
-                Ward w = _wardService.GetByID(WardID.GetValueOrDefault(-1));
-                District d = _districtService.GetByID(w.DistrictID);
-                lstWard = _wardService.GetByDistrictID(d.ID).ToList();
+                Ward w = _wardService.GetWardByID(WardID);
+                District d = _districtService.GetDistrictByID(w.DistrictID);
+                lstWard = _wardService.WardListByDistrictID(d.ID);
                 ViewBag.WardID = WardID;
             }
 
@@ -308,15 +355,15 @@ namespace CoffeeShop.Web.Controllers
             if (WardID == null)
             {
                 City firstCity = _cityService.GetAll().FirstOrDefault();
-                lstDistrict = _districtService.GetByCityID(firstCity.ID).ToList();
+                lstDistrict = _districtService.DistrictListByCityID(firstCity.ID);
             }
             else
             {
-                Ward w = _wardService.GetByID(WardID.GetValueOrDefault(-1));
-                District d = _districtService.GetByID(w.DistrictID);
+                Ward w = _wardService.GetWardByID(WardID);
+                District d = _districtService.GetDistrictByID(w.DistrictID);
               
 
-                lstDistrict = _districtService.GetByCityID(d.CityID).ToList();
+                lstDistrict = _districtService.DistrictListByCityID(d.CityID);
                 ViewBag.DistrictID = w.DistrictID;
             }
 

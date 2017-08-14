@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
@@ -23,9 +24,8 @@ namespace CoffeeShop.Web.Controllers
         //load data for datatables
         public ActionResult LoadData()
         {
-            //dc.Configuration.LazyLoadingEnabled = false; // if your table is relational, contain foreign key
-            var data = _iCityService.GetAllIsDelete();
-            return Json(new { data = data }, JsonRequestBehavior.AllowGet);
+            var list = _iCityService.GetAll().Select(x => new City { ID = x.ID, Name = x.Name, Description = x.Description, IsDelete = x.IsDelete });
+            return Json(new { data = list }, JsonRequestBehavior.AllowGet);
         }
 
         //create partial list city
@@ -42,16 +42,12 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iCityService.Add(city);
-                _iCityService.Save();
-                return 1;
+                return _iCityService.Insert(city);
             }
             catch
             {
                 return 0;
             }
-            
-
         }
 
         //update city
@@ -60,9 +56,12 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iCityService.Update(city);
-                _iCityService.Save();
-                return 1;
+                int rs = _iCityService.Edit(city);
+                if (rs == 1)
+                {
+                    _iCityService.Save();
+                }
+                return rs;
             }
             catch
             {
@@ -76,7 +75,7 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iCityService.Delete(id);
+                _iCityService.Delete1(id);
                 _iCityService.Save();
                 return 1;
             }

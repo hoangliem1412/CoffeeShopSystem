@@ -9,28 +9,80 @@ namespace CoffeeShop.Service
 {
     public class CityService :Service<City>, ICityService
     {
-        ICityRepository _cityRepository;
-        IUnitOfWork _unitOfWork;
+        //ICityRepository _cityRepository;
+        //IUnitOfWork _unitOfWork;
 
         public CityService(IRepository<City> cityRepository, IUnitOfWork unitOfwork) : base(cityRepository, unitOfwork)
         {
         }
 
+        public int Insert(City city)
+        {
+            var list = base.GetAll();
+            bool check = false;
+            foreach (var item in list)
+            {
+                if (city.Name == item.Name)
+                {
+                    check = true;
+                }
+            }
+            if (!check)
+            {
+                var rs = base.Add(city);
+                base.Save();
+                return rs.ID;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public int Edit(City city)
+        {
+            base.Update(city);
+            var list = base.GetAll();
+            int count = 0;
+            foreach (var item in list)
+            {
+                if (city.Name == item.Name)
+                {
+                    count++;
+                }
+            }
+            if (count >= 2)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
         public IEnumerable<City> GetAllIsDelete()
         {
-            return _cityRepository.GetAll().Where(c => c.IsDelete == false).OrderBy(c => c.Name);
+            return base.GetAll().Where(c => c.IsDelete == false).OrderBy(c => c.Name);
         }
 
         public IEnumerable<City> GetAll(string keyword)
         {
-            return _cityRepository.GetMulti(x => x.Name.Contains(keyword));
+            return base.GetMulti(x => x.Name.Contains(keyword));
+        }
+
+        public void Delete1(int id)
+        {
+            var city = base.GetSingleById(id);
+            city.IsDelete = true;
+            base.Update(city);
         }
 
         public void Restore(int id)
         {
-            var city = _cityRepository.GetSingleById(id);
+            var city = base.GetSingleById(id);
             city.IsDelete = false;
-            _cityRepository.Update(city);
+            base.Update(city);
         }
 
         public void CreateNew(City c)

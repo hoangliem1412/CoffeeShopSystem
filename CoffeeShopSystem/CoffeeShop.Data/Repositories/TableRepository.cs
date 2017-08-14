@@ -29,17 +29,7 @@ namespace CoffeeShop.Data.Repositories
         /// <returns>List<Table></returns>
         public IEnumerable<Table> GetByShop(int id)
         {
-            
             return GetMany(t => t.GroupTable.ShopID == id && t.IsDelete != true);
-        }
-        /// <summary>
-        /// Search cơ bản
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <returns></returns>
-        public IEnumerable<Table> SearchBase(Expression<Func<Table, bool>> condition)
-        {
-            return GetMany(condition);
         }
     }
 }

@@ -12,15 +12,5 @@ namespace CoffeeShop.Data.Repositories
             : base(dbFactory)
         {
         }
-
-        public IEnumerable<GroupTable> GetByShop(int id)
-        {
-            return GetMany(t => t.ShopID == id && t.IsDelete != true);
-        }
-
-        public IEnumerable<GroupTable> SearchBase(Expression<Func<GroupTable, bool>> condition)
-        {
-            return GetMany(condition);
-        }
     }
 }

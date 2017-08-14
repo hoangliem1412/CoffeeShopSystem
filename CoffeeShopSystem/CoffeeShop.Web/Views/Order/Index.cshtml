@@ -29,7 +29,19 @@
     <script>
         $(document).ready(function () {
 
-
+			//advance search
+			$('#OptionSearch').on('click', function () {
+                var click = $(this);
+                if (click.data('option') == "0")
+                {
+                    $('#frmAdvancedSearch').removeClass('hidden');
+                    click.data('option', '1');
+                }
+                else {
+                    $('#frmAdvancedSearch').addClass('hidden');
+                    click.data('option', '0');
+                }
+            })
             //Xem chi tiet
             $("#bodyOrder").on('click', '.btnDetail', function () {
                 var id = $(this).data('id');
@@ -205,6 +217,14 @@
                 .done(function (data) {
 
                     var id = $('#modalEdit [name=txtID]').val();
+
+                    ////Xoa khoi table khi thay doi trang thai
+                    //var sttBeforeEdit = $('#bodyOrder #bodyStatus-' + id).text();
+                    //var sttAfterEdit = $('#modalEdit [name=txtStatus]  option:selected').text();
+
+                    //if (sttAfterEdit != sttBeforeEdit) {
+                    //    $('.trbody-' + id).remove();
+                    //}
 
                     //Cập nhật lại thay đổi hóa đơn trong table
                     $('#bodyOrder #bodyTotalMoney-' + id).html($('#modalEdit [name=lbMonney]').html());
@@ -423,6 +443,63 @@
             }
         }
     </script>
+	
+	<!--advanced search by date and table name-->
+    <script>
+        $('#advancedSearch').on('click', function () {
+            $.ajax({
+                url: '@Url.Action("AdvancedSearch", "Order")',
+                type: 'post',
+                data: { 'customerName': $('#txtSearch2').val(), 'aSFromDate': $('#aSFromDate').val(), 'aSToDate': $('#aSToDate').val(), 'aSTableName': $('#aSTableName').val() },
+                dataType: 'json',
+                // timeout: 30 * 1000,
+            })
+                .done(function (data) {      
+                    var html = '';
+                    $.each(data, function (idx, item) {
+
+                        var currentTime = new Date(parseInt(item.setDate.replace('/Date(', '')));
+                        var month = currentTime.getMonth() + 1;
+                        var day = currentTime.getDate();
+                        var year = currentTime.getFullYear();
+                        var date = day + "-" + month + "-" + year;
+
+                        if (item.status == false) {
+                            status = "Chưa thanh toán";
+                            boolStatus = "False";
+                        }
+                        else if (item.status == true) {
+                            status = "Đã thanh toán";
+                            boolStatus = "True";
+                        }
+                        //show data table
+                        html +=
+                             '<tr class="trbody-' + item.id + '">' +
+                                    '<td>' + item.id + '</td>' +
+                                    '<td id="bodyTableName-' + item.id + '">' + item.tableName + '</td>' +
+                                    '<td>' + item.userName + '</td>' +
+                                    '<td>' + item.promoName + '</td>' +
+                                    '<td>' + date + '</td>' +
+                                    '<td id="bodyTotalMoney-' + item.id + '">' + item.totalMoney + '</td>' +
+                                    '<td id="bodyStatus-' + item.id + '">' + status + '</td>' +
+                                    '<td>' +
+                                     ' <a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnDetail" title="Xem chi tiết">' +
+                                         '<i class="fa fa-folder"></i>' +
+                                     '</a>' +
+                                     '</td>' +
+                                  '<td>' +
+                                      '<a href="javascript:;" data-id="' + item.id + '"data-table="' + item.tableID + '" data-promo="' + item.promoName + '" data-user="' + item.userName + '" data-date="' + date + '" data-status="' + boolStatus + '" data-money="' + item.totalMoney + '"class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
+                                  '</td>' +
+                             '</tr>';
+                    })
+
+                    $('#bodyOrder').html(html);
+               })
+            .fail(function () {
+                alert('fail');
+            });
+        });
+    </script>
 
 }
 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -473,8 +550,41 @@
                     @*<div class="col-sm-4">
                             <input type="text" id="txtSearch" class="form-control" placeholder="Nhập từ khóa">
                         </div>*@
-                    <div class="col-sm-4" >
-                        <input type="text" id="txtSearch2" onkeyup="Search()" class="form-control" placeholder="Từ khóa">
+                    <div class="col-sm-4 form-inline" >
+                        @*<input type="text" id="txtSearch2" onkeyup="Search()" class="form-control" placeholder="Từ khóa">*@
+                        <a id="OptionSearch" style="float:right; margin-left:10px" data-option="0" class="btn btn-primary">
+                            <i class="fa fa-cogs"></i>
+                        </a>
+                        <div style="float:right" class="input-group">
+                            <input type="text" class="form-control" id="txtSearch2" onkeyup="Search()" placeholder="Từ khóa">
+                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                        </div>  
+                    </div>
+					<!--Tìm kiếm nâng cao-->
+                    <div id="frmAdvancedSearch" class="hidden">
+                        <div class="col-sm-8" style="float:right">
+                            <div class="form-group col-sm-4">
+                                <label>Từ ngày</label>
+                                <input type="date" id="aSFromDate" class="form-control" />
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <label>Đến ngày</label>
+                                <input type="date" id="aSToDate" class="form-control" />
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <label>Tên bàn</label>
+                                <select class="form-control" id="aSTableName">
+                                    <option value="0">------------</option>
+                                    @foreach (var item in ViewBag.ListTable)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group" style="float:right">
+                                <button type="submit" id="advancedSearch" class="btn btn-primary">Tìm kiếm</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -618,15 +728,10 @@
                             <div class="form-group">
                                 <label>Bàn</label>
                                 <select class="form-control" name="txtTable">
-                                    <option value="1">Bàn 1</option>
-                                    <option value="5">Bàn 5</option>
-                                    <option value="3">Bàn 3</option>
-                                    <option value="4">Bàn 4</option>
-                                    <option value="6">Bàn 6</option>
-                                    <option value="7">Bàn 7</option>
-                                    <option value="9">Bàn 9</option>
-                                    <option value="2">Bàn 2</option>
-                                    <option value="10">Bàn 10</option>
+                                    @foreach (var item in ViewBag.ListTable)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
                                 </select>
                             </div>
                             <div class="form-group">

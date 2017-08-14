@@ -1,14 +1,16 @@
 ﻿.dataTables_paginate {
-    margin: 0 5px 5px;
+    margin: 15px 5px;
+    border-radius: 5px;
 }
 .form-control{
     border-radius: 5px;
 }
 
-.searchbox{
-    padding: 6px 5px 0 !important;
+.searchbox {
+    padding: 5px 0 0 !important;
     width: 50%;
     float: right;
+    position: relative;
 }
 .addbtn{
     float: left;
@@ -16,14 +18,31 @@
     margin: 5px 0 0 5px;
 }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{
-    background-color: lightblue !important;
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background-color: #ddd !important;
+    cursor: pointer;
+    border-color: #337ab7 !important;
+}
+.paginate_button:hover {
+    cursor: pointer;
+    background-color: lightsteelblue !important;
+}
+
+.paginate_button.disabled:hover {
+    cursor: not-allowed;
+    background-color: #ddd !important;
+}
+
+.dataTables_paginate a{
+    padding: 10px 15px !important;
+    margin: 1px;
+    border-radius: 4px;
 }
 
 .lengthpage{
     float: left;
     padding: 0;
-    margin: 6px 0 0 0;
+    margin: 6px 5px 0 0;
 }
 
 .float-left{
@@ -31,4 +50,9 @@
 }
 label.float-left {
     margin: 7px 5px 0 0;
+}
+.searchbox-hiden{
+    position: absolute;
+    width: 100%;
+    padding: 0 5px;
 }

@@ -8,7 +8,5 @@ namespace CoffeeShop.Data.Repositories
 {
     public interface IGroupTableRepository : IRepository<GroupTable>
     {
-        IEnumerable<GroupTable> SearchBase(Expression<Func<GroupTable, bool>> condition);
-        IEnumerable<GroupTable> GetByShop(int id);
     }
 }

@@ -14,6 +14,7 @@ namespace CoffeeShop.Web.Controllers
         //Khởi tạo service
         IOrderService _orderService;
         IOrderProductService orderProductService;
+        ITableService tableService;
 
 
         /// <summary>
@@ -21,11 +22,11 @@ namespace CoffeeShop.Web.Controllers
         /// </summary>
         /// <param name="tableService"></param>
         /// <param name="orderProductService2"></param>
-        public OrderController(IOrderService tableService, IOrderProductService orderProductService2)
+        public OrderController(IOrderService orderService, IOrderProductService orderProductService2, ITableService tableService2)
         {
-            this._orderService = tableService;
+            this._orderService = orderService;
             this.orderProductService = orderProductService2;
-         
+            this.tableService = tableService2;        
         }
 
         /// <summary>
@@ -35,6 +36,8 @@ namespace CoffeeShop.Web.Controllers
         // GET: Order
         public ActionResult Index()
         {
+
+            ViewBag.ListTable = tableService.GetByShop(1);
             listOrder = _orderService.GetAll().Where(o => o.Status == false).ToList();
             return View(listOrder);
         }
@@ -112,8 +115,6 @@ namespace CoffeeShop.Web.Controllers
             return Json(CurrentContext.GetAll().TotalMoney(), JsonRequestBehavior.AllowGet);
         }
 
-
-
         /// <summary>
         /// Lưu cập nhật hóa đơn vào database
         /// </summary>
@@ -139,7 +140,7 @@ namespace CoffeeShop.Web.Controllers
                 orderProductService.Update(orderPro);
             }
             
-            var listItemDelete = CurrentContext.GetAll().ItemsDelete; //các item bị xóa
+            var listItemDelete = CurrentContext.GetAll().ItemsDelete; 
             if (listItemDelete.Count > 0)
             {
                 foreach (var item in listItemDelete)
@@ -184,6 +185,21 @@ namespace CoffeeShop.Web.Controllers
             listOrder = new List<Order>();
             var lst = _orderService.GetByStatus(status,ref listOrder);
             return Json(lst, JsonRequestBehavior.AllowGet);
+        }
+		
+        /// <summary>
+        /// Filter by date and customerName and tableID
+        /// </summary>
+        /// <param name="customerName"></param>
+        /// <param name="aSFromDate"></param>
+        /// <param name="aSToDate"></param>
+        /// <param name="aSTableName"></param>
+        /// <returns></returns>
+		[HttpPost]
+        public JsonResult AdvancedSearch(string customerName,string aSFromDate, string aSToDate, int aSTableName)
+        {
+            var result=_orderService.SearchAdvanced(customerName,aSFromDate,aSToDate,aSTableName,ref listOrder);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

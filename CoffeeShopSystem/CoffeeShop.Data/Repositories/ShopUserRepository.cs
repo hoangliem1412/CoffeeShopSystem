@@ -17,19 +17,5 @@ namespace CoffeeShop.Data.Repositories
         {
             return GetMany(expression);
         }
-        public ShopUser Create(int ShopID, int UserID, int RoleID, string Description)
-        {
-            ShopUser su = new ShopUser();
-            su.ShopID = ShopID;
-            su.UserID = UserID;
-            su.RoleID = RoleID;
-            su.Description = Description;
-            su.IsDelete = false;
-            return su;
-        }
-        //public ShopUser Detail(int shopUserID)
-        //{
-        //    return GetSingleById(shopUserID);
-        //}
     }
 }

@@ -12,10 +12,5 @@ namespace CoffeeShop.Data.Repositories
             : base(dbFactory)
         {
         }
-
-        public IEnumerable<District> GetByCityID(Expression<Func<District, bool>> expression)
-        {
-            return GetMany(expression);
-        }
     }
 }

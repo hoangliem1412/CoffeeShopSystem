@@ -1,9 +1,5 @@
 ﻿using CoffeeShop.Model.ModelEntity;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Service
 {
@@ -16,6 +12,12 @@ namespace CoffeeShop.Service
         IEnumerable<District> GetAllIsDelete();
 
         IEnumerable<District> GetAll(string keyword);
+
+        int Insert(District district);
+
+        int Edit(District district);
+
+        void Delete1(int id);
 
         void Restore(int id);
 

@@ -1,6 +1,4 @@
-﻿@model IEnumerable<CoffeeShop.Model.ModelEntity.District>
-
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
@@ -10,8 +8,11 @@
         <div class="x_title">
             <h2>QUẢN LÝ DANH SÁCH QUẬN - HUYỆN</h2>
             <ul class="nav navbar-right panel_toolbox">
-                <li style="float:right">
-                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                <li>
+                    <select id="txtIsDeleteOption" class="form-control">
+                        <option value="false">Đang quản lý</option>
+                        <option value="true">Đã xóa</option>
+                    </select>
                 </li>
             </ul>
             <div class="clearfix"></div>
@@ -22,6 +23,7 @@
                     <th>ID</th>
                     <th>Tên quận - huyện</th>
                     <th>Mô tả</th>
+                    <th>ID city</th>
                     <th>Thuộc thành phố</th>
                     <th>Đã xóa</th>
                     <th>Chức năng</th>
@@ -29,6 +31,7 @@
             </thead>
         </table>
         <div class="row">
+            <label class="label" id="lblStatus" style="display:none; float:left; width:auto; height:35px; font-size: 20px;">Đã thêm</label>
             <button type="button" id="btnAddNew" class="btn btn-primary" style="float:right">Thêm mới</button>
         </div>
     </div>
@@ -46,29 +49,48 @@
                 <form id="form">
                     <fieldset id="SubmitForm">
                         <div class="form-group">
-                            <label>Tên quận - huyện:</label>
-                            <input type="text" class="form-control" id="txtName" name="" placeholder="Nhập tên quận - huyện" required="required" />
+                            <label>Tên quận - huyện (<font color="red">&#42;</font>):</label>
+                            <input type="text" class="form-control" id="txtName" autofocus name="" placeholder="Nhập tên quận - huyện" min="2" maxlength="30" required="required" />
+                            <label id="lblValidateName" style="color:red; display:none"></label>
                         </div>
                         <div class="form-group">
                             <label>Mô tả:</label>
                             <input type="text" class="form-control" id="txtDescription" name="" placeholder="Nhập mô tả" />
                         </div>
-                        <div class="form-group">
+                        <div class="form-horizontal">
                             <label>Chọn thành phố:</label>
+                        </div>
+                        <div class="input-group">
                             <select class="form-control" id="txtNameCity" name="">
                                 @Html.Action("PartialListCity", "City")
                             </select>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" id="btnAddNewCity" title="Thêm thành phố mới"><i class="fa fa-plus"></i></button>
+                                <button class="btn btn-danger" type="button" id="btnCloseAddNewCity" style="display:none" title="Đóng"><i class="fa fa-close"></i></button>
+                            </span>
                         </div>
-                        <div class="form-group">
-                            <label>Đã xóa:</label>
-                            <select class="form-control" id="txtIsDelete" name="">
-                                <option value="false">False</option>
-                                <option value="true">True</option>
-                            </select>
+                        <div class="form-group" id="divAddNewCity" style="display:none;  padding: 0 10px 10px 10px; border: 2px solid rgba(52,73,94,.94)">
+                            <div class="row" style="background-color:rgba(52,73,94,.94); color:white; text-align:center; margin-bottom:10px">
+                                <h5>THÊM THÀNH PHỐ - TỈNH THÀNH</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label>Tên thành phố (<font color="red">&#42;</font>):</label>
+                                    <input type="text" class="form-control" id="txtInsertNameCity" name="" placeholder="Nhập tên thành phố" required />
+                                    <label id="lblValidateNameCity" style="color:red; display:none"></label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>Mô tả:</label>
+                                    <input type="text" class="form-control" id="txtInsertDescriptionCity" name="" placeholder="Nhập mô tả" />
+                                </div>
+                            </div>
+                            <div class="row" style="margin: 10px 0 10px 0">
+                                <a href="#" class="btn btn-block btn-primary" id="btnAddCity">Lưu</a>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6">
-                                <a href="#" class="btn btn-block btn-primary" data-dismiss="modal" id="btnAdd">Lưu</a>
+                                <a href="#" class="btn btn-block btn-primary" id="btnAdd">Lưu</a>
                             </div>
                             <div class="col-sm-6">
                                 <a href="#" class="btn btn-block btn-info" data-dismiss="modal" id="btnCancel">Hủy</a>
@@ -83,7 +105,6 @@
 @*/create popup*@
 
 @*Create A PopUp Modal For DeleteConfirmation*@
-
 <div class="modal fade" id="DeleteConfirmation">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -102,14 +123,168 @@
     </div>
 </div>
 @*/Create A PopUp Modal For DeleteConfirmation*@
-
-
 <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.12.4.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
-@*<script src="~/scripts/jquery-1.10.2.min.js"></script>*@
 <script>
-    $(document).ready(function () {
+    $(document).ready(function (e) {
+
+        $("#MyModal").on('hidden.bs.modal', function () {
+            $('#lblValidateName').css({ display: 'none' })
+            $('#txtName').css({ 'border-color': '' });
+            $('#txtName').val().trim();
+
+            $('#btnCloseAddNewCity').css({ display: 'none' });
+            $('#btnAddNewCity').css({ display: 'block' });
+
+            $('#divAddNewCity').css({ display: 'none' });
+            $('#txtName').prop('disabled', false);
+            $('#txtDescription').prop('disabled', false);
+            $('#txtNameCity').prop('disabled', false);
+            $('#btnAdd').attr('disabled', false);
+            $('#btnCancel').attr('disabled', false);
+
+            $('#lblValidateNameCity').css({ display: 'none' })
+            $('#txtInsertNameCity').css({ 'border': '' });
+            $('#txtInsertNameCity').val('');
+            $('#txtInsertDescriptionCity').val('');
+        });
+
+        $('#txtIsDeleteOption').change(function () {
+            var key = $('#txtIsDeleteOption').val();
+            table.column(5).search(key).draw();
+            if (key == "false") {
+                $('.btnDelete').css("display", "");
+                $('.btnRestore').css("display", "none");
+            } else {
+                $('.btnDelete').css("display", "none");
+                $('.btnRestore').css("display", "");
+            }
+
+        });
+
+        function HasValue(val) {
+            return val.replace(/\s+/, '').length;
+        }
+
+        let checkBeforeInsert_Update = false;
+        //validate txtName
+        $('#txtName').focusout(function () {
+            var name = $('#txtName').val();
+            var reg = /[^0-9]/;
+            if (HasValue(name) == false) {
+                $('#lblValidateName').css({ display: 'block' })
+                $('#lblValidateName').html("Tên không được để trống.");
+                $('#txtName').css({ 'border-color': 'red' });
+                $('#txtName').focus();
+                checkBeforeInsert_Update = false;
+            } else {
+                if (reg.test(name)) {
+                    $('#lblValidateName').css({ display: 'none' })
+                    $('#txtName').css({ 'border-color': '' });
+                    $('#txtName').val().trim();
+                    checkBeforeInsert_Update = true;
+                } else {
+                    $('#lblValidateName').css({ display: 'block' })
+                    $('#lblValidateName').html("Tên quận - huyện không hợp lệ.");
+                    $('#txtName').css({ 'border-color': 'red' });
+                    $('#txtName').focus();
+                    checkBeforeInsert_Update = false;
+                }
+            }
+        });
+
+        $('#btnAddNewCity').click(function () {
+
+            $('#btnAddNewCity').css({ display: 'none' });
+            $('#btnCloseAddNewCity').css({ display: 'block' });
+
+            $('#divAddNewCity').css({ display: 'block' });
+            $('#txtName').prop('disabled', true);
+            $('#txtDescription').prop('disabled', true);
+            $('#txtNameCity').prop('disabled', true);
+            $('#btnAdd').attr('disabled', true);
+            $('#btnCancel').attr('disabled', true);
+
+            $('#txtInsertNameCity').focus();
+
+        });
+
+        $('#btnCloseAddNewCity').click(function () {
+
+            $('#btnCloseAddNewCity').css({ display: 'none' });
+            $('#btnAddNewCity').css({ display: 'block' });
+
+            $('#divAddNewCity').css({ display: 'none' });
+            $('#txtName').prop('disabled', false);
+            $('#txtDescription').prop('disabled', false);
+            $('#txtNameCity').prop('disabled', false);
+            $('#btnAdd').attr('disabled', false);
+            $('#btnCancel').attr('disabled', false);
+
+            $('#lblValidateNameCity').css({ display: 'none' })
+            $('#txtInsertNameCity').css({ 'border': '' });
+            $('#txtInsertNameCity').val('');
+            $('#txtInsertDescriptionCity').val('');
+        });
+
+        $('#btnAddCity').click(function () {
+
+            var name = $('#txtInsertNameCity').val();
+            var description = $('#txtInsertDescriptionCity').val();
+
+            var city = new Object();
+            city.Name = name;
+            city.Description = description;
+            city.IsDelete = false;
+
+            var length = $('#txtNameCity option').filter(function () {
+                return $(this).text() === name;
+            }).length;
+
+            if (length != 0 || name == "") {
+                if (length != 0) {
+                    $('#lblValidateNameCity').css({ display: 'block' })
+                    $('#lblValidateNameCity').html("Tên thành phố - tỉnh thành đã tồn tại.");
+                    $('#txtInsertNameCity').css({ 'border-color': 'red' });
+                    $('#txtInsertNameCity').focus();
+                }
+                if (name == "") {
+                    $('#lblValidateNameCity').css({ display: 'block' })
+                    $('#lblValidateNameCity').html("Tên không được để trống.");
+                    $('#txtInsertNameCity').css({ 'border-color': 'red' });
+                    $('#txtInsertNameCity').focus();
+                }
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Insert", "City")',
+                    data: JSON.stringify(city),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (rs) {
+                        if (rs != 0) {
+                            var option = '<option value="'+ rs +'">' + name + '</option>';
+                            $('#txtNameCity').append(option);
+
+                            $('#btnCloseAddNewCity').css({ display: 'none' });
+                            $('#btnAddNewCity').css({ display: 'block' });
+
+                            $('#divAddNewCity').css({ display: 'none' });
+                            $('#txtName').prop('disabled', false);
+                            $('#txtDescription').prop('disabled', false);
+                            $('#txtNameCity').prop('disabled', false);
+                            $('#txtIsDelete').prop('disabled', false);
+                            $('#btnAdd').attr('disabled', false);
+                            $('#btnCancel').attr('disabled', false);
+
+                        } else {
+                            alert("Lỗi");
+                        }
+                    }
+                });
+            }
+        });
         //======================start datatables===========================
         let table = $('#myTable').DataTable({
             language: {
@@ -131,22 +306,25 @@
                 "datatype": "json"
             },
             "columns": [
-                    { className: 'ID', data: "ID", autoWidth: true },
+                    { className: 'ID', data: "ID", autoWidth: true, visible: false },
                     { className: 'Name', data: "Name", autoWidth: true },
                     { className: 'Description', data: "Description", autoWidth: true },
-                    { className: 'CityID', data: "CityID", autoWidth: true },
-                    { className: 'IsDelete', data: "IsDelete", autoWidth: true },
+                    { className: 'CityID', data: "CityID", autoWidth: true, visible: false },
+                    { className: 'CityName', data: "NameCity", autoWidth: true },
+                    { className: 'IsDelete', data: "IsDelete", autoWidth: true, visible: false },
                     {
                         "targets": -1,
                         "data": null,
                         "defaultContent": '<a href="#" class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
-                                        '<a href="#" class="btn btn-danger btn-xs btnDelete" title="Xóa"><i class="fa fa-trash-o"></i></a>'
+                                        '<a href="#" class="btn btn-danger btn-xs btnDelete" title="Xóa"><i class="fa fa-trash-o"></i></a>' +
+                                        '<a href="#" class="btn btn-warning btn-xs btnRestore" title="Phục hồi" style="display:none"><i class="fa fa-refresh"></i></a>'
                     }
             ],
             "columnDefs": [
                        { "display": 'block', "targets": [0, 3] }
             ]
         });
+        table.column(5).search("false").draw();
         //======================end datatables===========================
         let checkClickAddNew = false;
         //event click Thêm mới
@@ -156,11 +334,12 @@
             $("#form")[0].reset();
             $("#MyModal").modal();
             $('#ModalTitle').html("THÊM QUẬN - HUYỆN");
+
         });
 
         //event click button 'Sua' in list city
         let idUpdate;
-        let rowTemp;
+        let isDeleteUpdate;
         $('#myTable tbody').on('click', '.btnEdit', function () {
             checkClickAddNew = false;
             $("#form")[0].reset();
@@ -168,84 +347,118 @@
             $('#ModalTitle').html("SỬA QUẬN - HUYỆN");
 
             var row = $(this).closest("tr");
-            rowTemp = row; // lấy biến row temp để phục vụ cho việc update + insert
-            idUpdate = row.find(".ID").html();
+            idUpdate = table.row($(this).parents('tr')).data()["ID"];
+            isDeleteUpdate = table.row($(this).parents('tr')).data()["IsDelete"];
             var name = row.find(".Name").html();
             var description = row.find(".Description").html();
-            var isDelete = row.find(".IsDelete").html();
+            var cityID = table.row($(this).parents('tr')).data()["CityID"];
 
             $('#txtName').val(name);
             $('#txtDescription').val(description);
-            $('#txtIsDelete').val(isDelete);
+            $('#txtNameCity').val(cityID);
         });
 
         //event click button Thêm in popup
         $('#btnAdd').click(function () {
-            //checkClickAddNew == true => insert
-            if (checkClickAddNew == true) {
-                var name = $('#txtName').val();
-                var description = $('#txtDescription').val();
-                var cityID = $('#txtNameCity').val();
-                var isDelete = $('#txtIsDelete').val();
+            if ($('#txtName').val() == "") {
+                checkBeforeInsert_Update = false;
+                $('#lblValidateName').css({ display: 'block' })
+                $('#lblValidateName').html("Tên không được để trống.");
+                $('#txtName').css({ 'border-color': 'red' });
+                $('#txtName').focus();
+            } else {
+                var reg = /[^0-9]/;
+                if (reg.test($('#txtName').val())) {
+                    $('#lblValidateName').css({ display: 'none' })
+                    $('#txtName').css({ 'border-color': '' });
+                    $('#txtName').val().trim();
+                    checkBeforeInsert_Update = true;
+                } else {
+                    $('#lblValidateName').css({ display: 'block' })
+                    $('#lblValidateName').html("Tên quận - huyện không hợp lệ.");
+                    $('#txtName').css({ 'border-color': 'red' });
+                    $('#txtName').focus();
+                    checkBeforeInsert_Update = false;
+                }
+            }
+            //check before insert or update
+            if (checkBeforeInsert_Update == true) {
+                //checkClickAddNew == true => insert
+                if (checkClickAddNew == true) {
+                    var name = $('#txtName').val();
+                    var description = $('#txtDescription').val();
+                    var cityID = $('#txtNameCity').val();
 
-                var district = new Object();
-                district.Name = name;
-                district.Description = description;
-                district.CityID = cityID;
-                district.IsDelete = isDelete;
+                    var district = new Object();
+                    district.Name = name;
+                    district.Description = description;
+                    district.CityID = cityID;
+                    district.IsDelete = false;
 
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Insert", "District")',
-                    data: JSON.stringify(district),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (rs) {
-                        if (rs != 0) {
-                            //eventSuccess("Đã thêm");
-                            //AppendRow(rs, name, description, isDelete);
-                            //ShowWithIsDelete();
-                            table.ajax.reload(null, false);
-                        } else {
-                            //eventError('Error!');
-                            alert("Lỗi");
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Insert", "District")',
+                        data: JSON.stringify(district),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (rs) {
+                            if (rs == 1) {
+                                table.ajax.reload(null, false);
+                                $("#MyModal").modal("hide");
+                                EventSuccess('Đã thêm');
+                            } else {
+                                if (rs == -1) {
+                                    $('#lblValidateName').css({ display: 'block' })
+                                    $('#lblValidateName').html("Tên quận - huyện đã tồn tại.");
+                                    $('#txtName').css({ 'border-color': 'red' });
+                                    $('#txtName').focus();
+                                    EventError('Tên đã tồn tại!');
+                                } else {
+                                    $("#MyModal").modal("hide");
+                                    EventError('Lỗi!');
+                                }
+                            }
                         }
-                    }
-                });
+                    });
+                } else{//checkClickAddNew == false => update
+                    var name = $('#txtName').val();
+                    var description = $('#txtDescription').val();
+                    var cityID = $('#txtNameCity').val();
+                    var nameCity = $('#txtNameCity :selected').text();
 
-            }//checkClickAddNew == false => update
-            else {
-                var name = $('#txtName').val();
-                var description = $('#txtDescription').val();
-                var cityID = $('#txtNameCity').val();
-                var isDelete = $('#txtIsDelete').val();
+                    var district = new Object();
+                    district.ID = idUpdate;
+                    district.Name = name;
+                    district.Description = description;
+                    district.CityID = cityID;
+                    district.IsDelete = isDeleteUpdate;
 
-                var district = new Object();
-                district.ID = idUpdate;
-                district.Name = name;
-                district.Description = description;
-                district.CityID = cityID;
-                district.IsDelete = isDelete;
-
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Update", "District")',
-                    data: JSON.stringify(district),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (rs) {
-                        if (rs != 0) {
-                            rowTemp.find(".Name").html(name);
-                            rowTemp.find(".Description").html(description);
-                            rowTemp.find(".IsDelete").html(isDelete);
-                            table.ajax.reload(null, false);
-                            //ShowWithIsDelete();
-                            //eventSuccess("Đã sửa");
-                        } else {
-                            //eventError("Lỗi!");
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Update", "District")',
+                        data: JSON.stringify(district),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (rs) {
+                            if (rs == 1) {
+                                table.ajax.reload(null, false);
+                                $("#MyModal").modal("hide");
+                                EventSuccess('Đã chỉnh sửa');
+                            } else {
+                                if (rs == -1) {
+                                    $('#lblValidateName').css({ display: 'block' })
+                                    $('#lblValidateName').html("Tên quận - huyện đã tồn tại.");
+                                    $('#txtName').css({ 'border-color': 'red' });
+                                    $('#txtName').focus();
+                                    EventError('Tên đã tồn tại!');
+                                } else {
+                                    $("#MyModal").modal("hide");
+                                    EventError('Lỗi!');
+                                }
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 
@@ -254,13 +467,14 @@
         $('#myTable tbody').on('click', '.btnDelete', function () {
             $("#DeleteConfirmation").modal("show");
             var row = $(this).closest("tr");
-            rowTemp = row;
-            idDelete = row.find(".ID").html();
+            idDelete = table.row($(this).parents('tr')).data()["ID"];
             var name = row.find(".Name").html();
             $('#lblName').html(name);
+
         });
 
         $('#btnConfirmDelete').click(function () {
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("Delete", "District")',
@@ -269,13 +483,10 @@
                 dataType: "json",
                 success: function (rs) {
                     if (rs != 0) {
-                        //eventSuccess('Đã xóa');
-                        //rowTemp.find(".IsDelete").html("True");
-                        rowTemp.remove();
                         table.ajax.reload(null, false);
-                        //ShowWithIsDelete();
+                        EventSuccess('Đã xóa');
                     } else {
-                        //eventError('Error!')
+                        EventError('Lỗi!');
                     }
                 }
 
@@ -283,9 +494,8 @@
         });
 
         //event click delete
-        $('.btnRestore').click(function () {
-            var row = $(this).closest("tr");
-            var id = row.find(".ID").html();
+        $('#myTable tbody').on('click', '.btnRestore', function () {
+            var id = table.row($(this).parents('tr')).data()["ID"];
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("Restore", "District")',
@@ -294,55 +504,29 @@
                 dataType: "json",
                 success: function (rs) {
                     if (rs != 0) {
-                        row.find(".IsDelete").html("False");
-                        ShowWithIsDelete();
+                        table.ajax.reload(null, false);
+                        table.column(5).search("false").draw();
+                        $('#txtIsDeleteOption').val("false");
+                        EventSuccess('Đã phục hồi');
                     } else {
-                        //eventError('Error!')
+                        EventError('Lỗi!');
                     }
                 }
             });
         });
     });
 
-    //event keyup txtSearch
-    function FuncSearch() {
-        var input, filter, table, tr, tdName, i, isDelete, tdIsDelete;
-        input = document.getElementById("txtSearch");
-        filter = input.value.toUpperCase();
-
-        isDelete = document.querySelector('input[name="optradio"]:checked').value
-
-        table = document.getElementById("listTable");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-            tdName = tr[i].getElementsByTagName("td")[1];
-            if (tdName) {
-                if (tdName.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
+    function EventSuccess(text) {
+        $('#lblStatus').css({ display: 'block' });
+        $('#lblStatus').html(text);
+        $('#lblStatus').addClass('label-success')
+        $('#lblStatus').removeClass('label-danger')
     }
 
-    //event select show with isdelete
-    function ShowWithIsDelete() {
-        var isDelete, filter, table, tr, td, i;
-        isDelete = document.querySelector('input[name="optradio"]:checked').value
-        //input = document.getElementByName('optradio');
-        filter = isDelete.toUpperCase();
-        table = document.getElementById("listTable");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[3];
-            if (td) {
-                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
+    function EventError(text) {
+        $('#lblStatus').css({ display: 'block' });
+        $('#lblStatus').html(text);
+        $('#lblStatus').addClass('label-danger')
+        $('#lblStatus').removeClass('label-success')
     }
 </script>

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoffeeShop.Model
 {
@@ -17,5 +13,6 @@ namespace CoffeeShop.Model
         public int Type { get; set; }
         public string Description { get; set; }
         public int IsDelete { get; set; }
+        public int RowPerPage { get; set; }
     }
 }

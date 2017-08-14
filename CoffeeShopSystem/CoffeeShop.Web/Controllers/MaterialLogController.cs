@@ -1,8 +1,9 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
+using System.Collections.Generic;
+using CoffeeShop.Model;
 
 namespace CoffeeShop.Web.Controllers
 {
@@ -10,6 +11,9 @@ namespace CoffeeShop.Web.Controllers
     {
         private IMaterialLogService mLogService;
         private IMaterialService materialService;
+        static IEnumerable<MaterialLog> logList;
+        int rowPerPage = 10;
+        static int totalItems = 0;
 
         public MaterialLogController(IMaterialLogService mLogService, IMaterialService mateService)
         {
@@ -19,128 +23,96 @@ namespace CoffeeShop.Web.Controllers
 
         // GET: MaterialLog
         public ActionResult Index()
+
         {
-            var materialLogs = mLogService.GetMulti(x => x.IsDelete == false);
+            logList = mLogService.GetAvailable().ToList();
+            totalItems = logList.Count();
             ViewBag.MateList = materialService.GetMulti(x => x.IsDelete == false);
+            ViewBag.TotalItems = totalItems;
+            ViewBag.RowPerPage = rowPerPage;
 
-            return View(materialLogs.ToList());
+            return View(logList.Take(rowPerPage));
+
         }
 
-        // GET: MaterialLog/Details/5
-        public ActionResult Details(int? id)
+        public JsonResult Paging(int inRowPerPage, int currentPage)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            var result = new { totalItems = logList.Count(), items = mLogService.Paging(logList, inRowPerPage, currentPage) };
 
-            MaterialLog materialLog = mLogService.GetSingleById(id.Value);
-
-            if (materialLog == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(materialLog);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        // GET: MaterialLog/Create
-        public ActionResult Create()
+        public JsonResult GetByStatus(int inRowPerPage, int status, int currentPage = 1)
         {
-            //ViewBag.MaterialID = new SelectList(db.MaterialCategories, "ID", "Name");
-            //ViewBag.EmployeeID = new SelectList(db.Users, "ID", "Username");
-            return View();
+            logList = mLogService.GetByStatus(logList, status);
+            return Paging(inRowPerPage, currentPage);
         }
 
         // POST: MaterialLog/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,MaterialID,EmployeeID,Inventory,UnitPrice,Type,Description,CreatedDate,IsDelete")] MaterialLog materialLog)
+        public JsonResult Create(MaterialLog materialLog)
         {
             if (ModelState.IsValid)
             {
-                //db.MaterialLogs.Add(materialLog);
-                //db.SaveChanges();
-                return RedirectToAction("Index");
+                mLogService.Add(materialLog);
+                mLogService.Save();
+                return Json("", JsonRequestBehavior.AllowGet);
             }
 
-            //ViewBag.MaterialID = new SelectList(db.MaterialCategories, "ID", "Name", materialLog.MaterialID);
-            //ViewBag.EmployeeID = new SelectList(db.Users, "ID", "Username", materialLog.EmployeeID);
-            return View(materialLog);
+            return Json("Có lỗi xảy ra, vui lòng thử lại", JsonRequestBehavior.AllowGet);
         }
 
         // GET: MaterialLog/Edit/5
-        public ActionResult Edit(int? id)
+        public JsonResult Detail(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return Json("", JsonRequestBehavior.AllowGet);
             }
-            //MaterialLog materialLog = db.MaterialLogs.Find(id);
-            //if (materialLog == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //ViewBag.MaterialID = new SelectList(db.MaterialCategories, "ID", "Name", materialLog.MaterialID);
-            //ViewBag.EmployeeID = new SelectList(db.Users, "ID", "Username", materialLog.EmployeeID);
-            //return View(materialLog);
-            return null;
+
+            var result = mLogService.GetSingleById(id.Value);
+
+            return Json(mLogService.Flat(result), JsonRequestBehavior.AllowGet);
         }
 
         // POST: MaterialLog/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,MaterialID,EmployeeID,Inventory,UnitPrice,Type,Description,CreatedDate,IsDelete")] MaterialLog materialLog)
+        public ActionResult Edit(MaterialLog materialLog)
         {
             if (ModelState.IsValid)
             {
-               // db.Entry(materialLog).State = EntityState.Modified;
-                //db.SaveChanges();
-                return RedirectToAction("Index");
+                mLogService.Update(materialLog);
+                mLogService.Save();
+                return Json("", JsonRequestBehavior.AllowGet);
             }
-            //ViewBag.MaterialID = new SelectList(db.MaterialCategories, "ID", "Name", materialLog.MaterialID);
-            //ViewBag.EmployeeID = new SelectList(db.Users, "ID", "Username", materialLog.EmployeeID);
-            return View(materialLog);
-        }
 
-        // GET: MaterialLog/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            //MaterialLog materialLog = db.MaterialLogs.Find(id);
-            //if (materialLog == null)
-            //{
-            //    return HttpNotFound();
-            //}
-            //return View(materialLog);
-            return null;
+            return Json("Có lỗi xảy ra, vui lòng thử lại", JsonRequestBehavior.AllowGet);
         }
 
         // POST: MaterialLog/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        public JsonResult Delete(int id)
         {
-            //MaterialLog materialLog = db.MaterialLogs.Find(id);
-            //db.MaterialLogs.Remove(materialLog);
-            //db.SaveChanges();
-            return RedirectToAction("Index");
+            mLogService.Delete(id);
+            mLogService.Save();
+
+            return Json("", JsonRequestBehavior.AllowGet);
         }
 
-        protected override void Dispose(bool disposing)
+        public JsonResult SearchByName(string keyword, int rowPerPage)
         {
-            if (disposing)
-            {
-                //db.Dispose();
-            }
-            base.Dispose(disposing);
+            logList = mLogService.SearchByName(keyword);
+            var result = new { totalItems = logList.Count(), items = mLogService.Paging(logList, rowPerPage, 1) };
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Search(MaterialLogSearchViewModel model/*, int rowPerPage*/)
+        {
+            logList = mLogService.Search(model);
+            var result = new { totalItems = logList.Count(), items = mLogService.Paging(logList, model.RowPerPage, 1) };
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

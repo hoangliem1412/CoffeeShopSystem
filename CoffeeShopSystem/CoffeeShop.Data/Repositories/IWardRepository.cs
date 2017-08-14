@@ -8,6 +8,6 @@ namespace CoffeeShop.Data.Repositories
 {
     public interface IWardRepository : IRepository<Ward>
     {
-        IEnumerable<Ward> GetByDistrictID(Expression<Func<Ward, bool>> expression);
+        
     }
 }

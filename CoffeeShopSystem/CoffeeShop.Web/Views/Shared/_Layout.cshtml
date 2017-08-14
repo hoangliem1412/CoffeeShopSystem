@@ -23,7 +23,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Coffee System</span></a>
+                        <a href="/" class="site_title"><i class="fa fa-paw"></i> <span>Coffee System</span></a>
                     </div>
                     <div class="clearfix"></div>
                     <!-- menu profile quick info -->
@@ -45,11 +45,7 @@
                             <ul class="nav side-menu">
                                 <li>
                                     <a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                                    @*<ul class="nav child_menu">
-                                            <li><a href="index.html">Dashboard</a></li>
-                                            <li><a href="index2.html">Dashboard2</a></li>
-                                            <li><a href="index3.html">Dashboard3</a></li>
-                                        </ul>*@
+
                                 </li>
                                 <li>
                                     <a href="@Url.Action("Index", "ShopUser")"><i class="fa fa-user"></i> Quản lý nhân viên</a>
@@ -64,28 +60,20 @@
                                 <li>
                                     <a><i class="fa fa-edit"></i> Quản lý món <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="form.html">General Form</a></li>
-                                        <li><a href="form_advanced.html">Advanced Components</a></li>
-                                        <li><a href="form_validation.html">Form Validation</a></li>
-                                        <li><a href="form_wizards.html">Form Wizard</a></li>
-                                        <li><a href="form_upload.html">Form Upload</a></li>
-                                        <li><a href="form_buttons.html">Form Buttons</a></li>
+                                        <li><a href="/Product">Sản phẩm</a></li>
+                                        <li><a href="/Category">Loại sản phẩm</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a><i class="fa fa-desktop"></i> Quản lý bàn <span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-edit"></i> Quản lý nguyên liệu <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="general_elements.html">General Elements</a></li>
-                                        <li><a href="media_gallery.html">Media Gallery</a></li>
-                                        <li><a href="typography.html">Typography</a></li>
-                                        <li><a href="icons.html">Icons</a></li>
-                                        <li><a href="glyphicons.html">Glyphicons</a></li>
-                                        <li><a href="widgets.html">Widgets</a></li>
-                                        <li><a href="invoice.html">Invoice</a></li>
-                                        <li><a href="inbox.html">Inbox</a></li>
-                                        <li><a href="calendar.html">Calendar</a></li>
+                                        <li><a href="/Material">Nguyên liệu</a></li>
+                                        <li><a href="/Category/ListCate">Loại nguyên liệu</a></li>
+                                        <li><a href="/MaterialLog">Log nguyên liệu</a></li>
+                                        
                                     </ul>
                                 </li>
+
                                 <li>
                                     <a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -93,13 +81,7 @@
                                         <li><a href="tables_dynamic.html">Table Dynamic</a></li>
                                     </ul>
                                 </li>
-                                <li>
-                                    <a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                                        <li><a href="fixed_footer.html">Fixed Footer</a></li>
-                                    </ul>
-                                </li>
+
                                 <li>
                                     <a><i class="fa fa-money"></i> Quản lý hóa đơn <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -110,21 +92,17 @@
 
                                 <!-- Quản lý khuyến mãi -->
                                 <li>
-                                    <a href="@Url.Action("Index","Promotion")"><i class="fa fa-money"></i> Quản Lý Khuyến Mãi <span></span></a>   
-                                    @*<ul class="nav child_menu">
-                                        <li><a href="@Url.Action("Index","Promotion")">Khuyến mãi</a></li>
-
-                                    </ul>*@                                 
+                                    <a href="@Url.Action("Index","Promotion")"><i class="fa fa-gift"></i> Quản Lý Khuyến Mãi <span></span></a>                                
                                 </li>
 
                                 <!-- Quản lý cửa hàng -->
-                                @*<li>
+                                <li>
                                     <a><i class="fa fa-university"></i> Quản Lý Cửa Hàng <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="@Url.Action('Index','ShopManagement')">Cửa Hàng</a></li>
+                                        <li><a href='@Url.Action("Index","ShopManagement")'>Cửa Hàng</a></li>
 
                                     </ul>
-                                </li>*@
+                                </li>
 
 
                             </ul>
@@ -202,6 +180,7 @@
     <script src="~/Scripts/custom.min.js"></script>
     <!-- jQuery Validate Scripts -->
     <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/KieuNTL1_script.js"></script>
     @RenderSection("js", false)
 
 </body>

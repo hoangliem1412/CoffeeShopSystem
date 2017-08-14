@@ -6,6 +6,5 @@ namespace CoffeeShop.Data.Repositories
 {
     public interface IPromotionRepository : IRepository<Promotion>
     {
-        IEnumerable<Promotion> Paging(IEnumerable<Promotion> List, int recordsPerPage, int page);
     }
 }

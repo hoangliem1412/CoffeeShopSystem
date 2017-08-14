@@ -81,7 +81,7 @@ namespace CoffeeShop.Service
             return repository.Delete(entity);
         }
 
-        public void Save()
+        public virtual void Save()
         {
             unitOfWork.Commit();
         }

@@ -61,6 +61,7 @@
       <DependentUpon>Resource1.resx</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="MaterialLogSearchViewModel.cs" />
     <Compile Include="ModelEntity\City.cs">
       <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>

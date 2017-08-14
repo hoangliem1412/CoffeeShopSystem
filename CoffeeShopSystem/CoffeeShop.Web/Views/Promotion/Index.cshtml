@@ -5,17 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section css{
-    @*<link href="~/Asserts/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" />*@
 
 }
 
 
 @section js{
 
-    <script src="~/Asserts/jquery-validation-1.16.0/jquery.validate.min.js"></script>
-
-
-
+    <script src="~/Asserts/jquery-validation-1.17.0/jquery.validate.min.js"></script>
 
     <!-- GetPromotionById-->
     <script>
@@ -35,26 +31,23 @@
                 timeout: 30 * 1000,
 
             })
-
                  .done(function (result) {
 
                      $('#EIDtext').val(result.ID);
                      $('#EShoptext').val(result.ShopID);
                      $('#Enametext').val(result.Name);
 
-                     //alert(result.StartDate);
+                     // Gán date
                      var date = new Date(parseInt(result.StartDate.replace('/Date(', '')));
-                     //alert(currentTime);
                      var month = date.getMonth() + 1;
                      if (month < 10) month = '0' + month;
                      var day = date.getDate();
                      if (day < 10) month = '0' + day;
                      var year = date.getFullYear();
                      var StartDate = year + "-" + month + "-" + day;
-                     //alert(date);
                      $('#EStartDate').val(StartDate);
 
-                     // Gán textbox
+                     // Gán date
                      var date = new Date(parseInt(result.EndDate.replace('/Date(', '')));
                      var month = date.getMonth() + 1;
                      if (month < 10) month = '0' + month;
@@ -63,8 +56,6 @@
                      var year = date.getFullYear();
                      var EndDate = year + "-" + month + "-" + day;
                      $('#EEndDate').val(EndDate);
-
-
                      $('#Epurchasenumber').val(result.BasePurchase);
                      $('#Ediscountnumer').val(result.Discount);
                      $('#Ediscriptiontextarea').val(result.Description);
@@ -73,13 +64,12 @@
 
                  .fail(function (jqXHR, status, error) {
                      console.log(jqXHR);
-                     alert('Thêm thất bại!');
+                     alert('Load thất bại!');
 
                  });
 
         })
     </script>
-
 
     <!-- AddModal -->
     <script>
@@ -110,6 +100,20 @@
     <!-- DeleteModal -->
     <script>
         $('#DeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+        })
+    </script>
+
+
+    <!-- RecoveryModal -->
+    <script>
+        $('#RecoveryModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var recipient = button.data('whatever') // Extract info from data-* attributes
             // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
@@ -200,7 +204,7 @@
             StartDate: {
                 required: true,
             },
-            // 2. Enddate > StartDate, Today
+
             EndDate: {
                 required: true,
             },
@@ -259,10 +263,8 @@
     </script>
 
 
-
-
     <!-- Search in table: name, des-->
-    <script>
+    @*<script>
     function myFunction() {
         $('#paging').hide();
         var input, filter, table, tr, td, i;
@@ -282,7 +284,7 @@
             }
         }
     }
-    </script>
+    </script>*@
 
     <!-- Submit Add -->
     <script>
@@ -292,7 +294,6 @@
                 //// Check validate
                 var form = $('#AddForm');
                 form.validate();
-
 
                 if (form.valid() == true) {
                     $('#AddForm').submit();
@@ -313,7 +314,7 @@
                 var form = $('#EditForm');
                 form.validate();
                 if (form.valid() == true) {
-
+                    //Call ajax
                     $.ajax({
                         url: form.attr('action'),
                         type: form.attr('method'),
@@ -324,6 +325,7 @@
 
                     })
                         .done(function (n) {
+                            // update this row in table
                             var id = form.find('[name=ID]').val();//?form > result
                             var name = form.find('[name=Name]').val();
                             var basepurchase = form.find('[name=BasePurchase]').val();//?val();
@@ -331,7 +333,6 @@
                             var startdate = form.find('[name=StartDate]').val();
                             var enddate = form.find('[name=EndDate]').val();
                             var description = form.find('[name=Description]').val();
-
 
                             var table = $('#BodyTable');
                             table.find('#ID-' + id).html(id);
@@ -342,10 +343,8 @@
                             table.find('#EndDate-' + id).html(enddate);
                             table.find('#Description-' + id).html(description);
 
-
                             $('#EditModal').modal('hide');
                         })
-
 
                      .fail(function (jqXHR, status, error) {
                          console.log(jqXHR);
@@ -354,7 +353,6 @@
                 }
                 else { }
             })
-
         })
     </script>
 
@@ -362,37 +360,33 @@
     <!-- Ajax: Submit Delete-->
     <script>
     $('.DeleteItem').on('click', function () {
-
+        //show Modal
         var iddel = $(this).data('proid');
-        $('#DeleteIDText').val(iddel);
 
-        $('#DeleteModal').modal('show');
+        //Submit delete
         $('#submitDelete').on('click', function () {
-
+            //Call Ajax
             $.ajax({
                 url: '@Url.Action("Delete","Promotion")',
                 type: 'post',
-                data: {'IdToDelete': iddel},
+                data: {'idToDelete': iddel},
                 dataType: 'json',
-                timeout: 30 * 1000,
-
             })
 
              .done(function (result) {
-                 if (result == true) {
+                 if (result == false) {
+                     alert('Không được xóa khuyến mãi đang trong hóa đơn !!!');
+
                      $('#DeleteModal').modal('hide');
-                     $('#BodyTable #item-' + iddel).remove();
                  }
                  else {
-                     alert("Không được xóa khuyến mãi đang trong hóa đơn !!!");
                      $('#DeleteModal').modal('hide');
+
+                     // Remove this row in table
+                     $('#BodyTable #item-' + iddel).remove();
                  }
 
-
              })
-
-
-
 
              .fail(function (jqXHR, status, error) {
                  console.log(jqXHR);
@@ -406,65 +400,109 @@
     </script>
 
 
+    <!-- Ajax: Submit Recovery-->
+    <script>
+    $('.RecoveryItem').on('click', function () {
+        //show Modal
+        var idrecovery = $(this).data('proid');
+
+        //Submit
+        $('#submitRecovery').on('click', function () {
+            //Call Ajax
+            $.ajax({
+                url: '@Url.Action("Recovery","Promotion")',
+                type: 'post',
+                data: { 'idToRecovery': idrecovery },
+                dataType: 'json',
+            })
+
+             .done(function (result) {
+                     $('#RecoveryModal').modal('hide');
+
+                     // Remove this row in table
+                     $('#BodyTable #item-' + idrecovery).remove();
+
+             })
+
+             .fail(function (jqXHR, status, error) {
+                 console.log(jqXHR);
+                 alert('Phục hồi thất bại!');
+             });
+
+        })
+    })
+    </script>
+
+
     <!-- Sort -->
-<script>
-function sortTable(n) {
-  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-  table = document.getElementById("listTable");
-  switching = true;
-  //Set the sorting direction to ascending:
-  dir = "asc";
-  /*Make a loop that will continue until
-  no switching has been done:*/
-  while (switching) {
-    //start by saying: no switching is done:
-    switching = false;
-    rows = table.getElementsByTagName("TR");
-    /*Loop through all table rows (except the
-    first, which contains table headers):*/
-    for (i = 1; i < (rows.length - 1); i++) {
-      //start by saying there should be no switching:
-      shouldSwitch = false;
-      /*Get the two elements you want to compare,
-      one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[n];
-      y = rows[i + 1].getElementsByTagName("TD")[n];
-      /*check if the two rows should switch place,
-      based on the direction, asc or desc:*/
-      if (dir == "asc") {
-        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-          //if so, mark as a switch and break the loop:
-          shouldSwitch= true;
-          break;
+    <script>
+        function sortTable(n) {
+          var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+          table = document.getElementById("listTable");
+          switching = true;
+          //Set the sorting direction to ascending:
+          dir = "asc";
+          /*Make a loop that will continue until
+          no switching has been done:*/
+          while (switching) {
+            //start by saying: no switching is done:
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+            /*Loop through all table rows (except the
+            first, which contains table headers):*/
+            for (i = 1; i < (rows.length - 1); i++) {
+              //start by saying there should be no switching:
+              shouldSwitch = false;
+              /*Get the two elements you want to compare,
+              one from current row and one from the next:*/
+              x = rows[i].getElementsByTagName("TD")[n];
+              y = rows[i + 1].getElementsByTagName("TD")[n];
+              /*check if the two rows should switch place,
+              based on the direction, asc or desc:*/
+              if (dir == "asc") {
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                  //if so, mark as a switch and break the loop:
+                  shouldSwitch= true;
+                  break;
+                }
+              } else if (dir == "desc") {
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                  //if so, mark as a switch and break the loop:
+                  shouldSwitch= true;
+                  break;
+                }
+              }
+            }
+            if (shouldSwitch) {
+              /*If a switch has been marked, make the switch
+              and mark that a switch has been done:*/
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              //Each time a switch is done, increase this count by 1:
+              switchcount ++;
+            } else {
+              /*If no switching has been done AND the direction is "asc",
+              set the direction to "desc" and run the while loop again.*/
+              if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+              }
+            }
+          }
         }
-      } else if (dir == "desc") {
-        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-          //if so, mark as a switch and break the loop:
-          shouldSwitch= true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      /*If a switch has been marked, make the switch
-      and mark that a switch has been done:*/
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-      //Each time a switch is done, increase this count by 1:
-      switchcount ++;
-    } else {
-      /*If no switching has been done AND the direction is "asc",
-      set the direction to "desc" and run the while loop again.*/
-      if (switchcount == 0 && dir == "asc") {
-        dir = "desc";
-        switching = true;
-      }
-    }
-  }
-}
-</script>
+    </script>
+
+    <!-- Load list by radio-->
+    <script>
+        $('#RadioForm [name=optradio]').change(function () {
+            var select = $(this).val();
+            location.href = "/Promotion/LoadByCondition?select=" + select;
+        })
+    </script>
 
 }
+
+<!-- Content -->
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
@@ -490,15 +528,15 @@ function sortTable(n) {
                     <label>Trên</label>
                 </div>
                 <div class="col-sm-8">
-                    <form id="ListView" action="">
+                    <form id="RadioForm" action="">
                         <label class="radio-inline">
-                            <input type="radio" value="all" onclick="handleClick(this);">Hiển thị tất cả
+                            <input type="radio" name="optradio" value="all" @if (ViewBag.Select == "all") { <text> checked="checked" </text>  }> Hiển thị tất cả
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" value="action" checked="checked">Đang quản lý
+                            <input type="radio" name="optradio" value="active" @if (ViewBag.Select == "active") { <text> checked="checked" </text>  }>Đang quản lý
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" value="delete">Đã xóa
+                            <input type="radio" name="optradio" value="delete" @if (ViewBag.Select == "delete") { <text> checked="checked" </text>  }>Đã xóa
                         </label>
                     </form>
                 </div>
@@ -510,20 +548,45 @@ function sortTable(n) {
                         <a href="javascript:;" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="panel-title"><i class="glyphicon glyphicon-plus"></i></a>
                     </div>
 
-                    <!-- Search -->
-                    @*<form id = "SearchForm" action="@Url.Action("Search", "Promotion")">*@
+                    <!-- Basic Search-->
+                    @*<form id = "SearchForm" action="@Url.Action("Search", "Promotion")">
                     <div class="col-sm-4">
-                        <input id="SearchText" onkeyup="myFunction()" name="keyword" type="text" class="form-control" placeholder="Từ khóa...">
+                        <input id="SearchText" onkeyup="myFunction()" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm khuyến mãi theo tên, mô tả">
                     </div>
-                    @*</form>*@
+                    </form>*@
 
+                    <!-- Basic Search-->
+                    <form id="SearchForm" action="@Url.Action("BasicSearch", "Promotion")">                        
+                        <div class="col-sm-4">
+                            <input id="SearchText" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm khuyến mãi theo tên, mô tả">
+                        </div>
+                    </form>
+
+                    <!-- Advanced Search-->
+                    <form id="AdvancedSearch" class="form-inline" action="@Url.Action("AdvancedSearch","Promotion")" style="margin-top:50px">
+                        <div class="form-group">
+                            <label for="NameText">Tìm kiếm theo Tên:</label>
+                            <input type="text" class="form-control" id="NameText" name="Name" value="@ViewBag.Name">
+                        </div>
+                        <div class="form-group" style="margin-left:20px">
+                            <label for="StartDate">Từ ngày:</label>
+                            <input type="date" class="form-control" id="StartDate" name="StartDate" value="@ViewBag.StartDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="EndDate"> - </label>
+                            <input type="date" class="form-control" id="EndDate" name="EndDate" value="@ViewBag.EndDate">
+                        </div>
+
+                        <button id="submitSearch" class="btn btn-primary" style="float:right">Tìm kiếm</button>
+                    </form>
                 </div>
 
+                <!-- Sort in table -->
                 <div class="panel-body clearfix">
                     <table class="table table-striped table-responsive jambo_table bulk_action" id="listTable">
                         <thead>
                             <tr>
-                                <th onclick="sortTable(0)">ID <i class="fa fa-sort" ></i></th>
+                                <th onclick="sortTable(0)">ID <i class="fa fa-sort"></i></th>
                                 <th onclick="sortTable(1)">Khuyến Mãi <i class="fa fa-sort"></i></th>
                                 <th onclick="sortTable(2)">Giảm Giá <i class="fa fa-sort"></i></th>
                                 <th onclick="sortTable(3)">Chiết Khấu <i class="fa fa-sort"></i></th>
@@ -554,15 +617,24 @@ function sortTable(n) {
 
                                     <td id="Description-@i.ID">@i.Description</td>
 
-                                    <!-- 4. Edit, Delete-->
+                                    <!-- 4. Edit, Delete btn-->
                                     <td>
                                         <a href="javascript:;" class="EditItem btn btn-primary btn-xs" data-toggle="modal" data-target="#EditModal" data-proid="@i.ID" title="Sửa">
                                             <i class="fa fa-pencil"></i>
                                         </a>
 
-                                        <a href="javascript:;" class="DeleteItem btn btn-danger btn-xs" data-toggle="modal" data-proid="@i.ID" title="Xóa">
-                                            <i class="fa fa-trash-o"></i>
-                                        </a>
+                                        @if (ViewBag.Select == "delete")
+                                        {
+                                            <a href="javascript:;" class="RecoveryItem btn btn-success btn-xs" data-toggle="modal" data-target="#RecoveryModal" data-proid="@i.ID" title="Phục hồi">
+                                                <i class="fa fa-arrow-circle-left"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="javascript:;" class="DeleteItem btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModal" data-proid="@i.ID" title="Xóa">
+                                                <i class="fa fa-trash-o"></i>
+                                            </a>
+                                        }
                                     </td>
 
                                 </tr>
@@ -570,61 +642,71 @@ function sortTable(n) {
                         </tbody>
                     </table>
                 </div>
-                <div class="panel-footer" id="paging">
+
+
+                <!-- Paging -->
+                <div class="panel-footer" id="paging" @if (ViewBag.Count == 0) { <text> hidden</text>}>
                     <div class="row">
                         <div class="col col-xs-4">
                             Page @ViewBag.CurPage of @ViewBag.Pages
                         </div>
                         <nav aria-label="Page navigation" style="margin-left:5px">
                             <ul class="pagination">
-                                <!-- Ẩn hiện nút Previous-->
+                                <!-- Hide Previous button-->
                                 @if (ViewBag.CurPage == 1)
                                 {
                                     <li>
-                                        <a href="?page=1" aria-label="Previous" hidden>
+                                        <a href="?page=1&select=@ViewBag.Select&Name=@ViewBag.Name&StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&keyword=@ViewBag.keyword" aria-label="Previous" hidden>
                                             <span aria-hidden="true">&laquo;</span>
                                         </a>
+                                        @*<a href="?page=1&select=@ViewBag.Select" aria-label="Previous" hidden>
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>*@
                                     </li>
                                 }
+
                                 else
                                 {
+                                    <!-- Show Previous button-->
                                     <li>
-                                        <a href="?page=@(ViewBag.CurPage - 1)" aria-label="Previous">
+                                        <a href="?page=@(ViewBag.CurPage - 1)&select=@ViewBag.Select&Name=@ViewBag.Name&StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&keyword=@ViewBag.keyword" aria-label="Previous">
                                             <span aria-hidden="true">&laquo;</span>
                                         </a>
                                     </li>
                                 }
 
-                                <!-- Bật active trang hiện tại-->
+                                <!-- Active / No Active Current Page-->
                                 @for (int i = 1; i <= ViewBag.Pages; i++)
                                 {
                                     if (ViewBag.CurPage == i)
                                     {
                                         <li class="active">
-                                            <a href="?page=@i">@i</a>
+                                            <a href="?page=@i&select=@ViewBag.Select&Name=@ViewBag.Name&StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&keyword=@ViewBag.keyword">@i</a>
                                         </li>
                                     }
                                     else
                                     {
                                         <li>
-                                            <a href="?page=@i">@i</a>
+                                            <a href="?page=@i&select=@ViewBag.Select&Name=@ViewBag.Name&StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&keyword=@ViewBag.keyword">@i</a>
                                         </li>
                                     }
                                 }
 
-                                <!-- Ẩn hiện nút Next-->
+                                <!-- Hidden Next Button-->
                                 @if (ViewBag.CurPage == ViewBag.Pages)
                                 {
                                     <li>
-                                        <a href="?page=@ViewBag.Pages" aria-label="Next" hidden>
+                                        <a href="?page=@ViewBag.Pages&select=@ViewBag.Select&Name=@ViewBag.Name&StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&keyword=@ViewBag.keyword" aria-label="Next" hidden>
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                     </li>
                                 }
+
                                 else
                                 {
+                                    <!-- Active Next Button-->
                                     <li>
-                                        <a href="?page=@(ViewBag.CurPage + 1)" aria-label="Next">
+                                        <a href="?page=@(ViewBag.CurPage + 1)&select=@ViewBag.Select&Name=@ViewBag.Name&StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&keyword=@ViewBag.keyword" aria-label="Next">
                                             <span aria-hidden="true">&raquo;</span>
                                         </a>
                                     </li>
@@ -635,12 +717,12 @@ function sortTable(n) {
 
                     </div>
                 </div>
+
             </div>
+
         </div>
     </div>
 </div>
-
-
 
 
 <!-- Add Modal -->
@@ -682,7 +764,7 @@ function sortTable(n) {
                         <label for="purchasenumber">Mức Giá:</label>
                         <div class="input-group col-sm-5">
                             <input id="purchasenumber" name="BasePurchase" type="number" min="1000" step="1000" required="required" class="form-control" placeholder="Giảm giá">
-                            @*<div class="input-group-addon">VNĐ</div>*@
+
                         </div>
                     </div>
 
@@ -690,7 +772,7 @@ function sortTable(n) {
                         <label for="discountnumber">Chiết Khấu:</label>
                         <div class="input-group col-sm-5">
                             <input id="discountnumer" name="Discount" type="number" min="0" step="1" required="required" class="form-control" placeholder="Chiết khấu">
-                            @*<div class="input-group-addon">%</div>*@
+
                         </div>
                     </div>
 
@@ -702,7 +784,7 @@ function sortTable(n) {
 
                 <!-- Button -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
                     <button type="button" id="submitAdd" class="btn btn-success">Lưu</button>
                 </div>
 
@@ -775,7 +857,7 @@ function sortTable(n) {
 
                 <!-- Button -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
                     <button type="button" id="submitEdit" class="btn btn-success">Lưu</button>
                 </div>
             </form>
@@ -812,7 +894,7 @@ function sortTable(n) {
 
                 <!-- Button -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
                     <button type="button" id="submitDelete" class="btn btn-success">Đồng Ý</button>
                 </div>
             </form>
@@ -820,12 +902,36 @@ function sortTable(n) {
     </div>
 </div>
 
+<!-- RecoveryModal -->
+<div class="modal fade" id="RecoveryModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+                <h2 style="text-align: center">Phục Hồi Khuyến Mãi</h2>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" name="IdToRecovery" class="form-control" id="RecoveryIDText">
 
 
+                <div class="form-group">
+                    <label class="form-control-label">Bạn chắc chắn muốn phục hồi khuyến mãi này ?</label>
+                </div>
+            </div>
+
+            <!-- Button -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                <button type="button" id="submitRecovery" class="btn btn-success">Đồng Ý</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-
-
-
-
-<!-- Search-->

@@ -1,5 +1,7 @@
 ﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -9,84 +11,149 @@ namespace CoffeeShop.Web.Controllers
     {
 
         //initialize service object
-        IPromotionService _PromotionService;
+        static int itemperpage = 5;
+        IPromotionService _promotionService;
+        IEnumerable<Promotion> list;
+        int TotalPage;
 
         public PromotionController(IPromotionService PromotionService)
         {
-            _PromotionService = PromotionService;
+            _promotionService = PromotionService;
+
         }
 
-        // GET: /Promotion/
+        /// <summary>
+        /// This method is used to load Promotion List
+        /// </summary>
+        /// <param name="Promotion"></param>
+        /// <returns>Json</returns>
         public ActionResult Index(int page = 1)
         {
+            list = _promotionService.GetActive();
+            TotalPage = _promotionService.GetTotalPage(list.Count(), itemperpage);
             // totalitem, recordsPerPage
-            ViewBag.Pages = _PromotionService.GetTotalPage(_PromotionService.GetActive().Count(), 5);
+            ViewBag.Pages = TotalPage;
             ViewBag.CurPage = page;
+            ViewBag.Select = "active";
+            ViewBag.Count = list.Count();
+            return View(_promotionService.Paging(list, itemperpage, page));
+        }
 
-            //IEnumerable<Promotion> list, recordsPerPage, page
-            return View(_PromotionService.Paging(_PromotionService.GetActive(), 5, page));
+        /// <summary>
+        /// This method is used to load Promotion list by condition
+        /// </summary>
+        /// <param name="select"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public ActionResult LoadByCondition(string select, int page = 1)
+        {
+            list = _promotionService.LoadByCondition(select);
+            TotalPage = _promotionService.GetTotalPage(list.Count(), itemperpage);
+
+            ViewBag.Select = select;
+            ViewBag.Pages = TotalPage;
+            ViewBag.CurPage = page;
+            ViewBag.Count = list.Count();
+            return View("Index", _promotionService.Paging(list, itemperpage, page));
         }
 
 
 
-
+        /// <summary>
+        /// This method is used to create a Promotion
+        /// </summary>
+        /// <param name="Promotion"></param>
+        /// <returns>Json</returns>
         [HttpPost]
         public ActionResult Create(Promotion promotion)
         {
-            _PromotionService.Add(promotion);
-            //_PromotionService.Save();
-
-            // lastpage => Load đúng vị trí
-            int lastpage = _PromotionService.GetTotalPage(_PromotionService.GetActive().Count(), 5);
+            _promotionService.Add(promotion);
+            _promotionService.Save();
+            int lastpage = _promotionService.GetTotalPage(_promotionService.GetActive().Count(), itemperpage);
             return RedirectToAction("Index", new { page = lastpage });
         }
 
-        //[HttpPost]
-        //public JsonResult Create(Promotion promotion)
-        //{
-        //    _PromotionService.Add(promotion);
-        //    _PromotionService.Save();
-        //    return Json(promotion);
-        //}
-
-
-
+        /// <summary>
+        /// This method is used to get a Promotion detail
+        /// </summary>
+        /// <param name="Promotion"></param>
+        /// <returns>Json</returns>
         public JsonResult GetById(int idToGet)
         {
-            Promotion promotion = _PromotionService.GetByID(idToGet);
+            Promotion promotion = _promotionService.GetById(idToGet);
             return Json(promotion, JsonRequestBehavior.AllowGet);
         }
 
 
-        // 3. ShopId
-        //POST: /Promotion/Edit
+        /// <summary>
+        /// This method is used to edit a Promotion
+        /// </summary>
+        /// <param name="Promotion"></param>
+        /// <returns>Json</returns>
         [HttpPost]
         public JsonResult Edit(Promotion Promotion)
         {
-            _PromotionService.Update(Promotion);
-            //_PromotionService.Save();
+            _promotionService.Update(Promotion);
+            _promotionService.Save();
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
-
-
-        //POST: /Promotion/Delete
+        /// <summary>
+        /// This method is used to delete a Promotion
+        /// </summary>
+        /// <param name="idToDelete"></param>
+        /// <returns>Json</returns>
         [HttpPost]
-        public JsonResult Delete(int IdToDelete)
+        public JsonResult Delete(int idToDelete)
         {
-            return Json(_PromotionService.Delete(IdToDelete), JsonRequestBehavior.AllowGet);
-            ////Xóa thành công
-            //if (_PromotionService.Delete(IdToDelete))
-            //{
-            //    _PromotionService.Save();
-            //    return Json("Xóa thành công", JsonRequestBehavior.AllowGet);
-            //}
-            //else
-            //{
-            //    return Json("Không thể xóa khuyến mãi đang trong hóa đơn", JsonRequestBehavior.AllowGet);
-            //}
-        }//5. Khóa ngoại
+            return Json(_promotionService.DeletePromotion(idToDelete), JsonRequestBehavior.AllowGet);
+        }
 
 
+        /// <summary>
+        /// This method is used to recovery a Promotion
+        /// </summary>
+        /// <param name="IdToDelete"></param>
+        /// <returns>Json</returns>
+        [HttpPost]
+        public JsonResult Recovery(int idToRecovery)
+        {
+            return Json(_promotionService.RecoveryPromotion(idToRecovery), JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult BasicSearch(string keyword, int page = 1)
+        {
+            list = _promotionService.BasicSearch(keyword);
+            TotalPage = _promotionService.GetTotalPage(list.Count(), itemperpage);
+            ViewBag.Pages = TotalPage;
+            ViewBag.CurPage = page;
+            ViewBag.Select = "active";
+
+            ViewBag.keyword = keyword;
+            ViewBag.Count = list.Count();
+            return View("Index", _promotionService.Paging(list, itemperpage, page));
+        }
+
+
+        /// <summary>
+        /// This method is used to Search
+        /// </summary>
+        /// <param name="promotion"></param>
+        /// <returns></returns>
+        public ActionResult AdvancedSearch(string Name, string StartDate, string EndDate, int page = 1)
+        {
+            list = _promotionService.AdvancedSearch(Name, StartDate, EndDate);
+            TotalPage = _promotionService.GetTotalPage(list.Count(), itemperpage);
+            ViewBag.Pages = TotalPage;
+            ViewBag.CurPage = page;
+            ViewBag.Select = "active";
+
+            ViewBag.Name = Name;
+            ViewBag.StartDate = StartDate;
+            ViewBag.EndDate = EndDate;
+            ViewBag.Count = list.Count();
+            return View("Index", _promotionService.Paging(list, itemperpage, page));
+        }
     }
 }

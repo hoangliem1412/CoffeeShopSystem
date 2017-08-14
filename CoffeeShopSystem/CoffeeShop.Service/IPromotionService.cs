@@ -1,35 +1,36 @@
 ﻿using CoffeeShop.Model.ModelEntity;
+using System;
 using System.Collections.Generic;
 
 namespace CoffeeShop.Service
 {
-    public interface IPromotionService
+    public interface IPromotionService : IService<Promotion>
     {
-        void Add(Promotion promotion);
-        void Update(Promotion promotion);
-        bool Delete(int id);
-        void Save();
-
-
-        // Get All
-        IEnumerable<Promotion> GetAll();
 
         // Get List Active
         IEnumerable<Promotion> GetActive();
 
-        // Get List Delete
-        IEnumerable<Promotion> GetDelete();
+        // Load List by condition
+        IEnumerable<Promotion> LoadByCondition(string select);
 
-        // Get By ID
-        Promotion GetByID(int id);
 
-        //Search
-        IEnumerable<Promotion> Search(string input);
+        // Search
+        IEnumerable<Promotion> BasicSearch(string keyword);
+        IEnumerable<Promotion> AdvancedSearch(string Name, string startDate, string endDate);
 
         // Get GetTotalPage
         int GetTotalPage(int totalitem, int recordsPerPage);
 
-        // Phân trang
+        // Paging
         IEnumerable<Promotion> Paging(IEnumerable<Promotion> list, int recordsPerPage, int page);
+
+        // Delete
+        bool DeletePromotion(int id);
+
+        //Recovery
+        bool RecoveryPromotion(int id);
+
+        //GetById
+        Promotion GetById(int id);
     }
 }

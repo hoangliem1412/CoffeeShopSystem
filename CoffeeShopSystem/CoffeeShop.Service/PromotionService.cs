@@ -1,31 +1,17 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CoffeeShop.Service
 {
-    public class PromotionService : IPromotionService
+    public class PromotionService : Service<Promotion>, IPromotionService
     {
-        IPromotionRepository _PromotionRepository;
-        IUnitOfWork _unitOfWork;
-        public PromotionService(IPromotionRepository PromotionRepository, IUnitOfWork unitOfWork)
+        public PromotionService(IRepository<Promotion> repo, IUnitOfWork unitOfWork) : base(repo, unitOfWork)
         {
-            this._PromotionRepository = PromotionRepository;
-            this._unitOfWork = unitOfWork;
         }
-
-
-        /// <summary>
-        /// GetAll
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Promotion> GetAll()
-        {
-            return _PromotionRepository.GetAll(); //select duoc group Promotion tuong ung.
-        }
-
 
         /// <summary>
         /// Get List Active
@@ -33,48 +19,67 @@ namespace CoffeeShop.Service
         /// <returns></returns>
         public IEnumerable<Promotion> GetActive()
         {
-            return _PromotionRepository.GetMany(x => x.IsDelete != true);
+            return base.GetAll().Where(x => x.IsDelete != true);
         }
 
-
         /// <summary>
-        /// Get List Delete
+        /// Get list by condition
         /// </summary>
+        /// <param name="select"></param>
         /// <returns></returns>
-        public IEnumerable<Promotion> GetDelete()
+        public IEnumerable<Promotion> LoadByCondition(string select)
         {
-            return _PromotionRepository.GetMany(x => x.IsDelete == true);
+            if (select == "all")
+            {
+                return base.GetAll();
+            }
+            else if (select == "active")
+            {
+                return base.GetAll().Where(x => x.IsDelete != true);
+            }
+            else
+            {
+                return base.GetAll().Where(x => x.IsDelete == true);
+            }
         }
 
-
-
         /// <summary>
-        /// Get Promotion by Id
+        /// This method is used to get a promotion by promotion id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Promotion GetByID(int id)
+        public Promotion GetById(int id)
         {
-            // Để truyền ra Ajax => Show data to update
-            var promotion = _PromotionRepository.GetSingleById(id);
-            Promotion p = new Promotion();
-            p.ID = promotion.ID;
-            p.Name = promotion.Name;
-            p.ShopID = promotion.ShopID;
-            p.StartDate = promotion.StartDate;
-            p.EndDate = promotion.EndDate;
-            p.BasePurchase = promotion.BasePurchase;
-            p.Discount = promotion.Discount;
-            p.Description = promotion.Description;
-            return p;
+            var promotion = base.GetSingleById(id);
+
+            // Nếu promorion is exist in any order => load fail
+            if (promotion.Orders.Any(o => o.PromotionID == id))
+            {
+                Promotion p = new Promotion();
+                p.ID = promotion.ID;
+                p.Name = promotion.Name;
+                p.ShopID = promotion.ShopID;
+                p.StartDate = promotion.StartDate;
+                p.EndDate = promotion.EndDate;
+                p.BasePurchase = promotion.BasePurchase;
+                p.Discount = promotion.Discount;
+                p.Description = promotion.Description;
+                return p;
+                
+            }
+            else
+            {
+                return promotion;
+            }
         }
 
+
         /// <summary>
-        /// Search
+        /// Basic Search
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns></returns>
-        public IEnumerable<Promotion> Search(string keyword)
+        public IEnumerable<Promotion> BasicSearch(string keyword)
         {
             if (keyword == "")
             {
@@ -82,61 +87,31 @@ namespace CoffeeShop.Service
             }
             else
             {
-                return _PromotionRepository.GetMany(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword) && x.IsDelete != true);
+                return base.GetMulti(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword) && x.IsDelete != true);
             }
         }
 
 
         /// <summary>
-        /// Add Promotion
+        /// This method is used to Search advanced
         /// </summary>
-        /// <param name="Promotion"></param>
-        public void Add(Promotion Promotion)
+        /// <param name="keyword"></param>
+        /// <returns></returns>
+        public IEnumerable<Promotion> AdvancedSearch(string Name, string startDate, string endDate)
         {
-            _PromotionRepository.Add(Promotion);
-            Save();
+            return base.GetAll().Where(x =>
+                (Name == "" ? true : x.Name == Name)
+                && (startDate == "" ? true : x.StartDate == DateTime.Parse(startDate))
+                && (endDate == "" ? true : x.EndDate == DateTime.Parse(endDate))
+                && x.IsDelete != true);
         }
-
-
 
         /// <summary>
-        /// Update Promotion
+        /// This method is used to get total page
         /// </summary>
-        /// <param name="Promotion"></param>
-        public void Update(Promotion Promotion)
-        {
-            _PromotionRepository.Update(Promotion);
-            Save();
-        }
-
-
-
-        /// <summary>
-        /// Delete Promotion
-        /// </summary>
-        /// <param name="id"></param>
-        public bool Delete(int id)
-        {
-            // Load to Update IsDelete = true
-            var p = _PromotionRepository.GetSingleById(id);
-
-            // Nếu pro đã có trong hóa đơn => k xóa
-            if (p.Orders.Any(o => o.PromotionID == id))
-            {
-                return false;
-            }
-            else
-            {
-                p.IsDelete = true;
-                _PromotionRepository.Update(p);
-                Save();
-                return true;
-                
-            }
-
-        }
-
-
+        /// <param name="totalitem"></param>
+        /// <param name="recordsPerPage"></param>
+        /// <returns></returns>
         public int GetTotalPage(int totalitem, int recordsPerPage)
         {
             int nPages = totalitem / recordsPerPage;
@@ -148,52 +123,69 @@ namespace CoffeeShop.Service
             }
             else
             {
-
             }
             return nPages;
         }
 
 
         /// <summary>
-        /// Phân trang
+        /// This method is used to Paging
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Promotion> Paging(IEnumerable<Promotion> List, int recordsPerPage, int page)
         {
-            return _PromotionRepository.Paging(List, recordsPerPage, page);
+            var list = List
+                .OrderBy(p => p.ID)
+                .Skip((page - 1) * recordsPerPage)
+                .Take(recordsPerPage)
+                .ToList();
+            return list;
         }
-
 
         /// <summary>
-        /// Save
+        /// Delete 
         /// </summary>
-        public void Save()
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool DeletePromotion(int id)
         {
-            _unitOfWork.Commit();
+            // Load to Update IsDelete = true
+            var promotion = base.GetSingleById(id);
+
+            // Nếu promorion is exist in any order => do not delete
+            if (promotion.Orders.Any(o => o.PromotionID == id))
+            {
+                return false;
+            }
+            else
+            {
+                promotion.IsDelete = true;
+                base.Update(promotion);
+                Save();
+                return true;
+            }
         }
 
+        /// <summary>
+        /// RecoveryPromotion 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool RecoveryPromotion(int id)
+        {
+            try
+            {
+                var promotion = base.GetSingleById(id);
+                promotion.IsDelete = false;
+                base.Update(promotion);
+                Save();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
 
-        //public Promotion GetByID(int id)
-        //{
-        //    return _PromotionRepository.GetSingleById(id);
-        //}
-
-
-        //public IEnumerable<Promotion> GetAllPaging(int page, int size, out int totalRow)
-        //{
-        //    return _PromotionRepository.GetMultiPaging(x => (!x.IsDelete ?? true), out totalRow, page, size);
-        //}
-
-        //public IEnumerable<Promotion> GetAllPagingByGroup(int groupPromotion, int pageIndex, int pageSize, out int totalRow)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public IEnumerable<Promotion> GetAllPagingByGroup(int groupPromotion, int pageIndex, int pageSize, out int totalRow)
-        //{
-        //    //return _PromotionRepository.GetMultiPaging(x => (!x.IsDelete ?? true) && x.GroupPromotionID == groupPromotion, out totalRow, pageIndex, pageSize, new string[] { "GroupPromotion" });
-        //}
-
-
+        }
     }
 }

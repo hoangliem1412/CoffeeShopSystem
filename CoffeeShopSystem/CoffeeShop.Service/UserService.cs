@@ -1,11 +1,10 @@
 ﻿using CoffeeShop.Data.Infrastructure;
-using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
 using System.Collections.Generic;
 
 namespace CoffeeShop.Service
 {
-    
+
 
     public class UserService : Service<User>, IUserService
     {

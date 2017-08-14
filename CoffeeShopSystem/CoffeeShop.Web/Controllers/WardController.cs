@@ -1,6 +1,8 @@
 ﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
+using CoffeeShop.Web.Models;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
@@ -24,9 +26,8 @@ namespace CoffeeShop.Web.Controllers
         //load data for datatables
         public ActionResult LoadData()
         {
-            //dc.Configuration.LazyLoadingEnabled = false; // if your table is relational, contain foreign key
-            var data = _iWardService.GetAllActive();
-            return Json(new { data = data }, JsonRequestBehavior.AllowGet);
+            var list = _iWardService.GetAll().Select(x => new WardViewModel { ID = x.ID, Name = x.Name, Description = x.Description, DistrictID = x.DistrictID, NameDistrict = x.District.Name, IsDelete = x.IsDelete });
+            return Json(new { data = list }, JsonRequestBehavior.AllowGet);
         }
 
         //insert ward
@@ -35,11 +36,11 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iWardService.Add(ward);
+                int rs = _iWardService.Insert(ward);
                 _iWardService.Save();
-                return 1;
+                return rs;
             }
-            catch (Exception ex)
+            catch
             {
                 return 0;
             }
@@ -51,11 +52,14 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iWardService.Update(ward);
-                _iWardService.Save();
-                return 1;
+                int rs = _iWardService.Edit(ward);
+                if (rs == 1)
+                {
+                    _iWardService.Save();
+                }
+                return rs;
             }
-            catch (Exception ex)
+            catch
             {
                 return 0;
             }
@@ -67,7 +71,23 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iWardService.Delete(id);
+                _iWardService.Delete1(id);
+                _iWardService.Save();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        //Restore district
+        [HttpPost]
+        public int Restore(int id)
+        {
+            try
+            {
+                _iWardService.Restore(id);
                 _iWardService.Save();
                 return 1;
             }

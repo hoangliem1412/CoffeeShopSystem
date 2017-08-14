@@ -60,11 +60,9 @@ namespace CoffeeShop.Web.Controllers
             tableService.Add(t);
             //Save
             tableService.Save();
-            //Gọi service GetByID để lấy table vừa thêm
-            var ressult = tableService.GetByID(t.ID);
             //Gọi service GetByID của grouptable lấy thông tin của group
-            var resultGroupTable = groupTableService.GetByID(t.GroupTableID);
-            var data = new { ID = ressult.ID, Name = ressult.Name, GroupTableName = resultGroupTable.Name, GroupTableID = resultGroupTable.ID, OrderCount = ressult.Orders.Count, Des = ressult.Description};
+            var resultGroupTable = groupTableService.GetSingleById(t.GroupTableID);
+            var data = new { ID = t.ID, Name = t.Name, GroupTableName = resultGroupTable.Name, GroupTableID = resultGroupTable.ID, OrderCount = 0, Des = t.Description };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -81,28 +79,16 @@ namespace CoffeeShop.Web.Controllers
         }
 
         /// <summary>
-        /// Search cơ bản
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public ActionResult SearchBase(string text)
-        {
-            var searchResult = tableService.SearchBase(text).ToList();
-            return Json(searchResult, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
         /// Search theo tình trạng của option
         /// </summary>
-        /// <param name="option">string</param>
-        /// <returns>dynamic<List<data>, option></returns>
+        /// <param name="option">bool</param>
+        /// <returns>Json(List<data>, bool>)</returns>
         [HttpPost]
-        public ActionResult SearchCondition(string option)
+        public ActionResult SearchCondition(bool delete)
         {
             //Gọi service SearchCondition
-            var searchResult = tableService.SearchCondition(option).ToList();
             //gán kết quả trả về
-            var resultToReturn = new { data = searchResult, option = option };
+            var resultToReturn = new { data = tableService.SearchCondition(delete), delete = delete };
             return Json(resultToReturn, JsonRequestBehavior.AllowGet);
         }
 
@@ -116,6 +102,21 @@ namespace CoffeeShop.Web.Controllers
         {
             //Gọi service Recover
             return Json(tableService.Recover(ID), JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Search nâng cao
+        /// </summary>
+        /// <param name="name">string</param>
+        /// <param name="groupTableID">int</param>
+        /// <param name="delete">bool</param>
+        /// <returns>Json(List<data>, bool)</returns>
+        [HttpPost]
+        public ActionResult SearchAdvanced(string name, int groupTableID, bool delete)
+        {
+            var resultToReturn = new { data = tableService.SearchAdvanced(name, groupTableID, delete), delete = delete };
+            //Gọi service SearchAdvanced
+            return Json(resultToReturn, JsonRequestBehavior.AllowGet);
         }
     }
 }

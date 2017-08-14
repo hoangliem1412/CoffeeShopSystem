@@ -179,7 +179,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DistrictViewModel.cs" />
     <Compile Include="Models\MaterialViewModel.cs" />
+    <Compile Include="Models\WardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -415,7 +417,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -431,10 +435,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Login\Test.cshtml" />
-    <Content Include="Views\MaterialLog\Create.cshtml" />
-    <Content Include="Views\MaterialLog\Delete.cshtml" />
-    <Content Include="Views\MaterialLog\Details.cshtml" />
-    <Content Include="Views\MaterialLog\Edit.cshtml" />
     <Content Include="Views\MaterialLog\Index.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
     <Content Include="Views\Material\Index.cshtml" />

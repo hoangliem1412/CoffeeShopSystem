@@ -10,5 +10,13 @@ namespace CoffeeShop.Service
         Ward GetByID(int id);
         IEnumerable<Ward> GetByDistrictID(int districtID);
         IEnumerable<Ward> GetAllActive();
+
+        int Insert(Ward ward);
+
+        int Edit(Ward ward);
+
+        void Delete1(int id);
+
+        void Restore(int id);
     }
 }

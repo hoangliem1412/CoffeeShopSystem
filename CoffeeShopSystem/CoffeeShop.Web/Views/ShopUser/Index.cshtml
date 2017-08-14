@@ -14,12 +14,13 @@
             color: #a94442;
         }
     </style>
+<link href="~/Content/DatHT5.css" rel="stylesheet" />
 
 }
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
-            <h2>Bản ghi nhập - xuất nguyên vật liệu</h2>
+            <h2>Quản lý nhân viên</h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li style="float:right">
                     <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -40,19 +41,19 @@
                         </select>
                         <label>dòng mỗi trang</label>
                     </div>*@
-                @*<div class="col-sm-8">
-                        <form>
-                            <label class="radio-inline">
+                <div class="col-sm-8">
+                    <form>
+                        @*<label class="radio-inline">
                                 <input type="radio" name="optradio">Hiển thị tất cả
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="optradio" checked="checked">Đang quản lý
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="optradio">Đã xóa
-                            </label>
-                        </form>
-                    </div>*@
+                            </label>*@
+                        <label class="radio-inline">
+                            <input type="radio" name="viewOption" checked="checked" value="false">Đang quản lý
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="viewOption" value="true">Đã xóa
+                        </label>
+                    </form>
+                </div>
 
             </div>
             <div class="panel panel-default panel-table" style="margin-top: 20px">
@@ -88,13 +89,8 @@
                                     <td>@item.User.Email</td>
                                     <td>@item.User.DetailAddress - @item.User.Ward.Name - @item.User.Ward.District.Name - @item.User.Ward.District.City.Name</td>
                                     <td align="center">
-                                        <a class="btn btn-info btn-xs edit" data-shopuserid="@item.ID" data-shopid="@item.ShopID"><i class="fa fa-pencil"></i></a>
-                                        @*<a class="btn btn-info btn-xs edit" data-shopuserid="@item.ID" data-shopid="@item.ShopID" data-userid="@item.UserID"
-                                            data-roleid="@item.RoleID" data-roledescription="@item.Description" data-name="@item.User.Name" data-username="@item.User.Username"
-                                            data-password="@item.User.Password" data-email="@item.User.Email" data-ward="@item.User.WardID" data-district="@item.User.Ward.DistrictID"
-                                            data-city="@item.User.Ward.District.CityID" data-detailaddress="@item.User.DetailAddress" data-birthday="@Convert.ToDateTime(item.User.BirthDay).ToString("yyyy-MM-dd")"
-                                            data-sex="@item.User.Sex" data-userdescription="@item.User.Description"><i class="fa fa-pencil"></i></a>*@
-                                        <a class="btn btn-danger btn-xs delete" data-id="@item.ID" data-shopid="@item.ShopID" data-userid="@item.UserID"
+                                        <a class="btn btn-info btn-xs edit"  title="Chỉnh sửa" data-shopuserid="@item.ID" data-shopid="@item.ShopID"><i class="fa fa-pencil"></i></a>
+                                        <a class="btn btn-danger btn-xs delete" title="Xóa" data-id="@item.ID" data-shopid="@item.ShopID" data-userid="@item.UserID"
                                            data-roleid="@item.RoleID" data-description="@item.Description" data-isdelete="true"><i class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
@@ -133,13 +129,16 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Thông tin bản ghi</h4>
+                <h4 class="modal-title">Thông tin nhân viên</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="AddForm">
                     <fieldset id="SubmitForm">
                         <div class="form-group">
                             <input type="hidden" class="form-control" id="IsDeleteTextbox" name="IsDelete" value="false">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" class="form-control" id="AddShopUserIDTextbox" name="shopUserID">
                         </div>
                         <div class="form-group">
                             <label for="NameTextbox" class="col-sm-4 control-label">Họ tên (*)</label>
@@ -168,7 +167,7 @@
                         <div class="form-group">
                             <label for="RePasswordTextbox" class="col-sm-4 control-label">Nhập lại mật khẩu (*)</label>
                             <div class="col-sm-8">
-                                <input type="password" class="form-control" id="RePasswordTextbox" placeholder="Mật khẩu" name="RePassword">
+                                <input type="password" class="form-control" id="RePasswordTextbox" placeholder="Nhập lại mật khẩu" name="RePassword">
                             </div>
                         </div>
                         <div class="form-group">
@@ -192,7 +191,7 @@
                         <div class="form-group">
                             <label for="CityList" class="col-sm-4 control-label">Thành phố (*)</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="CityList">
+                                <select class="form-control" id="CityList" name="City">
                                     <option value="0">Thành phố</option>
                                     @foreach (var item in ViewBag.CityList)
                                     {
@@ -204,7 +203,7 @@
                         <div class="form-group">
                             <label for="DistrictList" class="col-sm-4 control-label">Quận (*)</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="DistrictList">
+                                <select class="form-control" id="DistrictList" name="District">
                                     <option value="0">Quận</option>
                                     @*@foreach (var item in ViewBag.DistrictList)
                                         {
@@ -262,8 +261,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button href="#" class="btn btn-primary" id="SubmitAdd">Submit</button>
-                <button href="#" class="btn btn-default" id="" data-dismiss="modal">Hủy</button>
+                <button class="btn btn-primary" id="SubmitAdd">Submit</button>
+                <button class="btn btn-default" id="" data-dismiss="modal">Hủy</button>
             </div>
         </div>
     </div>
@@ -276,7 +275,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Thông tin bản ghi</h4>
+                <h4 class="modal-title">Thông tin nhân viên</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="EditForm">
@@ -317,7 +316,7 @@
                         <div class="form-group">
                             <label for="EditRePasswordTextbox" class="col-sm-4 control-label">Nhập lại mật khẩu (*)</label>
                             <div class="col-sm-8">
-                                <input type="password" class="form-control" id="EditRePasswordTextbox" placeholder="Mật khẩu" name="RePassword">
+                                <input type="password" class="form-control" id="EditRePasswordTextbox" placeholder="Nhập lại mật khẩu" name="RePassword">
                             </div>
                         </div>
                         <div class="form-group">
@@ -341,7 +340,7 @@
                         <div class="form-group">
                             <label for="EditCityList" class="col-sm-4 control-label">Thành phố (*)</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="EditCityList">
+                                <select class="form-control" id="EditCityList" name="City">
                                     <option value="0">Thành phố</option>
                                     @foreach (var item in ViewBag.CityList)
                                     {
@@ -353,7 +352,7 @@
                         <div class="form-group">
                             <label for="EditDistrictList" class="col-sm-4 control-label">Quận (*)</label>
                             <div class="col-sm-8">
-                                <select class="form-control" id="EditDistrictList">
+                                <select class="form-control" id="EditDistrictList" name="District">
                                     <option value="0">Quận</option>
                                     @*@foreach (var item in ViewBag.DistrictList)
                                         {
@@ -406,8 +405,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-primary" id="SubmitEdit">Submit</a>
-                <a href="#" class="btn btn-default" id="" data-dismiss="modal">Hủy</a>
+                <a class="btn btn-primary" id="SubmitEdit">Submit</a>
+                <a class="btn btn-default" id="" data-dismiss="modal">Hủy</a>
             </div>
         </div>
     </div>
@@ -420,15 +419,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <a class="close" data-dismiss="modal">&times;</a>
                 <h4>THÔNG BÁO</h4>
             </div>
             <div class="modal-body">
                 <h4>Bạn có chắc muốn xóa ""?</h4>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-primary" data-dismiss="modal" id="r">Cancel</a>
-                <a href="#" class="btn btn-danger" id="btnConfirm" data-id="">Confirm</a>
+                <a class="btn btn-primary" data-dismiss="modal" id="r">Cancel</a>
+                <a class="btn btn-danger" id="btnConfirm" data-id="">Confirm</a>
             </div>
         </div>
     </div>
@@ -452,9 +451,18 @@
         //    });
         //});
         $(document).ready(function () {
+            //Khai báo sử dụng Datatable
             var mainTable = $('#mainTable').DataTable({
                 "language": {
-                    "lengthMenu": '<a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="btn btn-info"><i class="fa fa-plus" aria-hidden="true"></i></a> Hiển thị _MENU_',
+                    "lengthMenu": '<a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="btn btn-info"><i class="fa fa-plus" aria-hidden="true"></i></a> Hiển thị <select class="form-control">' +
+                    '<option value="5">5</option>' +
+                    '<option value="10">10</option>' +
+                    '<option value="20">20</option>' +
+                    '<option value="30">30</option>' +
+                    '<option value="40">40</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="-1">All</option>' +
+                    '</select> ',
                     "zeroRecords": "Không tìm thấy!",
                     "info": "",
                     "infoEmpty": "",
@@ -468,7 +476,58 @@
                     //"sDom": 'tipr',
                 }
             });
+
             //AddForm validation
+            //Thêm validation UniqueUser
+            jQuery.validator.addMethod("UniqueUser", function (value, element, elementID) {
+                //var url = '/ShopUser/IsUsernameUnique/?input=' + value;
+                var url = '@Url.Action("IsUsernameUnique", "ShopUser")';
+                var ret = false;
+                var id = $(elementID).val();
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: { 'input': value, 'userID': id},
+                    async: false,
+                    success: function (data) {
+                        ret = data;
+                        console.log(data);
+                    }
+                });
+                if (ret == "True") {
+                    return true;
+                }
+                if (ret == "False") {
+                    return false;
+                }
+            }, "Username đã tồn tại");
+            //Thêm validation UniqueEmail
+            jQuery.validator.addMethod("UniqueEmail", function (value, element, elementID) {
+                var url = '@Url.Action("IsEmailUnique", "ShopUser")';
+                var ret = false;
+                var id = $(elementID).val();
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: { 'input': value, 'userID': id },
+                    async: false,
+                    success: function (data) {
+                        ret = data;
+                        console.log(data);
+                    }
+                });
+                if (ret == "True") {
+                    return true;
+                }
+                if (ret == "False") {
+                    return false;
+                }
+            }, "Email đã tồn tại");
+            // Rule for combobox
+            jQuery.validator.addMethod("ValueNotEquals", function (value, element,comparator) {
+                return comparator !== value;
+            }, "Giá trị không được bằng comparator");
+            //Validate AddForm
             $('#AddForm').validate({
                 highlight: function (element) {
                     $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
@@ -485,12 +544,12 @@
                     Username: {
                         required: true,
                         minlength: 5,
-                        //UniqueUser: true,
+                        UniqueUser: '#AddShopUserIDTextbox',
                     },
                     Email: {
                         required: true,
                         email: true,
-                        //UniqueEmail: true,
+                        UniqueEmail: '#AddShopUserIDTextbox',
                     },
                     Password: {
                         required: true,
@@ -500,15 +559,26 @@
                         equalTo: '#PasswordTextbox'
                     },
                     role: {
+                        ValueNotEquals: "0",
                         required: true,
+                    },
+                    City: {
+                        required: true,
+                        ValueNotEquals: "0",
+                    },
+                    District: {
+                        required: true,
+                        ValueNotEquals: "0",
                     },
                     WardID: {
                         required: true,
+                        ValueNotEquals: "0",
                     },
                     BirthDay: {
                         required: true,
                     },
                     Sex: {
+                        ValueNotEquals: "0",
                         required: true
                     },
                 },
@@ -520,12 +590,12 @@
                     Username: {
                         required: "Vui lòng nhập username",
                         minlength: "Username tối thiểu 5 kí tự",
-                        //UniqueUser: "Username đã tồn tại"
+                        UniqueUser: "Username đã tồn tại"
                     },
                     Email: {
                         required: "Vui lòng nhập email",
                         email: "Email không hợp lệ",
-                        //UniqueEmail: "Email đã tồn tại"
+                        UniqueEmail: "Email đã tồn tại"
                     },
                     Password: {
                         required: "Vui lòng nhập mật khẩu",
@@ -535,21 +605,32 @@
                         equalTo: "Sai mật khẩu nhập lại"
                     },
                     role: {
+                        ValueNotEquals: "Vui lòng chọn vị trí",
                         required: "Vui lòng chọn vị trí",
+                    },
+                    City: {
+                        required: "Vui lòng chọn thành phố",
+                        ValueNotEquals: "Vui lòng chọn thành phố" ,
+                    },
+                    District: {
+                        required: "Vui lòng chọn phường",
+                        ValueNotEquals: "Vui lòng chọn phường",
                     },
                     WardID: {
                         required: "Vui lòng chọn quận",
+                        ValueNotEquals: "Vui lòng chọn quận",
                     },
                     BirthDay: {
                         required: "Vui lòng chọn ngày sinh"
                     },
                     Sex: {
+                        ValueNotEquals: "Vui lòng chọn giới tính",
                         required: "Vui lòng chọn giới tính",
                     },
                 }
             });
 
-            //AddForm validation
+            //EditForm validation
             $('#EditForm').validate({
                 highlight: function (element) {
                     $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
@@ -566,12 +647,12 @@
                     Username: {
                         required: true,
                         minlength: 5,
-                        //UniqueUser: true,
+                        UniqueUser: '#EditShopUserIDTextbox',
                     },
                     Email: {
                         required: true,
                         email: true,
-                        //UniqueEmail: true,
+                        UniqueEmail: '#EditShopUserIDTextbox',
                     },
                     Password: {
                         required: true,
@@ -601,12 +682,12 @@
                     Username: {
                         required: "Vui lòng nhập username",
                         minlength: "Username tối thiểu 5 kí tự",
-                        //UniqueUser: "Username đã tồn tại"
+                        UniqueUser: "Username đã tồn tại"
                     },
                     Email: {
                         required: "Vui lòng nhập email",
                         email: "Email không hợp lệ",
-                        //UniqueEmail: "Email đã tồn tại"
+                        UniqueEmail: "Email đã tồn tại"
                     },
                     Password: {
                         required: "Vui lòng nhập mật khẩu",
@@ -629,6 +710,9 @@
                     },
                 }
             });
+
+            //AddForm combobox change
+            //City combobox change
             $("#CityList").change(function () {
                 var selectedCity = this.value;
                 $('#DistrictList').empty();
@@ -644,12 +728,13 @@
                     $.each(result, function (index, data) {
                         $('#DistrictList').append(new Option(data.Name, data.ID));
                     });
-                    //alert("ok");
                 })
                 .fail(function (data) {
                     alert('Load district fail');
                 });
             });
+
+            //District combobox change
             $("#DistrictList").change(function () {
                 var selectedDistrict = this.value;
                 $('#WardList').empty();
@@ -664,7 +749,6 @@
                     $.each(result, function (index, data) {
                         $('#WardList').append(new Option(data.Name, data.ID));
                     });
-                    //alert("ok");
                 })
                 .fail(function (data) {
                     alert('Load wardfail');
@@ -672,6 +756,7 @@
             });
 
             //Edit combobox change
+            //City combobox change
             $("#EditCityList").change(function () {
                 var selectedCity = this.value;
                 $('#EditDistrictList').empty();
@@ -687,12 +772,13 @@
                     $.each(result, function (index, data) {
                         $('#EditDistrictList').append(new Option(data.Name, data.ID));
                     });
-                    //alert("ok");
                 })
                 .fail(function (data) {
                     alert('Load district fail');
                 });
             });
+
+            //District combobox change
             $("#EditDistrictList").change(function () {
                 var selectedDistrict = this.value;
                 $('#EditWardList').empty();
@@ -707,66 +793,47 @@
                     $.each(result, function (index, data) {
                         $('#EditWardList').append(new Option(data.Name, data.ID));
                     });
-                    //alert("ok");
                 })
                 .fail(function (data) {
                     alert('Load city fail');
                 });
             });
+
+            //Click submit AddForm
             $('#SubmitAdd').on('click', function () {
-                //var addform = $("AddForm");
-                //addform.valididate();
-                ////addform.valid();
-                //alert("Valid: " + addform.valid());
-                //if (addform.valid() == false)
-                //{
-                //    alert("Các trường (*) không được để trống");
-                //    return;
-                //}
-                $.ajax({
+                var addform = $("#AddForm");
+                addform.validate();
+                if (addform.valid() == true)
+                {
+                    $.ajax({
                     url: '@Url.Action("Add", "ShopUser")',
                     type: 'POST',
                     datatype: 'json',
                     data: $('#AddForm').serialize(),
-                })
-                .done(function (result) {
-                    //$('#tbody').empty();
-                    //var html = "";
-                    //$.each(result, function (index, data) {
-                    //        html += '<tr><td>' + data.ID + '</td>'
-                    //            + '<td>' + data.Name + '</td>'
-                    //            + '<td>' + data.Username + '</td>'
-                    //            + '<td>' + data.Email + '</td>'
-                    //            + '<td>' + data.DetailAddress + ' - '+ data.Ward + ' - ' + data.District + ' - ' + data.City + '</td>'
-                    //            + '<td align="center"><a class="btn btn-info btn-xs edit data-shopuserid="' + data.ID + '><i class="fa fa-pencil edit"></i></a>'
-                    //            + '<a class="btn btn-danger btn-xs delete"><i class="fa fa-trash delete"></i></a></td>'
-                    //            + '</tr>';
-                    //    });
-                    var rownode= mainTable.row.add([
-                            result.ID,
-                            result.Name,
-                            result.Username,
-                            result.Email,
-                            result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City,
-                            '<a class="btn btn-info btn-xs edit" data-shopuserid="' + result.ID + '"><i class="fa fa-pencil"></i></a>'
-                            + '<a class="btn btn-danger btn-xs delete" data-id="' + result.ID + '"><i class="fa fa-trash"></i></a>',
-                     ]).draw(false).node();
-                    $(rownode).attr('id', 'tr-' + result.ID);
-                    $(rownode).find('td:eq(5)')
-                        .attr('align', 'center');
-                    $('#AddForm')[0].reset();
-                    $('#AddModal').modal('hide');
-                    //$('#tbody').html(html);
-                    alert("Thêm thành công");
-                })
-                .fail(function (data) {
-                    $('#AddModal').modal('hide');
-                    alert('Thêm thất bại');
-                });
+                    })
+                    .done(function (result) {
+                        var rownode= mainTable.row.add([
+                                result.ID,
+                                result.Name,
+                                result.Username,
+                                result.Email,
+                                result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City,
+                                '<a class="btn btn-info btn-xs edit" data-shopuserid="' + result.ID + '"><i class="fa fa-pencil"></i></a>'
+                                + '<a class="btn btn-danger btn-xs delete" data-id="' + result.ID + '"><i class="fa fa-trash"></i></a>',
+                         ]).draw(false).node();
+                        $(rownode).attr('id', 'tr-' + result.ID);
+                        $(rownode).find('td:eq(5)')
+                            .attr('align', 'center');
+                        $('#AddForm')[0].reset();
+                        $('#AddModal').modal('hide');
+                        alert("Thêm thành công");
+                    })
+                    .fail(function (data) {
+                        $('#AddModal').modal('hide');
+                        alert('Thêm thất bại');
+                    });
+                }
             });
-            //$('#btnAddNew').on('click', function () {
-            //    $('#AddForm')[0].reset();
-            //});
             //Nhấn nút xác nhận xóa trên form
             $('#tbody').on('click', '.delete', function () {
                 $('#DeleteConfirmation').modal('show');
@@ -778,7 +845,6 @@
                 var btn = $(this);
                 var id = btn.data('id');
                 $('#DeleteID').val(id);
-                //$('#IsDelete').val('True');
                 $.ajax({
                     url: '@Url.Action("Delete","ShopUser")',
                     type: 'POST',
@@ -788,7 +854,6 @@
                 .done(function (data) {
                     var trid = "#tr-" + id;
                     $(trid).addClass("selected");
-                    //mainTable.row(btn.closest('tr')).remove().draw(false);
                     var rows = mainTable
                         .rows('.selected')
                         .remove()
@@ -819,9 +884,6 @@
                     data: { 'shopUserID': id },
                 })
                 .done(function (data) {
-                    //var trid = "#tr-" + id;
-                    //$(trid).hide();
-                    //$('#DeleteConfirmation').modal('hide');
                     selectedCity = data.City;
                     selectedDistrict = data.District;
                     selectedWard = data.Ward;
@@ -857,27 +919,11 @@
                                 $('#EditWardList').append(new Option(data.Name, data.ID));
                             });
                             $('#EditWardList').val(selectedWard);
-                            //alert("ok");
                         })
                         .fail(function (data) {
                             alert('Set ward fail');
                         });
                     }
-                    //
-
-                    //$('#EditUserIDTextbox').val(btn.data('userid'));
-                    //$('#EditShopUserIDTextbox').val(btn.data('shopuserid'));
-                    //$('#EditNameTextbox').val(btn.data('name'));
-                    //$('#EditUsernameTextbox').val(btn.data('username'));
-                    //$('#EditEmailTextbox').val(btn.data('email'));
-                    //$('#EditPasswordTextbox').val(btn.data('password'));
-                    //$('#EditRole').val(btn.data('roleid')).prop('selected', true);
-                    //$('#EditRoleDescriptionTextbox').val(btn.data('roledescription'));
-                    //$('#EditCityList').val(btn.data('city'));
-                    //$('#EditDetailAddressTextbox').val(btn.data('detailaddress'));
-                    //$('#EditBirthDayTextbox').val(btn.data('birthday'));
-                    //$('#EditGenderList').val(btn.data('sex')).prop('selected', true);
-                    //$('#EditDescriptionTextbox').val(btn.data('userdescription'));
 
                     $('#EditUserIDTextbox').val(data.UserID);
                     $('#EditShopUserIDTextbox').val(data.ShopUserID);
@@ -898,49 +944,96 @@
                 });
 
             });
-            //
+            //Click submit EditForm
             $('#SubmitEdit').on('click', function () {
-                //var editform = $("EditForm");
-                //editform.valididate();
-                //editform.valid();
-                //if (editform.valid() == false) {
-                //    alert("Các trường (*) không được để trống");
-                //    return;
-                //}
-                $.ajax({
+                var editform = $("#EditForm");
+                editform.validate();
+                if (editform.valid() == true)
+                {
+                    $.ajax({
                     url: '@Url.Action("Edit", "ShopUser")',
                     type: 'POST',
                     //datatype: 'json',
                     data: $('#EditForm').serialize(),
-                })
-                .done(function (result) {
-                    //$('#tbody').empty();
-                    //var html = "";
-                    //$.each(result, function (index, data) {
-                    //    html += '<tr><td>' + data.ID + '</td>'
-                    //        + '<td>' + data.Name + '</td>'
-                    //        + '<td>' + data.Username + '</td>'
-                    //        + '<td>' + data.Email + '</td>'
-                    //        + '<td>' + data.DetailAddress + ' - ' + data.Ward + ' - ' + data.District + ' - ' + data.City + '</td>'
-                    //        + '<td align="center"><a class="btn btn-info btn-xs edit data-shopuserid="' + data.ID + '"><i class="fa fa-pencil"></i></a>'
-                    //        + '<a class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a></td>'
-                    //        + '</tr>';
-                    //});
-                    var row = mainTable.row('#tr-' + result.ID);
-                    mainTable.cell(row, 1).data(result.Name).draw(false);
-                    mainTable.cell(row, 2).data(result.Username).draw(false);
-                    mainTable.cell(row, 3).data(result.Email).draw(false);
-                    mainTable.cell(row, 4).data(result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City).draw(false);
+                    })
+                    .done(function (result) {
+                        var row = mainTable.row('#tr-' + result.ID);
+                        mainTable.cell(row, 1).data(result.Name).draw(false);
+                        mainTable.cell(row, 2).data(result.Username).draw(false);
+                        mainTable.cell(row, 3).data(result.Email).draw(false);
+                        mainTable.cell(row, 4).data(result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City).draw(false);
 
-                    $('#EditForm')[0].reset();
-                    $('#EditModal').modal('hide');
-                    //$('#tbody').html(html);
-                    alert("Sửa thành công");
-                })
-                .fail(function (data) {
-                    $('#EditModal').modal('hide');
-                    alert('Sửa thất bại');
-                });
+                        $('#EditForm')[0].reset();
+                        $('#EditModal').modal('hide');
+                        //$('#tbody').html(html);
+                        alert("Sửa thành công");
+                    })
+                    .fail(function (data) {
+                        $('#EditModal').modal('hide');
+                        alert('Sửa thất bại');
+                    });
+                }
+
+            });
+
+            //Xem trang theo IsDelete= true/false
+            $('input:radio[name="viewOption"]').change(function () {
+                var radio = $(this);
+                if (radio.val() == 'true') {
+                    $.ajax({
+                        url: '@Url.Action("ViewDeleted", "ShopUser")',
+                        type: 'GET',
+                        data: '',
+                    })
+                    .done(function (result) {
+                        $('#mainTable').DataTable().clear().draw();
+                        $.each(result, function (index, data) {
+                            var rownode = mainTable.row.add([
+                                    data.ID,
+                                    data.Name,
+                                    data.Username,
+                                    data.Email,
+                                    data.DetailAddress + ' - ' + data.Ward + ' - ' + data.District + ' - ' + data.City,
+                                    'none'
+                                    //'<a class="btn btn-info btn-xs edit" data-shopuserid="' + data.ID + '"><i class="fa fa-pencil"></i></a>'
+                                    //+ '<a class="btn btn-danger btn-xs delete" data-id="' + data.ID + '"><i class="fa fa-trash"></i></a>',
+                            ]).draw(false).node();
+                            $(rownode).attr('id', 'tr-' + data.ID);
+                            $(rownode).find('td:eq(5)')
+                                .attr('align', 'center');
+                        });
+                    })
+                    .fail(function (data) {
+                        alert('Load fail');
+                    });
+                }
+                else if (radio.val() == 'false') {
+                    $.ajax({
+                        url: '@Url.Action("ViewCurrent", "ShopUser")',
+                        type: 'GET',
+                        data: '',
+                    })
+                    .done(function (result) {
+                        $('#mainTable').DataTable().clear().draw();
+                        $.each(result, function (index, data) {
+                            var rownode = mainTable.row.add([
+                                    data.ID,
+                                    data.Name,
+                                    data.Username,
+                                    data.Email,
+                                    data.DetailAddress + ' - ' + data.Ward + ' - ' + data.District + ' - ' + data.City,
+                                    '<a class="btn btn-info btn-xs edit" data-shopuserid="' + data.ID + '"><i class="fa fa-pencil"></i></a>'
+                                    + '<a class="btn btn-danger btn-xs delete" data-id="' + data.ID + '"><i class="fa fa-trash"></i></a>',
+                            ]).draw(false).node();
+                            $(rownode).attr('id', 'tr-' + data.ID);
+                            $(rownode).find('td:eq(5)')
+                                .attr('align', 'center');
+                        });
+                    })
+                    .fail(function (data) {
+                        alert('Load fail');
+                    });
+                }
             });
         });
 

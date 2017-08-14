@@ -1,6 +1,8 @@
 ﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
+using CoffeeShop.Web.Models;
 using System;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
@@ -24,9 +26,8 @@ namespace CoffeeShop.Web.Controllers
         //load data for datatables
         public ActionResult LoadData()
         {
-            //dc.Configuration.LazyLoadingEnabled = false; // if your table is relational, contain foreign key
-            var data = _iDistrictService.GetAllIsDelete();
-            return Json(new { data = data }, JsonRequestBehavior.AllowGet);
+            var list = _iDistrictService.GetAll().Select(x => new DistrictViewModel { ID = x.ID, Name = x.Name, Description = x.Description, CityID = x.CityID, NameCity = x.City.Name, IsDelete = x.IsDelete });
+            return Json(new { data = list }, JsonRequestBehavior.AllowGet);
         }
 
         //create partial list district
@@ -39,8 +40,7 @@ namespace CoffeeShop.Web.Controllers
         [HttpPost]
         public JsonResult GetDistrictByCityID(int id)
         {
-            var list = _iDistrictService.GetDistrictByCityID(id);
-            //return new JsonResult { Data = list };
+            var list = _iDistrictService.GetDistrictByCityID(id).Select(x => new DistrictViewModel { ID = x.ID, Name = x.Name, Description = x.Description, CityID = x.CityID, NameCity = x.City.Name, IsDelete = x.IsDelete });
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
@@ -48,12 +48,13 @@ namespace CoffeeShop.Web.Controllers
         [HttpPost]
         public int Insert(District district)
         {
-            try {
-                _iDistrictService.Add(district);
+            try
+            {
+                int rs = _iDistrictService.Insert(district);
                 _iDistrictService.Save();
-                return 1;
+                return rs;
             }
-            catch (Exception ex)
+            catch
             {
                 return 0;
             }
@@ -65,9 +66,12 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iDistrictService.Update(district);
-                _iDistrictService.Save();
-                return 1;
+                int rs = _iDistrictService.Edit(district);
+                if (rs == 1)
+                {
+                    _iDistrictService.Save();
+                }
+                return rs;
             }
             catch
             {
@@ -81,7 +85,7 @@ namespace CoffeeShop.Web.Controllers
         {
             try
             {
-                _iDistrictService.Delete(id);
+                _iDistrictService.Delete1(id);
                 _iDistrictService.Save();
                 return 1;
             }

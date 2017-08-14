@@ -10,11 +10,9 @@ namespace CoffeeShop.Service
     public interface IGroupTableService : IService<GroupTable>
     {
         bool Recover(int id);
-        IEnumerable<GroupTable> GetAll();
+        bool Delete(int id);
         IEnumerable<GroupTable> GetByShop(int id);
-
-        GroupTable GetByID(int id);
-
-        IEnumerable<dynamic> SearchCondition(string option);
+        dynamic SearchCondition(bool delete);
+        dynamic SearchAdvanced(string name, decimal formSurcharge, decimal toSurcharge, bool delete);
     }
 }

@@ -1,49 +1,57 @@
 ﻿using CoffeeShop.Data.Infrastructure;
-using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace CoffeeShop.Service
 {
     public class ShopUserService : Service<ShopUser>, IShopUserService
     {
-        private IShopUserRepository _ShopUserRepository;
-        private IUnitOfWork _unitOfWork;
-
         public ShopUserService(IRepository<ShopUser> repo, IUnitOfWork unitOfWork) : base(repo, unitOfWork)
         {
         }
         
-        public ShopUser Create(int ShopID, int UserID, int RoleID, string Description)
+        public ShopUser Create(int shopID, int userID, int roleID, string description)
         {
-            return _ShopUserRepository.Create(ShopID, UserID, RoleID, Description);
+            ShopUser shopUser = new ShopUser();
+            shopUser.ShopID = shopID;
+            shopUser.UserID = userID;
+            shopUser.RoleID = roleID;
+            shopUser.Description = description;
+            shopUser.IsDelete = false;
+            return shopUser; 
         }
 
         public IEnumerable<ShopUser> GetShopEmployee(int shopID)
         {
 
-            return _ShopUserRepository.GetShopEmployee(x => x.ShopID == shopID && (x.RoleID == 3 || x.RoleID == 5) && x.IsDelete != true);
+            return base.GetAll().Where(x => x.ShopID == shopID && (x.RoleID == 3 || x.RoleID == 5) && x.IsDelete != true);
         }
-        
+        public IEnumerable<ShopUser> GetShopEmployeeDeleted(int shopID)
+        {
+
+            return base.GetAll().Where(x => x.ShopID == shopID && (x.RoleID == 3 || x.RoleID == 5) && x.IsDelete == true);
+        }
+
         public void Update(ShopUser group, int role, string roleDescription)
         {
             group.RoleID = role;
             group.Description = roleDescription;
-            _ShopUserRepository.Update(group);
+            base.Update(group);
         }
 
         public void Delete(int shopUserID, bool b = true)
         {
-            var su = _ShopUserRepository.GetSingleById(shopUserID);
+            var su = base.GetSingleById(shopUserID);
             su.IsDelete = true;
-            _ShopUserRepository.Update(su);
+            base.Update(su);
         }
 
         public dynamic Detail(int shopUserID)
         {
-            var newSU = _ShopUserRepository.GetSingleById(shopUserID);
-            var su = new
+            var newSU = base.GetSingleById(shopUserID);
+            var shopUser = new
             {
                 ShopID=newSU.ShopID,
                 ShopUserID = newSU.ID,
@@ -63,7 +71,7 @@ namespace CoffeeShop.Service
                 UserDescription=newSU.User.Description,
 
             };
-            return su;
+            return shopUser;
         }
     }
 }

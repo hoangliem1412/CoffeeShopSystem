@@ -1,6 +1,7 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,11 +9,11 @@ namespace CoffeeShop.Service
 {
     public class OrderService : IOrderService
     {
-        IOrderRepository _tableRepository;
+        IOrderRepository _orderRepository;
         IUnitOfWork _unitOfWork;
         public OrderService(IOrderRepository tableRepository, IUnitOfWork unitOfWork)
         {
-            this._tableRepository = tableRepository;
+            this._orderRepository = tableRepository;
             this._unitOfWork = unitOfWork;
         }
 
@@ -22,7 +23,7 @@ namespace CoffeeShop.Service
         /// <param name="order"></param>
         public void Update(Order order)
         {
-            var orderUpdate = _tableRepository.GetSingleById(order.ID);
+            var orderUpdate = _orderRepository.GetSingleById(order.ID);
             orderUpdate.TableID = order.TableID;
             orderUpdate.Status = order.Status;
             decimal total = 0;
@@ -31,7 +32,7 @@ namespace CoffeeShop.Service
                 total = total + (decimal)p.Money;
             }
             orderUpdate.TotalMoney = total;
-            _tableRepository.Update(orderUpdate);
+            _orderRepository.Update(orderUpdate);
         }
         /// <summary>
         /// Xóa hóa đơn, cập nhật isDelete=true
@@ -39,9 +40,9 @@ namespace CoffeeShop.Service
         /// <param name="id"></param>
         public void Delete(int id)
         {
-            var orderUpdate = _tableRepository.GetSingleById(id);
+            var orderUpdate = _orderRepository.GetSingleById(id);
             orderUpdate.isDelete = true;
-            _tableRepository.Delete(id);
+            _orderRepository.Delete(id);
         }
 
 
@@ -51,7 +52,7 @@ namespace CoffeeShop.Service
         /// <returns></returns>
         public IEnumerable<Order> GetAll()
         {
-            return _tableRepository.GetAll().ToList();
+            return _orderRepository.GetAll().ToList();
         }
 
 
@@ -62,7 +63,7 @@ namespace CoffeeShop.Service
         /// <returns></returns>
         public Order GetByID(int id)
         {
-            return _tableRepository.GetSingleById(id);
+            return _orderRepository.GetSingleById(id);
         }
 
         /// <summary>
@@ -85,6 +86,22 @@ namespace CoffeeShop.Service
             return list;
         }
 
+		
+		        /// <summary>
+        ///Filter by Date and TableID
+        /// </summary>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <param name="TableID"></param>
+        /// <returns>dynamic</returns>
+        public dynamic SearchAdvanced(string customerName,string fromDate, string toDate, int TableID, ref List<Order> lst)
+        {
+            var list = lst.Where(o=>(customerName=="" ? true : o.User.Name.ToLower().Contains(customerName.ToLower())) && (fromDate==""? true : o.SetDate.Value>=DateTime.Parse(fromDate)) && (toDate == "" ? true : o.SetDate.Value <= DateTime.Parse(toDate)) && (TableID == 0 ? true : o.TableID ==TableID))
+                          .Select(o => new { id = o.ID, tableName = o.Table.Name, userName = o.User.Name, promoName = o.Promotion.Name, setDate = o.SetDate, totalMoney = o.TotalMoney, status = o.Status, tableID = o.TableID })
+                          .ToList();
+            return list ;
+        }
+		
         /// <summary>
         /// Lọc theo tình trạng hóa đơn
         /// </summary>
@@ -93,21 +110,21 @@ namespace CoffeeShop.Service
         /// <returns>dynamic</returns>
         public dynamic GetByStatus(string status, ref List<Order> lst)
         {
-            var list2 = _tableRepository.GetAll().ToList(); //gán giá trị vào biến toàn cục listOrder ở OrderController
-            var list = _tableRepository.GetAll().ToList().Select(o => new { id = o.ID, tableName = o.Table.Name, userName = o.User.Name, promoName = o.Promotion.Name, setDate = o.SetDate, totalMoney = o.TotalMoney, status = o.Status, tableID = o.TableID }).ToList();
-            if (status == "1") //lấy tất cả
+            var list2 = _orderRepository.GetAll().ToList(); 
+            var list = _orderRepository.GetAll().ToList().Select(o => new { id = o.ID, tableName = o.Table.Name, userName = o.User.Name, promoName = o.Promotion.Name, setDate = o.SetDate, totalMoney = o.TotalMoney, status = o.Status, tableID = o.TableID }).ToList();
+            if (status == "1") 
             {
                 lst = list2;
                 return list;
              
             }
-            else if (status == "2") //lấy hóa đơn chưa thanh toán
+            else if (status == "2") 
             {
                 lst = list2.Where(o => o.Status == false).ToList();
                 return list.Where(o => o.status == false);
                 
             }
-            else //lấy hóa đơn đã thanh toán
+            else 
             {
                 lst = list2.Where(o => o.Status == true).ToList();
                 return list.Where(o => o.status == true);            
