@@ -1,4 +1,7 @@
-﻿var pageIndex = 1;
+﻿//khoi tạo trang hiện tại mặc định vừa load là 1.
+var pageIndex = 1;
+
+//hàm convert date json sang date.
 function convertDateJson(date) {
     var value = new Date
             (
@@ -7,6 +10,8 @@ function convertDateJson(date) {
     var dat = value.getFullYear() + "-" + ("0" + value.getMonth()).slice(-2) + "-" + ("0" + value.getDay()).slice(-2);
     return dat;
 }
+
+//ham appenddata vào table.
 function pagination_LoadTable(data, tableHolder) {
     var row = "";
     data.forEach(function (item) {
@@ -28,40 +33,86 @@ function pagination_LoadTable(data, tableHolder) {
     tableHolder.empty();
     tableHolder.append(row);
 }
+
 var material = {
+    //hàm khỏi tạo, gọi hàm load là các sự kiện.
     init: function () {
         material.loadData();
         material.registerEvent();
     },
+
+    //hàm viết các sự kiện
     registerEvent: function () {
+        //kiểm tra hợp lệ của form thêm
+        $('#frmMaterialLogInfo').validate({
+            rules: {
+                Name: {
+                    required: true
+                },
+                CategoryID: {
+                    required: true
+                },
+                UnitPrice: {
+                    number: true,
+                    digits: true
+                },
+                Inventory: {
+                    number: true,
+                    digits: true
+                }
+            },
+            messages: {
+                Name: {
+                    required: "Bạn phải nhập tên nguyên liệu",
+                },
+                CategoryID: {
+                    required: "Bạn phải chọn loại nguyên liệu",
+                },
+                UnitPrice: {
+                    number: "Đơn giá phải là số",
+                    digits: "Đơn giá phải lớn hơn không"
+                },
+                Inventory: {
+                    number: "Số lượng tồn phải là số",
+                    digits: "Đơn giá phải lớn hơn không"
+                }
+            }
+        });
+
+        //sự kiện click dấu + trong giao diện
         $("#btnAddNew").click(function () {
             $('#SubmitFrmMaterial').text("Thêm");
             $("#frmMaterialLogInfo")[0].reset();
             $("#MyModal").modal();
         });
 
-        //event click delete
+        //sự kiến click icon xóa ở mỗi record
         $('.btn-danger').click(function () {
             var id = $(this).data('id');
             $('#btn-deleteMaterial').data('id', id)
             $("#DeleteConfirmation").modal("show");
         });
+
+        //sự kiện nhấn enter ở textbox search
         $("#text-search").off('keypress').on('keypress', function (e) {
             if (e.which == 13) {
                 material.loadData(true);
             }
         });
 
+        //sử kiện chọn số record hiện thị ở trang.
         $("#comboPageSize").off('change').on('change', function (e) {
             $('#text-search').val("");
             material.loadData(true);
         });
 
+        //sự kiện chọn radio button trình trạng hiển thị.
         $('input[name=optradio]').off('click').on('click', function () {
             $('#text-search').val("");
             material.loadData(true);
         });
 
+        //sự kiện button edit ở mỗi record.
         $('.btnEditMaterial').off('click').on('click', function () {
             $("#frmMaterialLogInfo")[0].reset();
             var id = parseInt($(this).data('id'));
@@ -87,17 +138,21 @@ var material = {
             $('#infoModal').modal('show');
         });
 
+        //sự kiện Thêm or Sửa ở form InfoMaterial
         $("#SubmitFrmMaterial").off('click').on('click', function () {
-            //if ($('#frmMaterialLogInfo').valid()) {
-            material.submitFromSaveData();
-            //}
+            if ($('#frmMaterialLogInfo').valid()) {
+                material.submitFromSaveData();
+            }
         });
 
+        //sự kiến click xác nhận xóa ở popup confirm.
         $("#btn-deleteMaterial").off('click').on('click', function () {
             var id = $(this).data('id');
             material.deleteMaterial(id);
         });
     },
+
+    //hàm thực hiện gọi controller để thêm hoặc sửa data
     submitFromSaveData: function () {
         var name = $('#txtName').val();
         var categoryID = $('#slCategory').val();
@@ -106,7 +161,7 @@ var material = {
         var inventory = $('#txtInventory').val();
         var description = $('#txtDescription').val();
         var id = parseInt($('#hiddenID').val());
-        var material = {
+        var mate = {
             Name: name,
             CategoryID: categoryID,
             UnitPrice: unitPrice,
@@ -119,7 +174,7 @@ var material = {
         $.ajax({
             url: '/Material/SubmitForm',
             data: {
-                strMaterial: JSON.stringify(material)
+                strMaterial: JSON.stringify(mate)
             },
             type: 'POST',
             dataType: 'json',
@@ -130,7 +185,6 @@ var material = {
                         //    message: 'Thêm thành công',
                         //    closeButton: false
                         //});
-
                     }
                     else {
                         //var dialog = bootbox.dialog({
@@ -139,9 +193,8 @@ var material = {
                         //});
                     }
                     $('#infoModal').modal('hide');
-                    dialog.modal('hide');
-                    material.loadData(true);
 
+                    material.loadData(true);
                 }
                 else {
                     bootbox.alert(response.message);
@@ -153,6 +206,7 @@ var material = {
         });
     },
 
+    //hàm gọi controller delete để xóa 1 record có ID = id
     deleteMaterial: function (id) {
         $.ajax({
             type: 'GET',
@@ -166,15 +220,17 @@ var material = {
                     //    closeButton: false
                     //});
                 }
-                else { alert(response.message);
-                   
+                else {
+                    alert(response.message);
                 }
                 $('#DeleteConfirmation').modal('hide');
-                dialog.modal('hide');
+
                 material.loadData(true);
             }
         })
     },
+
+    //ham reset các field trong form.
     resetForm: function () {
         $('#txtName').val("");
         $('#slCategory').reset();
@@ -184,6 +240,8 @@ var material = {
         $('#txtDescription').val();
         $('#hiddenID').val();
     },
+
+    //hàm load danh sách theo trình trạng, số lượng record, trang hiện tại.
     loadData: function (changePageSize) {
         var keyword = $('#text-search').val();
         var status = $('input[name=optradio]:checked').val();
@@ -199,7 +257,6 @@ var material = {
             },
             dataType: 'json',
             success: function (response) {
-
                 if (response.status) {
                     var data = response.data;
                     var html = '';
@@ -218,6 +275,8 @@ var material = {
             }
         });
     },
+
+    //hàm phân trang, callback hàm loadData
     paging: function (totalRow, callback, changePageSize) {
         var pageSize = $('#comboPageSize').val();
         var totalPage = Math.ceil(totalRow / pageSize);
@@ -232,9 +291,9 @@ var material = {
         $('#pagination').twbsPagination({
             totalPages: totalPage,
             first: "Đầu",
-            next: "Tiếp",
+            next: ">",
             last: "Cuối",
-            prev: "Trước",
+            prev: "<",
             visiblePages: 3,
             hideOnlyOnePage: true,
             onPageClick: function (event, page) {
@@ -244,4 +303,6 @@ var material = {
         });
     }
 }
+
+//gọi phương thức khởi tạo để load và chạy được các sự kiện javascript.
 material.init();

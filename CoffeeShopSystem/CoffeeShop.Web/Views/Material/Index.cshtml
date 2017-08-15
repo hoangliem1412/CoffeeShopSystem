@@ -8,12 +8,11 @@
 }
 
 @section js{
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/Controllers/MaterialController.js"></script>
     <script src="~/Scripts/plugins/jquery.twbsPagination.min.js"></script>
-    <script src="~/Scripts/bootbox.min.js"></script>
 }
 
-<link href="~/Content/dist/css/KieuNTL1_style.css" rel="stylesheet" />
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
@@ -51,7 +50,6 @@
                         </label>
                     </form>
                 </div>
-
             </div>
             <div class="panel panel-default panel-table" style="margin-top: 20px">
                 <div class="panel-heading clearfix">
@@ -105,38 +103,7 @@
                         </thead>
 
                         <tbody id="bodyTable">
-                            @*@foreach (var item in Model)
-                                {
-                                    <tr class="even pointer">
-                                        <td></td>
-                                        <td>
-                                            @item.CreatedDate
-                                        </td>
-                                        <td>
-                                            @item.MaterialCategory.Name
-                                        </td>
-                                        <td>
-                                            @item.Inventory
-                                        </td>
-                                        <td>
-                                            @item.UnitPrice
-                                        </td>
-                                        <td>
-                                            @item.Name
-                                        </td>
-                                        <td>
-                                            @item.IsDelete
-                                        </td>
-                                        <td>
-                                            @item.Description
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-primary btn-xs" title="Xem chi tiết"><i class="fa fa-folder"></i></a>
-                                            <a href="#" class="btn btn-info btn-xs" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>
-                                            <a href="#" class="btn btn-danger btn-xs" title="Xóa"><i class="fa fa-trash-o"></i></a>
-                                        </td>
-                                    </tr>
-                                }*@
+                            
                         </tbody>
                     </table>
                 </div>
@@ -225,7 +192,7 @@
                     <div class="modal-footer">
                         <div id="errMessageHolder" class="alert alert-danger" style="display:none;text-align:left;">
                         </div>
-                        <button type="submit" id="SubmitFrmMaterial" class="btn btn-primary">Thêm</button>
+                        <button type="button" id="SubmitFrmMaterial" class="btn btn-primary">Thêm</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                     </div>
                 </form>
@@ -256,5 +223,3 @@
 </div>
 @*/Create A PopUp Modal For DeleteConfirmation*@
 
-<script src="~/scripts/jquery-1.10.2.min.js"></script>
-<script src="~/Scripts/KieuNTL1_script.js"></script>

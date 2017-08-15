@@ -1,7 +1,6 @@
 ﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
 using CoffeeShop.Web.Models;
-using System;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
@@ -14,13 +13,21 @@ namespace CoffeeShop.Web.Controllers
         private IMaterialService materialService;
         private IMaterialCategoryService materialCategoryService;
 
+        /// <summary>
+        /// Khoi tao controller
+        /// </summary>
+        /// <param name="mateService"></param>
+        /// <param name="mateCateService"></param>
         public MaterialController(IMaterialService mateService, IMaterialCategoryService mateCateService)
         {
             this.materialService = mateService;
             this.materialCategoryService = mateCateService;
         }
 
-        // GET: Material
+        /// <summary>
+        /// Hiện thị index
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             //Lay danh sach material category cho combobox trong popup add va edit
@@ -28,34 +35,54 @@ namespace CoffeeShop.Web.Controllers
             return View();
         }
 
-        //Hàm duoc ajax gọi khi load trang
+        /// <summary>
+        /// Hàm load trang chính
+        /// </summary>
+        /// <param name="keyword">từ khóa tìm kiếm</param>
+        /// <param name="status">trạng thái đã xóa hay chưa xóa</param>
+        /// <param name="page">vị trí trang hiện tại</param>
+        /// <param name="pageSize">số dòng mỗi trang</param>
+        /// <returns>Trả về danh sách material theo điều kiện</returns>
         public ActionResult LoadData(string keyword, int status, int page, int pageSize = 5)
         {
             int totalRow = 0;
- 
- 
-            var listMaterial = materialService.GetSearchStatusPaging(keyword, status, page, pageSize, out totalRow).Select(x => new MaterialViewModel { ID = x.ID, CategoryID = x.CategoryID, CategoryName = x.MaterialCategory.Name, Name = x.Name, CreatedDate = x.CreatedDate, Description = x.Description, Inventory = x.Inventory, IsDelete = x.IsDelete, UnitPrice = x.UnitPrice }); 
-            
+
+            var listMaterial = materialService.GetSearchStatusPaging(keyword, status, page, pageSize, out totalRow).Select(x => new MaterialViewModel
+            {
+                ID = x.ID,
+                CategoryID = x.CategoryID,
+                CategoryName = x.MaterialCategory.Name,
+                Name = x.Name,
+                CreatedDate = x.CreatedDate,
+                Description = x.Description,
+                Inventory = x.Inventory,
+                IsDelete = x.IsDelete,
+                UnitPrice = x.UnitPrice
+            });
+
             return Json(new
             {
                 data = listMaterial, //danh sach Material
-                total = totalRow, //Tỗng số record được truy vấn
+                total = totalRow, //Tỗng số record được truy vấn. để tính ra bao nhiêu trang.
                 status = true //trạng thái
             }, JsonRequestBehavior.AllowGet);
         }
 
-        //Action được ajax gọi khi click submid trên popup
+        /// <summary>
+        /// Gọi khi click submit form. Lưu hành động thêm hoặc sửa xuống database.
+        /// </summary>
+        /// <param name="strMaterial">chuỗi json 1 material</param>
+        /// <returns>trạng thái thành công hay thất bại, message lỗi nếu có</returns>
         public JsonResult SubmitForm(string strMaterial)
         {
             //Lấy material được truyền qua
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             Material material = serializer.Deserialize<Material>(strMaterial);
-
             bool status = false;
             string message = string.Empty;
             bool action;
-            //action là thêm khi có id = 0
-            if (material.ID == 0)
+
+            if (material.ID == 0) //action là thêm khi có id = 0
             {
                 //material.CreatedDate = DateTime.Now;
                 material.IsDelete = false;
@@ -69,13 +96,13 @@ namespace CoffeeShop.Web.Controllers
                 action = false;
             }
 
-            //update xuống database
+            //commit update database
             try
             {
                 materialService.Save();
                 status = true;
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
                 status = false;
                 message = ex.Message;
@@ -83,22 +110,45 @@ namespace CoffeeShop.Web.Controllers
 
             return Json(new
             {
-                status = status,
-                message = message,
-                action = action
+                status = status, //trạng thái thành công status = true và ngược lại
+                message = message, //thông báo lỗi
+                action = action //xác thực hành động vừa làm là thêm hay sửa
             });
         }
 
+        /// <summary>
+        /// Lấy ra 1 material để hiện th5 view edit.
+        /// </summary>
+        /// <param name="id">id của record được chọn vào</param>
+        /// <returns>1 material có ID = id tương ứng</returns>
         public JsonResult GetDetailEdit(int id)
         {
             Material material = materialService.GetSingleByID(id);
+            MaterialViewModel materialVM = new MaterialViewModel()
+            {
+                ID = material.ID,
+                CategoryID = material.CategoryID,
+                CategoryName = material.MaterialCategory.Name,
+                Name = material.Name,
+                CreatedDate = material.CreatedDate,
+                Description = material.Description,
+                Inventory = material.Inventory,
+                IsDelete = material.IsDelete,
+                UnitPrice = material.UnitPrice
+            };
+
             return Json(new
             {
-                material = material,
+                material = materialVM,
                 status = true
             }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Gọi khi xóa 1 material
+        /// </summary>
+        /// <param name="id">id của record được chọn vào</param>
+        /// <returns></returns>
         public JsonResult Delete(int id)
         {
             string message = string.Empty;
