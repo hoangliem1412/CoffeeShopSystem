@@ -1,21 +1,20 @@
 ﻿using CoffeeShop.Model.ModelEntity;
-using System;
 using System.Collections.Generic;
 
 namespace CoffeeShop.Service
 {
     public interface IPromotionService : IService<Promotion>
     {
-
         // Get List Active
         IEnumerable<Promotion> GetActive();
 
         // Load List by condition
         IEnumerable<Promotion> LoadByCondition(string select);
 
-
-        // Search
+        // Basic Search
         IEnumerable<Promotion> BasicSearch(string keyword);
+
+        //Advanced Search
         IEnumerable<Promotion> AdvancedSearch(string Name, string startDate, string endDate);
 
         // Get GetTotalPage

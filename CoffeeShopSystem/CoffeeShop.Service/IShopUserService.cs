@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace CoffeeShop.Service
 {
+    /// <summary>
+    /// ShopUser Service Interface
+    /// </summary>
     public interface IShopUserService : IService<ShopUser>
     {
         ShopUser Create(int ShopID, int UserID, int RoleID, string Description);
@@ -13,5 +16,6 @@ namespace CoffeeShop.Service
         IEnumerable<ShopUser> GetShopEmployee(int shopID);
         IEnumerable<ShopUser> GetShopEmployeeDeleted(int shopID);
         void Delete(int shopUserID, bool b = true);
+        void Recover(int shopUserID);
     }
 }

@@ -16,48 +16,58 @@ namespace CoffeeShop.Service
         {
         }
 
+        /// <summary>
+        /// Insert
+        /// </summary>
+        /// <param name="City object"></param>
+        /// <returns>int</returns>
         public int Insert(City city)
         {
-            var list = base.GetAll();
+            var list = base.GetAll();//Get list city.
             bool check = false;
             foreach (var item in list)
             {
-                if (city.Name == item.Name)
+                if (city.Name == item.Name)//Check name city is exist in databases.
                 {
                     check = true;
                 }
             }
-            if (!check)
+            if (!check)//Not exist.
             {
-                var rs = base.Add(city);
-                base.Save();
-                return rs.ID;
+                var rs = base.Add(city);//Insert city to entity.
+                base.Save();//Save changes.
+                return rs.ID;//Return new cityID inserted.
             }
-            else
+            else//Exist
             {
                 return -1;
             }
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <param name="City object"></param>
+        /// <returns>int</returns>
         public int Edit(City city)
         {
-            base.Update(city);
-            var list = base.GetAll();
+            base.Update(city);//Modify city to entity.
+            var list = base.GetAll();//Get list city.
             int count = 0;
             foreach (var item in list)
             {
                 if (city.Name == item.Name)
                 {
-                    count++;
+                    count++;//Count name city the same.
                 }
             }
             if (count >= 2)
             {
-                return -1;
+                return -1;//No save changes in controller.
             }
             else
             {
-                return 1;
+                return 1;//Save changes in controller.
             }
         }
 
@@ -71,18 +81,26 @@ namespace CoffeeShop.Service
             return base.GetMulti(x => x.Name.Contains(keyword));
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="cityID"></param>
         public void Delete1(int id)
         {
-            var city = base.GetSingleById(id);
-            city.IsDelete = true;
-            base.Update(city);
+            var city = base.GetSingleById(id);//Get single city by id.
+            city.IsDelete = true;//Modify IsDelete to 'true'.
+            base.Update(city);//Modify city to entity.
         }
 
+        /// <summary>
+        /// Restore
+        /// </summary>
+        /// <param name="cityID"></param>
         public void Restore(int id)
         {
-            var city = base.GetSingleById(id);
-            city.IsDelete = false;
-            base.Update(city);
+            var city = base.GetSingleById(id);//Get single city by id.
+            city.IsDelete = false;//Modify IsDelete to 'false'.
+            base.Update(city);//Modify city to entity.
         }
 
         public void CreateNew(City c)

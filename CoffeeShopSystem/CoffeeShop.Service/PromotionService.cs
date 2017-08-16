@@ -1,5 +1,4 @@
 ﻿using CoffeeShop.Data.Infrastructure;
-using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,11 @@ namespace CoffeeShop.Service
 {
     public class PromotionService : Service<Promotion>, IPromotionService
     {
+        /// <summary>
+        /// This is PromotionService Constructer
+        /// </summary>
+        /// <param name="repo"></param>
+        /// <param name="unitOfWork"></param>
         public PromotionService(IRepository<Promotion> repo, IUnitOfWork unitOfWork) : base(repo, unitOfWork)
         {
         }
@@ -29,11 +33,7 @@ namespace CoffeeShop.Service
         /// <returns></returns>
         public IEnumerable<Promotion> LoadByCondition(string select)
         {
-            if (select == "all")
-            {
-                return base.GetAll();
-            }
-            else if (select == "active")
+            if (select == "active")
             {
                 return base.GetAll().Where(x => x.IsDelete != true);
             }
@@ -51,28 +51,18 @@ namespace CoffeeShop.Service
         public Promotion GetById(int id)
         {
             var promotion = base.GetSingleById(id);
-
-            // Nếu promorion is exist in any order => load fail
+            
             if (promotion.Orders.Any(o => o.PromotionID == id))
             {
-                Promotion p = new Promotion();
-                p.ID = promotion.ID;
-                p.Name = promotion.Name;
-                p.ShopID = promotion.ShopID;
-                p.StartDate = promotion.StartDate;
-                p.EndDate = promotion.EndDate;
-                p.BasePurchase = promotion.BasePurchase;
-                p.Discount = promotion.Discount;
-                p.Description = promotion.Description;
-                return p;
-                
+                // Delete Order constraint
+                promotion.Orders = null;
+                return promotion;
             }
             else
             {
                 return promotion;
             }
         }
-
 
         /// <summary>
         /// Basic Search
@@ -87,22 +77,21 @@ namespace CoffeeShop.Service
             }
             else
             {
-                return base.GetMulti(x => x.Name.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword) && x.IsDelete != true);
+                return base.GetMulti(x => x.Name.ToLower().Contains(keyword.ToLower()) || x.Description.ToLower().Contains(keyword.ToLower()) && x.IsDelete != true);
             }
         }
-
 
         /// <summary>
         /// This method is used to Search advanced
         /// </summary>
-        /// <param name="keyword"></param>
+        /// <param name="Name, startDate, endDate"></param>
         /// <returns></returns>
         public IEnumerable<Promotion> AdvancedSearch(string Name, string startDate, string endDate)
         {
             return base.GetAll().Where(x =>
                 (Name == "" ? true : x.Name == Name)
-                && (startDate == "" ? true : x.StartDate == DateTime.Parse(startDate))
-                && (endDate == "" ? true : x.EndDate == DateTime.Parse(endDate))
+                && (startDate == "" ? true : x.StartDate >= DateTime.Parse(startDate))
+                && (endDate == "" ? true : x.EndDate <= DateTime.Parse(endDate))
                 && x.IsDelete != true);
         }
 
@@ -121,12 +110,10 @@ namespace CoffeeShop.Service
             {
                 nPages++;
             }
-            else
-            {
-            }
+            else{}
+
             return nPages;
         }
-
 
         /// <summary>
         /// This method is used to Paging
@@ -139,6 +126,7 @@ namespace CoffeeShop.Service
                 .Skip((page - 1) * recordsPerPage)
                 .Take(recordsPerPage)
                 .ToList();
+
             return list;
         }
 
@@ -160,8 +148,10 @@ namespace CoffeeShop.Service
             else
             {
                 promotion.IsDelete = true;
+
                 base.Update(promotion);
                 Save();
+
                 return true;
             }
         }
@@ -177,8 +167,10 @@ namespace CoffeeShop.Service
             {
                 var promotion = base.GetSingleById(id);
                 promotion.IsDelete = false;
+
                 base.Update(promotion);
                 Save();
+
                 return true;
             }
             catch

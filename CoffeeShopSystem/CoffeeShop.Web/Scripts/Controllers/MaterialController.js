@@ -1,4 +1,6 @@
-﻿//khoi tạo trang hiện tại mặc định vừa load là 1.
+﻿/// <reference path="../jquery.validate.min.js" />
+
+//khoi tạo trang hiện tại mặc định vừa load là 1.
 var pageIndex = 1;
 
 //hàm convert date json sang date.

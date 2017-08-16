@@ -3,27 +3,28 @@ using CoffeeShop.Data.Repositories;
 using CoffeeShop.Model.ModelEntity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace CoffeeShop.Service
 {
     public class OrderService : IOrderService
     {
-        IOrderRepository _orderRepository;
-        IUnitOfWork _unitOfWork;
-        public OrderService(IOrderRepository tableRepository, IUnitOfWork unitOfWork)
+        IOrderRepository orderRepository;
+        IUnitOfWork unitOfWork;
+        public OrderService(IOrderRepository orderRepository, IUnitOfWork unitOfWork)
         {
-            this._orderRepository = tableRepository;
-            this._unitOfWork = unitOfWork;
+            this.orderRepository = orderRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
-        /// Cập nhật hóa đơn
+        /// update order
         /// </summary>
         /// <param name="order"></param>
         public void Update(Order order)
         {
-            var orderUpdate = _orderRepository.GetSingleById(order.ID);
+            var orderUpdate = orderRepository.GetSingleById(order.ID);
             orderUpdate.TableID = order.TableID;
             orderUpdate.Status = order.Status;
             decimal total = 0;
@@ -32,38 +33,39 @@ namespace CoffeeShop.Service
                 total = total + (decimal)p.Money;
             }
             orderUpdate.TotalMoney = total;
-            _orderRepository.Update(orderUpdate);
+            orderRepository.Update(orderUpdate);
         }
+
         /// <summary>
-        /// Xóa hóa đơn, cập nhật isDelete=true
+        /// Delete order,update IsDelate=true
         /// </summary>
         /// <param name="id"></param>
         public void Delete(int id)
         {
-            var orderUpdate = _orderRepository.GetSingleById(id);
+            var orderUpdate = orderRepository.GetSingleById(id);
             orderUpdate.isDelete = true;
-            _orderRepository.Delete(id);
+            orderRepository.Delete(id);
         }
 
 
         /// <summary>
-        /// Lấy tất cả hóa đơn
+        /// Get all by ShopID
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Order> GetAll()
         {
-            return _orderRepository.GetAll().ToList();
+            return orderRepository.GetAll().ToList();
         }
 
 
         /// <summary>
-        /// Lấy hóa đơn theo ID
+        /// get order by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         public Order GetByID(int id)
         {
-            return _orderRepository.GetSingleById(id);
+            return orderRepository.GetSingleById(id);
         }
 
         /// <summary>
@@ -71,63 +73,105 @@ namespace CoffeeShop.Service
         /// </summary>
         public void Save()
         {
-            _unitOfWork.Commit();
+            unitOfWork.Commit();
         }
 
         /// <summary>
-        /// Tìm kiếm theo IDOrder, TableName , CustomerName
+        /// Search by ID or Table
         /// </summary>
         /// <param name="keyword"></param>
         /// <param name="lst"></param>
         /// <returns>dynamic</returns>
-        public dynamic SearchByIDandTable(string keyword,List<Order> lst)
+        public dynamic SearchByIdOrTable(string keyword, List<Order> lst)
         {
-            var list = lst.ToList().Where(o => o.ID.ToString().ToLower().Contains(keyword.ToLower()) || o.Table.Name.ToString().ToLower().Contains(keyword.ToLower()) || o.User.Name.ToLower().Contains(keyword.ToLower())).Select(o => new { id = o.ID, tableName = o.Table.Name, userName = o.User.Name, promoName = o.Promotion.Name, setDate = o.SetDate, totalMoney = o.TotalMoney, status = o.Status, tableID = o.TableID }).ToList();
+            var list = lst.ToList()
+                          .Where(o => o.ID.ToString().ToLower().Contains(keyword.ToLower())
+                                      || o.Table.Name.ToString().ToLower().Contains(keyword.ToLower())
+                                      || o.User.Name.ToLower().Contains(keyword.ToLower()))
+                          .Select(o => new
+                          {
+                              id = o.ID,
+                              tableName = o.Table.Name,
+                              userName = o.User.Name,
+                              promoName = o.Promotion.Name,
+                              setDate = o.SetDate,
+                              totalMoney = o.TotalMoney,
+                              status = o.Status,
+                              tableID = o.TableID
+                          })
+                          .ToList();
             return list;
         }
 
-		
-		        /// <summary>
+
+        /// <summary>
         ///Filter by Date and TableID
         /// </summary>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
         /// <param name="TableID"></param>
         /// <returns>dynamic</returns>
-        public dynamic SearchAdvanced(string customerName,string fromDate, string toDate, int TableID, ref List<Order> lst)
+        public dynamic SearchAdvanced(string customerName, string fromDate, string toDate, int TableID, ref List<Order> lst)
         {
-            var list = lst.Where(o=>(customerName=="" ? true : o.User.Name.ToLower().Contains(customerName.ToLower())) && (fromDate==""? true : o.SetDate.Value>=DateTime.Parse(fromDate)) && (toDate == "" ? true : o.SetDate.Value <= DateTime.Parse(toDate)) && (TableID == 0 ? true : o.TableID ==TableID))
-                          .Select(o => new { id = o.ID, tableName = o.Table.Name, userName = o.User.Name, promoName = o.Promotion.Name, setDate = o.SetDate, totalMoney = o.TotalMoney, status = o.Status, tableID = o.TableID })
+            var list = lst.Where(o =>
+                                ((customerName == null || customerName == "") ? true : o.User.Name.ToLower().Contains(customerName.ToLower()))
+                                && ((fromDate == "" || fromDate == null) ? true : o.SetDate.Value >= DateTime.Parse(fromDate))
+                                && ((toDate == "" || fromDate == null) ? true : o.SetDate.Value <= DateTime.Parse(toDate))
+                                && (TableID == 0 ? true : o.TableID == TableID))
+                          .Select(o => new
+                          {
+                              id = o.ID,
+                              tableName = o.Table.Name,
+                              userName = o.User.Name,
+                              promoName = o.Promotion.Name,
+                              setDate = o.SetDate,
+                              totalMoney = o.TotalMoney,
+                              status = o.Status,
+                              tableID = o.TableID
+                          })
                           .ToList();
-            return list ;
+            return list;
         }
-		
+
         /// <summary>
-        /// Lọc theo tình trạng hóa đơn
+        /// Filter by Status
         /// </summary>
         /// <param name="status"></param>
         /// <param name="lst"></param>
         /// <returns>dynamic</returns>
         public dynamic GetByStatus(string status, ref List<Order> lst)
         {
-            var list2 = _orderRepository.GetAll().ToList(); 
-            var list = _orderRepository.GetAll().ToList().Select(o => new { id = o.ID, tableName = o.Table.Name, userName = o.User.Name, promoName = o.Promotion.Name, setDate = o.SetDate, totalMoney = o.TotalMoney, status = o.Status, tableID = o.TableID }).ToList();
-            if (status == "1") 
+            var list2 = orderRepository.GetAll().ToList();
+            var list = orderRepository.GetAll().ToList()
+                                               .Select(o => new
+                                               {
+                                                   id = o.ID,
+                                                   tableName = o.Table.Name,
+                                                   userName = o.User.Name,
+                                                   promoName = o.Promotion.Name,
+                                                   setDate = o.SetDate,
+                                                   totalMoney = o.TotalMoney,
+                                                   status = o.Status,
+                                                   tableID = o.TableID
+                                               })
+                                               .ToList();
+
+            if (status == "1")
             {
                 lst = list2;
                 return list;
-             
+
             }
-            else if (status == "2") 
+            else if (status == "2")
             {
                 lst = list2.Where(o => o.Status == false).ToList();
                 return list.Where(o => o.status == false);
-                
+
             }
-            else 
+            else
             {
                 lst = list2.Where(o => o.Status == true).ToList();
-                return list.Where(o => o.status == true);            
+                return list.Where(o => o.status == true);
             }
         }
     }

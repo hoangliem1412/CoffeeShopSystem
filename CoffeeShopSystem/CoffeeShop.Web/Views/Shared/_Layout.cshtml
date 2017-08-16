@@ -45,7 +45,6 @@
                             <ul class="nav side-menu">
                                 <li>
                                     <a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-
                                 </li>
                                 <li>
                                     <a href="@Url.Action("Index", "ShopUser")"><i class="fa fa-user"></i> Quản lý nhân viên</a>
@@ -60,28 +59,18 @@
                                 <li>
                                     <a><i class="fa fa-edit"></i> Quản lý món <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/Product">Sản phẩm</a></li>
-                                        <li><a href="/Category">Loại sản phẩm</a></li>
+                                        <li><a href="@Url.Action("Index", "Product")">Sản phẩm</a></li>
+                                        <li><a href="@Url.Action("Index", "Category")">Loại sản phẩm</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a><i class="fa fa-edit"></i> Quản lý nguyên liệu <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/Material">Nguyên liệu</a></li>
-                                        <li><a href="/Category/ListCate">Loại nguyên liệu</a></li>
-                                        <li><a href="/MaterialLog">Log nguyên liệu</a></li>
-                                        
+                                        <li><a href="@Url.Action("Index", "Material")">Nguyên liệu</a></li>
+                                        <li><a href="@Url.Action("Index","MaterialCategory")">Loại nguyên liệu</a></li>
+                                        <li><a href="@Url.Action("Index", "MaterialLog")">Log nguyên liệu</a></li>          
                                     </ul>
                                 </li>
-
-                                <li>
-                                    <a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="tables.html">Tables</a></li>
-                                        <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                                    </ul>
-                                </li>
-
                                 <li>
                                     <a><i class="fa fa-money"></i> Quản lý hóa đơn <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -89,18 +78,10 @@
 
                                     </ul>
                                 </li>
-                                <li>
-                                    <a><i class="fa fa-book"></i> Quản lý nguyên liệu <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="@Url.Action("Index","MaterialCategory")">Nguyên liệu</a></li>
-
-                                    </ul>
-                                </li>
                                 <!-- Quản lý khuyến mãi -->
                                 <li>
                                     <a href="@Url.Action("Index","Promotion")"><i class="fa fa-gift"></i> Quản Lý Khuyến Mãi <span></span></a>                                
                                 </li>
-
                                 <!-- Quản lý cửa hàng -->
                                 <li>
                                     <a><i class="fa fa-university"></i> Quản Lý Cửa Hàng <span class="fa fa-chevron-down"></span></a>
@@ -109,8 +90,15 @@
 
                                     </ul>
                                 </li>
-
-
+                                <!-- Quản lý địa điểm -->
+                                <li>
+                                    <a><i class="fa fa-location-arrow"></i> Quản Lý địa điểm <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href='@Url.Action("Index","City")'>Thành phố - Tỉnh thành</a></li>
+                                        <li><a href='@Url.Action("Index","District")'>Quận - huyện</a></li>
+                                        <li><a href='@Url.Action("Index","Ward")'>Phường - Xã</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -186,7 +174,6 @@
     <script src="~/Scripts/custom.min.js"></script>
     <!-- jQuery Validate Scripts -->
     <script src="~/Scripts/jquery.validate.min.js"></script>
-    @*<script src="~/Scripts/KieuNTL1_script.js"></script>*@
     @RenderSection("js", false)
 
 </body>

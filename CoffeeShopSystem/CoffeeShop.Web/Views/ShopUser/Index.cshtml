@@ -31,21 +31,8 @@
 
         <div class="x_content" style="display: block;">
             <div class="row">
-                @*<div class="col-sm-4">
-                        <label>Hiện</label>
-                        <select>
-                            <option value="value">5</option>
-                            <option value="value">10</option>
-                            <option value="value">50</option>
-                            <option value="value">100</option>
-                        </select>
-                        <label>dòng mỗi trang</label>
-                    </div>*@
                 <div class="col-sm-8">
                     <form>
-                        @*<label class="radio-inline">
-                                <input type="radio" name="optradio">Hiển thị tất cả
-                            </label>*@
                         <label class="radio-inline">
                             <input type="radio" name="viewOption" checked="checked" value="false">Đang quản lý
                         </label>
@@ -57,16 +44,49 @@
 
             </div>
             <div class="panel panel-default panel-table" style="margin-top: 20px">
-                @*<div class="panel-heading clearfix">
-                        <div class="col-sm-8">
-                            <a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="panel-title"><i class="glyphicon glyphicon-plus"></i></a>
-                        </div>
+                <div class="addbtn">
+                    <a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></a>
+                </div>
+                <div class="lengthpage">
+                    <div class="float-left">
+                        <select class="form-control text-center" id="lengthpage">
+                            <option value="0" disabled>Hiển thị</option>
+                            <option value="5">5</option>
+                            <option selected value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="-1">Tất cả</option>
+                        </select>
+                    </div>
+                </div>
+                <a style="float: right; margin-top: 5px" data-click="0" href="javascript:;" id="AddvancedButton" title="Chuyển tùy chọn tìm kiếm" class="btn btn-danger"><i class="fa fa-cogs"></i></a>
+                <div class="searchbox">
 
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" placeholder="Từ khóa...">
+                    <div id="basesearch" class="searchbox-hiden">
+                        <div class="form-groups">
+                            <div class="col-sm-12">
+                                <input type="text" id="baseSearch" title="Tên bàn, nhóm bàn, số lượng, mô tả ..." class="form-control" placeholder="Từ khóa">
+                            </div>
                         </div>
-                    </div>*@
-
+                    </div>
+                    <div id="advancedsearch" class="hidden searchbox-hiden">
+                            <div class="form-groups">
+                                <div class="col-sm-6">
+                                    <select class="form-control" title="Giới tính" id="SexSearch">
+                                        <option value="">Tất cả</option>
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select class="form-control" title="Vị trí" id="RoleSearch">
+                                        <option value="">Tất cả</option>
+                                        <option value="Đầu bếp">Đầu bếp</option>
+                                        <option value="Nhân viên">Nhân viên</option>
+                                    </select>
+                                </div>
+                            </div>
+                    </div>
+                </div>
                 <div class="panel-body clearfix">
                     <table class="display table table-striped table-bordered table-responsive jambo_table bulk_action" id="mainTable">
                         <thead>
@@ -76,6 +96,8 @@
                                 <th>Tài khoản</th>
                                 <th>Email</th>
                                 <th>Địa chỉ</th>
+                                <th>Giới tính</th>
+                                <th>Vị trí</th>
                                 <th style="text-align:center"><i class="fa fa-cog"></i></th>
                             </tr>
                         </thead>
@@ -88,6 +110,8 @@
                                     <td>@item.User.Username</td>
                                     <td>@item.User.Email</td>
                                     <td>@item.User.DetailAddress - @item.User.Ward.Name - @item.User.Ward.District.Name - @item.User.Ward.District.City.Name</td>
+                                    <td>@item.User.Sex</td>
+                                    <td>@(item.RoleID==3 ? "Nhân viên" : "Đầu bếp")</td>
                                     <td align="center">
                                         <a class="btn btn-info btn-xs edit"  title="Chỉnh sửa" data-shopuserid="@item.ID" data-shopid="@item.ShopID"><i class="fa fa-pencil"></i></a>
                                         <a class="btn btn-danger btn-xs delete" title="Xóa" data-id="@item.ID" data-shopid="@item.ShopID" data-userid="@item.UserID"
@@ -98,26 +122,6 @@
                         </tbody>
                     </table>
                 </div>
-                @*<div class="panel-footer">
-                        <div class="row">
-                            <div class="col col-xs-4">
-                                Page 1 of 5
-                            </div>
-                            <div class="col col-xs-8">
-                                <ul class="pagination hidden-xs pull-right">
-                                    <li><a href="#">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                </ul>
-                                <ul class="pagination visible-xs pull-right">
-                                    <li><a href="#">«</a></li>
-                                    <li><a href="#">»</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>*@
             </div>
         </div>
     </div>
@@ -205,10 +209,6 @@
                             <div class="col-sm-8">
                                 <select class="form-control" id="DistrictList" name="District">
                                     <option value="0">Quận</option>
-                                    @*@foreach (var item in ViewBag.DistrictList)
-                                        {
-                                            <option value="@item.ID">@item.Name</option>
-                                        }*@
                                 </select>
                             </div>
                         </div>
@@ -217,10 +217,6 @@
                             <div class="col-sm-8">
                                 <select class="form-control" id="WardList" name="WardID">
                                     <option value="0">Phường</option>
-                                    @*@foreach (var item in ViewBag.WardList)
-                                        {
-                                            <option value="@item.ID">@item.Name</option>
-                                        }*@
                                 </select>
                             </div>
                         </div>
@@ -253,11 +249,6 @@
                             </div>
                         </div>
                     </fieldset>
-                    @*<div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-8">
-                                <button type="button" id="SubmitAdd" class="btn btn-default">Submit</button>
-                            </div>
-                        </div>*@
                 </form>
             </div>
             <div class="modal-footer">
@@ -354,10 +345,6 @@
                             <div class="col-sm-8">
                                 <select class="form-control" id="EditDistrictList" name="District">
                                     <option value="0">Quận</option>
-                                    @*@foreach (var item in ViewBag.DistrictList)
-                                        {
-                                            <option value="@item.ID">@item.Name</option>
-                                        }*@
                                 </select>
                             </div>
                         </div>
@@ -366,10 +353,6 @@
                             <div class="col-sm-8">
                                 <select class="form-control" id="EditWardList" name="WardID">
                                     <option value="0">Phường</option>
-                                    @*@foreach (var item in ViewBag.WardList)
-                                        {
-                                            <option value="@item.ID">@item.Name</option>
-                                        }*@
                                 </select>
                             </div>
                         </div>
@@ -414,7 +397,6 @@
 @*end create popup*@
 
 @*Create A PopUp Modal For DeleteConfirmation*@
-
 <div class="modal fade" id="DeleteConfirmation">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -423,11 +405,31 @@
                 <h4>THÔNG BÁO</h4>
             </div>
             <div class="modal-body">
-                <h4>Bạn có chắc muốn xóa ""?</h4>
+                <h4>Bạn có chắc muốn xóa ?</h4>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-primary" data-dismiss="modal" id="r">Cancel</a>
-                <a class="btn btn-danger" id="btnConfirm" data-id="">Confirm</a>
+                <a class="btn btn-danger" id="btnConfirmDelete" data-id="">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+@*/Create A PopUp Modal For DeleteConfirmation*@
+
+@*Create A PopUp Modal For DeleteConfirmation*@
+<div class="modal fade" id="RecoverConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">&times;</a>
+                <h4>THÔNG BÁO</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Bạn có chắc muốn phục hồi ?</h4>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-primary" data-dismiss="modal" id="r">Cancel</a>
+                <a class="btn btn-danger" id="btnConfirmRecover" data-id="">Confirm</a>
             </div>
         </div>
     </div>
@@ -438,605 +440,5 @@
     <script src="~/Asserts/DataTables-1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="~/Asserts/DataTables-1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/jquery-validation-1.17.0/jquery.validate.min.js"></script>
-    <script>
-        //$(document).ready(function () {
-        //    $('#mainTable').DataTable()({
-        //        "language": {
-        //            "lengthMenu": "Display _MENU_ records per page",
-        //            "zeroRecords": "Nothing found - sorry",
-        //            "info": "Showing page _PAGE_ of _PAGES_",
-        //            "infoEmpty": "No records available",
-        //            "infoFiltered": "(filtered from _MAX_ total records)"
-        //        }
-        //    });
-        //});
-        $(document).ready(function () {
-            //Khai báo sử dụng Datatable
-            var mainTable = $('#mainTable').DataTable({
-                "language": {
-                    "lengthMenu": '<a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="btn btn-info"><i class="fa fa-plus" aria-hidden="true"></i></a> Hiển thị <select class="form-control">' +
-                    '<option value="5">5</option>' +
-                    '<option value="10">10</option>' +
-                    '<option value="20">20</option>' +
-                    '<option value="30">30</option>' +
-                    '<option value="40">40</option>' +
-                    '<option value="50">50</option>' +
-                    '<option value="-1">All</option>' +
-                    '</select> ',
-                    "zeroRecords": "Không tìm thấy!",
-                    "info": "",
-                    "infoEmpty": "",
-                    "infoFiltered": "",
-                    "search": "",
-                    "searchPlaceholder": "Từ khóa",
-                    "paginate": {
-                        "next": '<i class="fa fa-angle-right" aria-hidden="true"></i>',
-                        "previous": '<i class="fa fa-angle-left" aria-hidden="true"></i>'
-                    },
-                    //"sDom": 'tipr',
-                }
-            });
-
-            //AddForm validation
-            //Thêm validation UniqueUser
-            jQuery.validator.addMethod("UniqueUser", function (value, element, elementID) {
-                //var url = '/ShopUser/IsUsernameUnique/?input=' + value;
-                var url = '@Url.Action("IsUsernameUnique", "ShopUser")';
-                var ret = false;
-                var id = $(elementID).val();
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: { 'input': value, 'userID': id},
-                    async: false,
-                    success: function (data) {
-                        ret = data;
-                        console.log(data);
-                    }
-                });
-                if (ret == "True") {
-                    return true;
-                }
-                if (ret == "False") {
-                    return false;
-                }
-            }, "Username đã tồn tại");
-            //Thêm validation UniqueEmail
-            jQuery.validator.addMethod("UniqueEmail", function (value, element, elementID) {
-                var url = '@Url.Action("IsEmailUnique", "ShopUser")';
-                var ret = false;
-                var id = $(elementID).val();
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: { 'input': value, 'userID': id },
-                    async: false,
-                    success: function (data) {
-                        ret = data;
-                        console.log(data);
-                    }
-                });
-                if (ret == "True") {
-                    return true;
-                }
-                if (ret == "False") {
-                    return false;
-                }
-            }, "Email đã tồn tại");
-            // Rule for combobox
-            jQuery.validator.addMethod("ValueNotEquals", function (value, element,comparator) {
-                return comparator !== value;
-            }, "Giá trị không được bằng comparator");
-            //Validate AddForm
-            $('#AddForm').validate({
-                highlight: function (element) {
-                    $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-                },
-                unhighlight: function (element) {
-                    $(element).closest('.form-group').removeClass('has-error');
-                },
-                errorElement: 'span',
-                errorClass: 'help-clock',
-                rules: {
-                    Name: {
-                        required: true,
-                    },
-                    Username: {
-                        required: true,
-                        minlength: 5,
-                        UniqueUser: '#AddShopUserIDTextbox',
-                    },
-                    Email: {
-                        required: true,
-                        email: true,
-                        UniqueEmail: '#AddShopUserIDTextbox',
-                    },
-                    Password: {
-                        required: true,
-                    },
-                    RePassword: {
-                        required: true,
-                        equalTo: '#PasswordTextbox'
-                    },
-                    role: {
-                        ValueNotEquals: "0",
-                        required: true,
-                    },
-                    City: {
-                        required: true,
-                        ValueNotEquals: "0",
-                    },
-                    District: {
-                        required: true,
-                        ValueNotEquals: "0",
-                    },
-                    WardID: {
-                        required: true,
-                        ValueNotEquals: "0",
-                    },
-                    BirthDay: {
-                        required: true,
-                    },
-                    Sex: {
-                        ValueNotEquals: "0",
-                        required: true
-                    },
-                },
-
-                messages: {
-                    Name: {
-                        required: "Vui lòng nhập họ tên",
-                    },
-                    Username: {
-                        required: "Vui lòng nhập username",
-                        minlength: "Username tối thiểu 5 kí tự",
-                        UniqueUser: "Username đã tồn tại"
-                    },
-                    Email: {
-                        required: "Vui lòng nhập email",
-                        email: "Email không hợp lệ",
-                        UniqueEmail: "Email đã tồn tại"
-                    },
-                    Password: {
-                        required: "Vui lòng nhập mật khẩu",
-                    },
-                    RePassword: {
-                        required: "Vui lòng nhập lại mật khẩu",
-                        equalTo: "Sai mật khẩu nhập lại"
-                    },
-                    role: {
-                        ValueNotEquals: "Vui lòng chọn vị trí",
-                        required: "Vui lòng chọn vị trí",
-                    },
-                    City: {
-                        required: "Vui lòng chọn thành phố",
-                        ValueNotEquals: "Vui lòng chọn thành phố" ,
-                    },
-                    District: {
-                        required: "Vui lòng chọn phường",
-                        ValueNotEquals: "Vui lòng chọn phường",
-                    },
-                    WardID: {
-                        required: "Vui lòng chọn quận",
-                        ValueNotEquals: "Vui lòng chọn quận",
-                    },
-                    BirthDay: {
-                        required: "Vui lòng chọn ngày sinh"
-                    },
-                    Sex: {
-                        ValueNotEquals: "Vui lòng chọn giới tính",
-                        required: "Vui lòng chọn giới tính",
-                    },
-                }
-            });
-
-            //EditForm validation
-            $('#EditForm').validate({
-                highlight: function (element) {
-                    $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-                },
-                unhighlight: function (element) {
-                    $(element).closest('.form-group').removeClass('has-error');
-                },
-                errorElement: 'span',
-                errorClass: 'help-clock',
-                rules: {
-                    Name: {
-                        required: true,
-                    },
-                    Username: {
-                        required: true,
-                        minlength: 5,
-                        UniqueUser: '#EditShopUserIDTextbox',
-                    },
-                    Email: {
-                        required: true,
-                        email: true,
-                        UniqueEmail: '#EditShopUserIDTextbox',
-                    },
-                    Password: {
-                        required: true,
-                    },
-                    RePassword: {
-                        required: true,
-                        equalTo: '#EditPasswordTextbox'
-                    },
-                    role: {
-                        required: true,
-                    },
-                    WardID: {
-                        required: true,
-                    },
-                    BirthDay: {
-                        required: true,
-                    },
-                    Sex: {
-                        required: true
-                    },
-                },
-
-                messages: {
-                    Name: {
-                        required: "Vui lòng nhập họ tên",
-                    },
-                    Username: {
-                        required: "Vui lòng nhập username",
-                        minlength: "Username tối thiểu 5 kí tự",
-                        UniqueUser: "Username đã tồn tại"
-                    },
-                    Email: {
-                        required: "Vui lòng nhập email",
-                        email: "Email không hợp lệ",
-                        UniqueEmail: "Email đã tồn tại"
-                    },
-                    Password: {
-                        required: "Vui lòng nhập mật khẩu",
-                    },
-                    RePassword: {
-                        required: "Vui lòng nhập lại mật khẩu",
-                        equalTo: "Sai mật khẩu nhập lại"
-                    },
-                    role: {
-                        required: "Vui lòng chọn vị trí",
-                    },
-                    WardID: {
-                        required: "Vui lòng chọn quận",
-                    },
-                    BirthDay: {
-                        required: "Vui lòng chọn ngày sinh"
-                    },
-                    Sex: {
-                        required: "Vui lòng chọn giới tính",
-                    },
-                }
-            });
-
-            //AddForm combobox change
-            //City combobox change
-            $("#CityList").change(function () {
-                var selectedCity = this.value;
-                $('#DistrictList').empty();
-                $('#WardList').empty();
-                $.ajax({
-                    url: '@Url.Action("DistrictListByCityID","ShopUser")',
-                    type: 'GET',
-                    datatype: 'json',
-                    data: { 'cityID': selectedCity },
-                })
-                .done(function (result) {
-                    $('#DistrictList').append(new Option('Quận', 0));
-                    $.each(result, function (index, data) {
-                        $('#DistrictList').append(new Option(data.Name, data.ID));
-                    });
-                })
-                .fail(function (data) {
-                    alert('Load district fail');
-                });
-            });
-
-            //District combobox change
-            $("#DistrictList").change(function () {
-                var selectedDistrict = this.value;
-                $('#WardList').empty();
-                $.ajax({
-                    url: '@Url.Action("WardListByDistrictID", "ShopUser")',
-                    type: 'GET',
-                    datatype: 'json',
-                    data: { 'districtID': selectedDistrict },
-                })
-                .done(function (result) {
-                    $('#WardList').append(new Option('Phường', 0));
-                    $.each(result, function (index, data) {
-                        $('#WardList').append(new Option(data.Name, data.ID));
-                    });
-                })
-                .fail(function (data) {
-                    alert('Load wardfail');
-                });
-            });
-
-            //Edit combobox change
-            //City combobox change
-            $("#EditCityList").change(function () {
-                var selectedCity = this.value;
-                $('#EditDistrictList').empty();
-                $('#EditWardList').empty();
-                $.ajax({
-                    url: '@Url.Action("DistrictListByCityID","ShopUser")',
-                    type: 'GET',
-                    datatype: 'json',
-                    data: { 'cityID': selectedCity },
-                })
-                .done(function (result) {
-                    $('#EditDistrictList').append(new Option('Quận', 0));
-                    $.each(result, function (index, data) {
-                        $('#EditDistrictList').append(new Option(data.Name, data.ID));
-                    });
-                })
-                .fail(function (data) {
-                    alert('Load district fail');
-                });
-            });
-
-            //District combobox change
-            $("#EditDistrictList").change(function () {
-                var selectedDistrict = this.value;
-                $('#EditWardList').empty();
-                $.ajax({
-                    url: '@Url.Action("WardListByDistrictID", "ShopUser")',
-                    type: 'GET',
-                    datatype: 'json',
-                    data: { 'districtID': selectedDistrict },
-                })
-                .done(function (result) {
-                    $('#EditWardList').append(new Option('Phường', 0));
-                    $.each(result, function (index, data) {
-                        $('#EditWardList').append(new Option(data.Name, data.ID));
-                    });
-                })
-                .fail(function (data) {
-                    alert('Load city fail');
-                });
-            });
-
-            //Click submit AddForm
-            $('#SubmitAdd').on('click', function () {
-                var addform = $("#AddForm");
-                addform.validate();
-                if (addform.valid() == true)
-                {
-                    $.ajax({
-                    url: '@Url.Action("Add", "ShopUser")',
-                    type: 'POST',
-                    datatype: 'json',
-                    data: $('#AddForm').serialize(),
-                    })
-                    .done(function (result) {
-                        var rownode= mainTable.row.add([
-                                result.ID,
-                                result.Name,
-                                result.Username,
-                                result.Email,
-                                result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City,
-                                '<a class="btn btn-info btn-xs edit" data-shopuserid="' + result.ID + '"><i class="fa fa-pencil"></i></a>'
-                                + '<a class="btn btn-danger btn-xs delete" data-id="' + result.ID + '"><i class="fa fa-trash"></i></a>',
-                         ]).draw(false).node();
-                        $(rownode).attr('id', 'tr-' + result.ID);
-                        $(rownode).find('td:eq(5)')
-                            .attr('align', 'center');
-                        $('#AddForm')[0].reset();
-                        $('#AddModal').modal('hide');
-                        alert("Thêm thành công");
-                    })
-                    .fail(function (data) {
-                        $('#AddModal').modal('hide');
-                        alert('Thêm thất bại');
-                    });
-                }
-            });
-            //Nhấn nút xác nhận xóa trên form
-            $('#tbody').on('click', '.delete', function () {
-                $('#DeleteConfirmation').modal('show');
-                var btn = $(this);
-                var id = btn.data('id');
-                $('#btnConfirm').data('id', id);
-            });
-            $('#btnConfirm').on('click', function () {
-                var btn = $(this);
-                var id = btn.data('id');
-                $('#DeleteID').val(id);
-                $.ajax({
-                    url: '@Url.Action("Delete","ShopUser")',
-                    type: 'POST',
-                    //dataType: 'json',
-                    data: { 'shopUserID': id },
-                })
-                .done(function (data) {
-                    var trid = "#tr-" + id;
-                    $(trid).addClass("selected");
-                    var rows = mainTable
-                        .rows('.selected')
-                        .remove()
-                        .draw();
-                    $('#DeleteConfirmation').modal('hide');
-                    alert('Xóa thành công');
-
-                })
-                .fail(function (data) {
-                    $('#DeleteConfirmation').modal('hide');
-                    alert('Xóa thất bại');
-                });
-            });
-            //Nhấn nút edit trên table
-            $('#tbody').on('click', '.edit', function () {
-                $('#EditModal').modal('show');
-                var btn = $(this);
-                var id = btn.data('shopuserid');
-                var selectedCity = /*btn.data('city')*/0;
-                var selectedDistrict = /*btn.data('district')*/0;
-                var selectedWard = /*btn.data('ward')*/0;
-                $('#EditDistrictList').empty();
-                $('#EditWardList').empty();
-                $.ajax({
-                    url: '@Url.Action("Detail", "ShopUser")',
-                    type: 'GET',
-                    dataType: 'json',
-                    data: { 'shopUserID': id },
-                })
-                .done(function (data) {
-                    selectedCity = data.City;
-                    selectedDistrict = data.District;
-                    selectedWard = data.Ward;
-                    {
-                        $.ajax({
-                            url: '@Url.Action("DistrictListByCityID","ShopUser")',
-                            type: 'GET',
-                            datatype: 'json',
-                            data: { 'cityID': selectedCity },
-                        })
-                        .done(function (result) {
-                            $('#EditDistrictList').append(new Option('Quận', 0));
-                            $.each(result, function (index, data) {
-                                $('#EditDistrictList').append(new Option(data.Name, data.ID));
-                            });
-                            $('#EditDistrictList').val(selectedDistrict);
-                        })
-                        .fail(function (data) {
-                            alert('Set disitrct fail');
-                        });
-                    }
-                    //
-                    {
-                        $.ajax({
-                            url: '@Url.Action("WardListByDistrictID", "ShopUser")',
-                            type: 'GET',
-                            datatype: 'json',
-                            data: { 'districtID': selectedDistrict },
-                        })
-                        .done(function (result) {
-                            $('#EditWardList').append(new Option('Phường', 0));
-                            $.each(result, function (index, data) {
-                                $('#EditWardList').append(new Option(data.Name, data.ID));
-                            });
-                            $('#EditWardList').val(selectedWard);
-                        })
-                        .fail(function (data) {
-                            alert('Set ward fail');
-                        });
-                    }
-
-                    $('#EditUserIDTextbox').val(data.UserID);
-                    $('#EditShopUserIDTextbox').val(data.ShopUserID);
-                    $('#EditNameTextbox').val(data.Name);
-                    $('#EditUsernameTextbox').val(data.Username);
-                    $('#EditEmailTextbox').val(data.Email);
-                    $('#EditPasswordTextbox').val(data.Password);
-                    $('#EditRole').val(data.RoleID);
-                    $('#EditRoleDescriptionTextbox').val(data.RoleDescription);
-                    $('#EditCityList').val(data.City);
-                    $('#EditDetailAddressTextbox').val(data.DetailAddress);
-                    $('#EditBirthDayTextbox').val(data.BirthDay);
-                    $('#EditGenderList').val(data.Sex);
-                    $('#EditDescriptionTextbox').val(data.UserDescription);
-                })
-                .fail(function (data) {
-                    alert('Lấy detail thất bại');
-                });
-
-            });
-            //Click submit EditForm
-            $('#SubmitEdit').on('click', function () {
-                var editform = $("#EditForm");
-                editform.validate();
-                if (editform.valid() == true)
-                {
-                    $.ajax({
-                    url: '@Url.Action("Edit", "ShopUser")',
-                    type: 'POST',
-                    //datatype: 'json',
-                    data: $('#EditForm').serialize(),
-                    })
-                    .done(function (result) {
-                        var row = mainTable.row('#tr-' + result.ID);
-                        mainTable.cell(row, 1).data(result.Name).draw(false);
-                        mainTable.cell(row, 2).data(result.Username).draw(false);
-                        mainTable.cell(row, 3).data(result.Email).draw(false);
-                        mainTable.cell(row, 4).data(result.DetailAddress + ' - ' + result.Ward + ' - ' + result.District + ' - ' + result.City).draw(false);
-
-                        $('#EditForm')[0].reset();
-                        $('#EditModal').modal('hide');
-                        //$('#tbody').html(html);
-                        alert("Sửa thành công");
-                    })
-                    .fail(function (data) {
-                        $('#EditModal').modal('hide');
-                        alert('Sửa thất bại');
-                    });
-                }
-
-            });
-
-            //Xem trang theo IsDelete= true/false
-            $('input:radio[name="viewOption"]').change(function () {
-                var radio = $(this);
-                if (radio.val() == 'true') {
-                    $.ajax({
-                        url: '@Url.Action("ViewDeleted", "ShopUser")',
-                        type: 'GET',
-                        data: '',
-                    })
-                    .done(function (result) {
-                        $('#mainTable').DataTable().clear().draw();
-                        $.each(result, function (index, data) {
-                            var rownode = mainTable.row.add([
-                                    data.ID,
-                                    data.Name,
-                                    data.Username,
-                                    data.Email,
-                                    data.DetailAddress + ' - ' + data.Ward + ' - ' + data.District + ' - ' + data.City,
-                                    'none'
-                                    //'<a class="btn btn-info btn-xs edit" data-shopuserid="' + data.ID + '"><i class="fa fa-pencil"></i></a>'
-                                    //+ '<a class="btn btn-danger btn-xs delete" data-id="' + data.ID + '"><i class="fa fa-trash"></i></a>',
-                            ]).draw(false).node();
-                            $(rownode).attr('id', 'tr-' + data.ID);
-                            $(rownode).find('td:eq(5)')
-                                .attr('align', 'center');
-                        });
-                    })
-                    .fail(function (data) {
-                        alert('Load fail');
-                    });
-                }
-                else if (radio.val() == 'false') {
-                    $.ajax({
-                        url: '@Url.Action("ViewCurrent", "ShopUser")',
-                        type: 'GET',
-                        data: '',
-                    })
-                    .done(function (result) {
-                        $('#mainTable').DataTable().clear().draw();
-                        $.each(result, function (index, data) {
-                            var rownode = mainTable.row.add([
-                                    data.ID,
-                                    data.Name,
-                                    data.Username,
-                                    data.Email,
-                                    data.DetailAddress + ' - ' + data.Ward + ' - ' + data.District + ' - ' + data.City,
-                                    '<a class="btn btn-info btn-xs edit" data-shopuserid="' + data.ID + '"><i class="fa fa-pencil"></i></a>'
-                                    + '<a class="btn btn-danger btn-xs delete" data-id="' + data.ID + '"><i class="fa fa-trash"></i></a>',
-                            ]).draw(false).node();
-                            $(rownode).attr('id', 'tr-' + data.ID);
-                            $(rownode).find('td:eq(5)')
-                                .attr('align', 'center');
-                        });
-                    })
-                    .fail(function (data) {
-                        alert('Load fail');
-                    });
-                }
-            });
-        });
-
-
-    </script>
+    <script src="~/Scripts/ShopUser.js"></script>
 }

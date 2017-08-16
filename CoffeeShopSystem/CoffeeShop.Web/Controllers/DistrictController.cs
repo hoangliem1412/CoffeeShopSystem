@@ -9,33 +9,52 @@ namespace CoffeeShop.Web.Controllers
 {
     public class DistrictController : Controller
     {
-        IDistrictService _iDistrictService;
+        IDistrictService _iDistrictService; //Declare interface IDistrictService.
 
+        ///<summary>
+        ///The class constructor.
+        ///</summary>
         public DistrictController(IDistrictService iDis)
         {
             this._iDistrictService = iDis;
         }
 
-        // GET: District
+        // GET: District.
         public ActionResult Index()
         {
             var list = _iDistrictService.GetAll();
             return View(list);
         }
 
-        //load data for datatables
+        /// <summary>
+        /// GET:Load data for datatables.
+        /// </summary>
+        /// <returns>Json</returns>
         public ActionResult LoadData()
         {
-            var list = _iDistrictService.GetAll().Select(x => new DistrictViewModel { ID = x.ID, Name = x.Name, Description = x.Description, CityID = x.CityID, NameCity = x.City.Name, IsDelete = x.IsDelete });
-            return Json(new { data = list }, JsonRequestBehavior.AllowGet);
+            var list = _iDistrictService
+                .GetAll()
+                .Select(x => new DistrictViewModel {
+                    ID = x.ID,
+                    Name = x.Name,
+                    Description = x.Description,
+                    CityID = x.CityID,
+                    NameCity = x.City.Name,
+                    IsDelete = x.IsDelete });//create list DistrictViewModel.
+
+            return Json(new { data = list }, JsonRequestBehavior.AllowGet);//return json with data is list district.
         }
 
-        //create partial list district
+        /// <summary>.
+        /// GET:Create partial list district.
+        /// </summary>
+        /// <returns>PartialViewResult</returns>
         public PartialViewResult PartialListDistrict()
         {
             var list = _iDistrictService.GetAllIsDelete();
             return PartialView("_PartialListDistrict", list);
         }
+
 
         [HttpPost]
         public JsonResult GetDistrictByCityID(int id)
@@ -44,7 +63,11 @@ namespace CoffeeShop.Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        //insert district
+        /// <summary>
+        /// POST:Insert.
+        /// </summary>
+        /// <param name="District object"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Insert(District district)
         {
@@ -60,7 +83,11 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //update district
+        /// <summary>
+        /// POST:Update
+        /// </summary>
+        /// <param name="District object"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Update(District district)
         {
@@ -79,7 +106,11 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //Delete district
+        /// <summary>
+        /// POST:Delete
+        /// </summary>
+        /// <param name="districtID"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Delete(int id)
         {
@@ -95,7 +126,11 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //restore district
+        /// <summary>
+        /// POST:Restore
+        /// </summary>
+        /// <param name="districtID"></param>
+        /// <returns>int</returns
         [HttpPost]
         public int Restore(int id)
         {

@@ -11,9 +11,6 @@ namespace CoffeeShop.Web.Controllers
     {
         private IMaterialLogService mLogService;
         private IMaterialService materialService;
-        static IEnumerable<MaterialLog> logList;
-        int rowPerPage = 10;
-        static int totalItems = 0;
 
         public MaterialLogController(IMaterialLogService mLogService, IMaterialService mateService)
         {
@@ -23,96 +20,82 @@ namespace CoffeeShop.Web.Controllers
 
         // GET: MaterialLog
         public ActionResult Index()
-
         {
-            logList = mLogService.GetAvailable().ToList();
-            totalItems = logList.Count();
             ViewBag.MateList = materialService.GetMulti(x => x.IsDelete == false);
-            ViewBag.TotalItems = totalItems;
-            ViewBag.RowPerPage = rowPerPage;
 
-            return View(logList.Take(rowPerPage));
-
+            return View(mLogService.GetMulti(x => x.IsDelete == false));
         }
 
-        public JsonResult Paging(int inRowPerPage, int currentPage)
+        /// <summary>
+        /// return all records of MaterialLog in database
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult LoadData()
         {
-            var result = new { totalItems = logList.Count(), items = mLogService.Paging(logList, inRowPerPage, currentPage) };
-
+            // flat result
+            var result = new { items = mLogService.Flat(mLogService.GetAll()) };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
-        public JsonResult GetByStatus(int inRowPerPage, int status, int currentPage = 1)
-        {
-            logList = mLogService.GetByStatus(logList, status);
-            return Paging(inRowPerPage, currentPage);
-        }
-
+        
         // POST: MaterialLog/Create
+        /// <summary>
+        /// create new MaterialLog item and return it's value if success
+        /// </summary>
+        /// <param name="materialLog">the item to be created</param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult Create(MaterialLog materialLog)
         {
-            if (ModelState.IsValid)
-            {
-                mLogService.Add(materialLog);
-                mLogService.Save();
-                return Json("", JsonRequestBehavior.AllowGet);
-            }
-
-            return Json("Có lỗi xảy ra, vui lòng thử lại", JsonRequestBehavior.AllowGet);
-        }
-
-        // GET: MaterialLog/Edit/5
-        public JsonResult Detail(int? id)
-        {
-            if (id == null)
-            {
-                return Json("", JsonRequestBehavior.AllowGet);
-            }
-
-            var result = mLogService.GetSingleById(id.Value);
-
+            var result = mLogService.Add(materialLog);
             return Json(mLogService.Flat(result), JsonRequestBehavior.AllowGet);
         }
+        
+        // GET: MaterialLog/Edit/5
+        /// <summary>
+        /// get detail of materiallog item
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult Detail(int? id)
+        {
+            if (id != null)
+            {
+                var result = mLogService.GetSingleById(id.Value);
 
+                return Json(mLogService.Flat(result), JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(null, JsonRequestBehavior.AllowGet);
+        }
+        
         // POST: MaterialLog/Edit/5
+        /// <summary>
+        /// update materiallog detail
+        /// </summary>
+        /// <param name="materialLog"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Edit(MaterialLog materialLog)
         {
-            if (ModelState.IsValid)
-            {
-                mLogService.Update(materialLog);
-                mLogService.Save();
-                return Json("", JsonRequestBehavior.AllowGet);
-            }
-
-            return Json("Có lỗi xảy ra, vui lòng thử lại", JsonRequestBehavior.AllowGet);
+            var result =  mLogService.Update(materialLog);
+            return Json(mLogService.Flat(result), JsonRequestBehavior.AllowGet);
         }
 
         // POST: MaterialLog/Delete/5
         [HttpPost]
         public JsonResult Delete(int id)
         {
-            mLogService.Delete(id);
-            mLogService.Save();
-
-            return Json("", JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult SearchByName(string keyword, int rowPerPage)
-        {
-            logList = mLogService.SearchByName(keyword);
-            var result = new { totalItems = logList.Count(), items = mLogService.Paging(logList, rowPerPage, 1) };
+            var result = mLogService.Delete(id);
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult Search(MaterialLogSearchViewModel model/*, int rowPerPage*/)
+        public JsonResult Search(MaterialLogSearchViewModel model)
         {
-            logList = mLogService.Search(model);
-            var result = new { totalItems = logList.Count(), items = mLogService.Paging(logList, model.RowPerPage, 1) };
+            var result = mLogService.Search(model);
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(mLogService.Flat(result), JsonRequestBehavior.AllowGet);
         }
+        
     }
 }

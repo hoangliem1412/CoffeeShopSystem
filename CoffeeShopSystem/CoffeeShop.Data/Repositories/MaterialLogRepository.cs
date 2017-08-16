@@ -1,5 +1,6 @@
 ﻿using CoffeeShop.Data.Infrastructure;
 using CoffeeShop.Model.ModelEntity;
+using System.Linq;
 
 namespace CoffeeShop.Data.Repositories
 {
@@ -9,6 +10,12 @@ namespace CoffeeShop.Data.Repositories
             : base(dbFactory)
         {
 
+        }
+
+        public void RefreshInstance(MaterialLog entity)
+        {
+            entity.Material = DbContext.Materials.SingleOrDefault(x => x.ID == entity.MaterialID);
+            entity.User = DbContext.Users.SingleOrDefault(x => x.ID == entity.EmployeeID);
         }
     }
 }

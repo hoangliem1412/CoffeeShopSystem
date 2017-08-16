@@ -1,6 +1,5 @@
 ﻿using CoffeeShop.Model.ModelEntity;
 using CoffeeShop.Service;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -9,13 +8,16 @@ namespace CoffeeShop.Web.Controllers
 {
     public class PromotionController : Controller
     {
-
         //initialize service object
         static int itemperpage = 5;
         IPromotionService _promotionService;
         IEnumerable<Promotion> list;
         int TotalPage;
 
+        /// <summary>
+        /// This is PromotionController Constructer
+        /// </summary>
+        /// <param name="PromotionService"></param>
         public PromotionController(IPromotionService PromotionService)
         {
             _promotionService = PromotionService;
@@ -36,6 +38,7 @@ namespace CoffeeShop.Web.Controllers
             ViewBag.CurPage = page;
             ViewBag.Select = "active";
             ViewBag.Count = list.Count();
+
             return View(_promotionService.Paging(list, itemperpage, page));
         }
 
@@ -54,10 +57,9 @@ namespace CoffeeShop.Web.Controllers
             ViewBag.Pages = TotalPage;
             ViewBag.CurPage = page;
             ViewBag.Count = list.Count();
+
             return View("Index", _promotionService.Paging(list, itemperpage, page));
         }
-
-
 
         /// <summary>
         /// This method is used to create a Promotion
@@ -70,6 +72,7 @@ namespace CoffeeShop.Web.Controllers
             _promotionService.Add(promotion);
             _promotionService.Save();
             int lastpage = _promotionService.GetTotalPage(_promotionService.GetActive().Count(), itemperpage);
+
             return RedirectToAction("Index", new { page = lastpage });
         }
 
@@ -81,9 +84,9 @@ namespace CoffeeShop.Web.Controllers
         public JsonResult GetById(int idToGet)
         {
             Promotion promotion = _promotionService.GetById(idToGet);
+
             return Json(promotion, JsonRequestBehavior.AllowGet);
         }
-
 
         /// <summary>
         /// This method is used to edit a Promotion
@@ -95,6 +98,7 @@ namespace CoffeeShop.Web.Controllers
         {
             _promotionService.Update(Promotion);
             _promotionService.Save();
+
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
@@ -109,11 +113,10 @@ namespace CoffeeShop.Web.Controllers
             return Json(_promotionService.DeletePromotion(idToDelete), JsonRequestBehavior.AllowGet);
         }
 
-
         /// <summary>
         /// This method is used to recovery a Promotion
         /// </summary>
-        /// <param name="IdToDelete"></param>
+        /// <param name="idToRecovery"></param>
         /// <returns>Json</returns>
         [HttpPost]
         public JsonResult Recovery(int idToRecovery)
@@ -121,23 +124,29 @@ namespace CoffeeShop.Web.Controllers
             return Json(_promotionService.RecoveryPromotion(idToRecovery), JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// This method is used to Searchbasic
+        /// </summary>
+        /// <param name="keyword"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public ActionResult BasicSearch(string keyword, int page = 1)
         {
             list = _promotionService.BasicSearch(keyword);
             TotalPage = _promotionService.GetTotalPage(list.Count(), itemperpage);
+
             ViewBag.Pages = TotalPage;
             ViewBag.CurPage = page;
             ViewBag.Select = "active";
 
             ViewBag.keyword = keyword;
             ViewBag.Count = list.Count();
+
             return View("Index", _promotionService.Paging(list, itemperpage, page));
         }
 
-
         /// <summary>
-        /// This method is used to Search
+        /// This method is used to Search Advanced
         /// </summary>
         /// <param name="promotion"></param>
         /// <returns></returns>
@@ -145,6 +154,7 @@ namespace CoffeeShop.Web.Controllers
         {
             list = _promotionService.AdvancedSearch(Name, StartDate, EndDate);
             TotalPage = _promotionService.GetTotalPage(list.Count(), itemperpage);
+
             ViewBag.Pages = TotalPage;
             ViewBag.CurPage = page;
             ViewBag.Select = "active";
@@ -153,6 +163,7 @@ namespace CoffeeShop.Web.Controllers
             ViewBag.StartDate = StartDate;
             ViewBag.EndDate = EndDate;
             ViewBag.Count = list.Count();
+
             return View("Index", _promotionService.Paging(list, itemperpage, page));
         }
     }

@@ -21,7 +21,7 @@ namespace CoffeeShop.Data.Repositories
 
 
         /// <summary>
-        /// Tìm kiếm theo ID hoặc Tên bàn  hoặc tên khách hàng
+        /// Search by ID or tableName
         /// </summary>
         /// <param name="keyword"></param>
         /// <returns> IEnumerable<Order></returns>

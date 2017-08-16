@@ -3,505 +3,16 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style type="text/css">
-    #tbOrderProduct tr {
-        width: 100%;
-        display: inline-table;
-        table-layout: fixed;
-    }
+<link href="~/Asserts/DataTables-1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="~/Content/Order.css" rel="stylesheet" />
+<link href="~/Asserts/DuyVM2.css" rel="stylesheet" />
 
-    #tbOrderProduct {
-        height: 240px;
-        display: -moz-groupbox;
-    }
-
-        #tbOrderProduct tbody {
-            overflow-y: scroll;
-            height: 200px;
-            /*width: 100%;*/
-            position: absolute;
-        }
-
-    /*https://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap*/
-</style>
 @section js{
-
-    <script>
-        $(document).ready(function () {
-
-			//advance search
-			$('#OptionSearch').on('click', function () {
-                var click = $(this);
-                if (click.data('option') == "0")
-                {
-                    $('#frmAdvancedSearch').removeClass('hidden');
-                    click.data('option', '1');
-                }
-                else {
-                    $('#frmAdvancedSearch').addClass('hidden');
-                    click.data('option', '0');
-                }
-            })
-            //Xem chi tiet
-            $("#bodyOrder").on('click', '.btnDetail', function () {
-                var id = $(this).data('id');
-
-                $.ajax({
-                    url: '@Url.Action("GetListOrderProductByOrderID", "Order")',
-                    type: 'post',
-                    data: { 'id': id },
-                    dataType: 'json',
-                    timeout: 30 * 1000,
-
-                })
-                            .done(function (data) {
-                                $('#Detailbody').empty();
-                                $.each(data, function (idx, item) {
-                                    var html =
-                                        '<tr>' +
-                                            '<td>' + item.name + '</td>' +
-                                             '<td>' + item.price + '</td>' +
-                                              '<td>' + item.quantity + '</td>' +
-                                            '<td>' + item.money + '</td>' +
-                                        '</tr>';
-                                    $('#Detailbody').append(html);
-                                });
-                                $('#modalDetail').modal('show');
-                            })
-                            .fail(function (jqXHR, status, error) {
-                                console.log(jqXHR);
-                                alert('fail');
-                            });
-            });
-
-
-            //EditOrder
-
-            $('#bodyOrder').on('click', '.btnEdit', function () {
-                var id = $(this).data('id');
-
-                $('#modalEdit [name=txtID]').val($(this).data('id'));
-                $('#modalEdit [name=txtName]').val($(this).data('user'));
-                $('#modalEdit [name=txtPromotion').val($(this).data('promo'));
-                $('#modalEdit [name=txtTable]').val($(this).data('table'));
-                $('#modalEdit [name=txtSetDate]').val($(this).data('date'));
-                $('#modalEdit [name=txtStatus]').val($(this).data('status'));
-                $('#modalEdit [name=lbMonney]').html($(this).data('money'));
-
-                //Lấy dữ liệu và gán vào modal
-                $.ajax({
-                    url: '@Url.Action("GetListOrderProductByOrderID", "Order")',
-                    type: 'post',
-                    data: { 'id': id },
-                    dataType: 'json',
-                    //   timeout: 30 * 1000,
-
-                })
-                        .done(function (data) {
-                            $('#tbEdit').empty();
-                            $.each(data, function (idx, item) {
-                                var html =
-                                    '<tr class="tr-' + item.id + '">' +
-                                        '<td>' + item.name + '</td>' +
-                                        '<td id="eprice-' + item.id + '" data-eprice="' + item.price + '">' + item.price + '</td>' +
-                                        '<td>' + '<input type="number" min="0" id="eq-' + item.id + '"value="' + item.quantity + '"class="form-control txtEQuantityPro"/> ' + '</td>' +
-                                        '<td id="eamount' + item.id + '">' + item.money + '</td>' +
-                                        '<td>' + '<a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnEProEdit" title="Sửa"><i class="fa fa-pencil"></i></a>'
-                                         + '<a href="javascript:;" data-id="' + item.id + '" class="btn btn-danger btn-xs btnEProRemove" title="Xóa"><i class="fa fa-trash-o"></i></a></td>'
-                                '</tr>';
-                                $('#tbEdit').append(html);
-                            });
-
-                        })
-                        .fail(function (jqXHR, status, error) {
-                            console.log(jqXHR);
-                            alert('fail');
-                        });
-                $('#modalEdit').modal('show');
-
-
-                //Gán session
-                $.ajax({
-                    url: '@Url.Action("SetOrderToSession", "Order")',
-                    type: 'post',
-                    data: { 'id': id },
-                    dataType: 'json',
-                    // timeout: 30 * 1000,
-
-                })
-                 .done(function (data) {
-                 })
-                  .fail(function (jqXHR, status, error) {
-                      console.log(jqXHR);
-                      alert('fail');
-                  });
-            });
-
-
-            //Cập nhật lại sản phẩm trong session
-            $('#tbEdit').on('click', '.btnEProEdit', function () {
-
-                var id = $(this).data('id');
-                var quantity = $('#tbEdit #eq-' + id).val();
-
-                $.ajax({
-                    url: '@Url.Action("UpdateOrderProduct", "Order")',
-                    type: 'post',
-                    data: { 'id': id, 'q': quantity },
-                    dataType: 'json',
-                    // timeout: 30 * 1000,
-                })
-                .done(function (data) {
-
-                    //cập nhật lại dữ liệu trên modal
-                    $('#tbEdit #eq-' + id).val(quantity);
-                    $('#tbEdit #eprice-' + id).data('eprice');
-                    $('#tbEdit #eamount' + id).html($('#tbEdit #eprice-' + id).data('eprice') * quantity)
-                    $('#modalEdit [name=lbMonney]').html(data);
-
-                })
-                 .fail(function (jqXHR, status, error) {
-                     console.log(jqXHR);
-                     alert('fail');
-                 });
-
-            });
-
-
-            //Xóa sản phẩm khỏi session
-            $('#tbEdit').on('click', '.btnEProRemove', function () {
-
-                $('#confirmDelete').modal('show');
-            });
-
-            $('#btnConfirmDelete').on('click', function () {
-                var id = $('#tbEdit .btnEProRemove').data('id');
-
-                $.ajax({
-                    url: '@Url.Action("RemoveOrderProduct", "Order")',
-                    type: 'post',
-                    data: { 'id': id },
-                    dataType: 'json',
-                    // timeout: 30 * 1000,
-                })
-                .done(function (data) {
-
-                    $('#confirmDelete').modal('hide'); //Đóng form xác nhận
-                    $('#tbEdit .tr-' + id).remove(); //Xóa item khỏi table
-                    $('#modalEdit [name=lbMonney]').html(data);//cập nhật lại tiền
-
-                })
-                 .fail(function (jqXHR, status, error) {
-                     console.log(jqXHR);
-                     alert('fail');
-                 });
-            });
-
-
-
-            //Cập nhật lại db từ session khi khi người dùng nhấn "Lưu"
-
-            $('#btnSaveChanges').on('click', function () {
-
-                var id = $('#modalEdit [name=txtID]').val();
-                var status = $('#modalEdit [name=txtStatus]').val();
-                var tableID = $('#modalEdit [name=txtTable]').val();
-
-                $.ajax({
-                    url: '@Url.Action("UpdateOrder", "Order")',
-                    type: 'post',
-                    data: { 'id': id, 'tableID': tableID, 'status': status },
-                    dataType: 'json',
-                    // timeout: 30 * 1000,
-                })
-                .done(function (data) {
-
-                    var id = $('#modalEdit [name=txtID]').val();
-
-                    ////Xoa khoi table khi thay doi trang thai
-                    //var sttBeforeEdit = $('#bodyOrder #bodyStatus-' + id).text();
-                    //var sttAfterEdit = $('#modalEdit [name=txtStatus]  option:selected').text();
-
-                    //if (sttAfterEdit != sttBeforeEdit) {
-                    //    $('.trbody-' + id).remove();
-                    //}
-
-                    //Cập nhật lại thay đổi hóa đơn trong table
-                    $('#bodyOrder #bodyTotalMoney-' + id).html($('#modalEdit [name=lbMonney]').html());
-                    $('#bodyOrder #bodyTableName-' + id).html($('#modalEdit [name=txtTable] option:selected').text());
-                    $('#bodyOrder #bodyStatus-' + id).html($('#modalEdit [name=txtStatus] option:selected').text());
-
-                    $('#modalEdit').modal('hide');//ẩn modal
-
-                })
-                 .fail(function (jqXHR, status, error) {
-                     console.log(jqXHR);
-                     alert('fail');
-                 });
-            });
-
-
-
-            //Tìm kiếm
-            $('#txtSearch').on('input', function () {
-                var keyword = $(this).val();
-                var status;
-                var boolStatus;
-
-                $.ajax({
-                    url: '@Url.Action("Search", "Order")',
-                    type: 'post',
-                    data: { 'keyword': keyword },
-                    dataType: 'json',
-                    // timeout: 30 * 1000,
-                })
-                .done(function (data) {
-
-                    $('#bodyOrder').empty();
-                    var html = '';
-
-                    if (data == 0) {
-                        html = '<h4>Không có kết quả tìm kiếm</h4>';
-                    }
-                    else {
-                        $.each(data, function (idx, item) {
-
-                            //parse ngày tháng từ chuỗi trong json
-                            var currentTime = new Date(parseInt(item.setDate.replace('/Date(', '')));
-                            var month = currentTime.getMonth() + 1;
-                            var day = currentTime.getDate();
-                            var year = currentTime.getFullYear();
-                            var date = day + "-" + month + "-" + year;
-
-                            if (item.status == false) {
-                                status = "Chưa thanh toán";
-                                boolStatus = "False";
-                            }
-                            else if (item.status == true) {
-                                status = "Đã thanh toán";
-                                boolStatus = "True";
-                            }
-
-                            //show data table
-                            html +=
-                                 '<tr class="trbody-' + item.id + '">' +
-                                        '<td>' + item.id + '</td>' +
-                                        '<td id="bodyTableName-' + item.id + '">' + item.tableName + '</td>' +
-                                        '<td>' + item.userName + '</td>' +
-                                        '<td>' + item.promoName + '</td>' +
-                                        '<td>' + date + '</td>' +
-                                        '<td id="bodyTotalMoney-' + item.id + '">' + item.totalMoney + '</td>' +
-                                        '<td id="bodyStatus-' + item.id + '">' + status + '</td>' +
-                                        '<td>' +
-                                         ' <a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnDetail" title="Xem chi tiết">' +
-                                             '<i class="fa fa-folder"></i>' +
-                                         '</a>' +
-                                         '</td>' +
-                                      '<td>' +
-                                          '<a href="javascript:;" data-id="' + item.id + '"data-table="' + item.tableID + '" data-promo="' + item.promoName + '" data-user="' + item.userName + '" data-date="' + date + '" data-status="' + boolStatus + '" data-money="' + item.totalMoney + '"class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
-                                      '</td>' +
-                                 '</tr>';
-                        })
-                    }
-                    $('#bodyOrder').html(html);
-
-                })
-                 .fail(function (jqXHR, status, error) {
-                     console.log(jqXHR);
-                     alert('fail');
-                 });
-            });
-
-
-
-            //Filter theo tình trạng hóa đơn
-            $('#frmView [name=optradio]').change(function () {
-                var status = $('input[name=optradio]:checked', '#frmView').val();
-                $.ajax({
-                    url: '@Url.Action("FilterStatus", "Order")',
-                    type: 'post',
-                    data: { 'status': status },
-                    dataType: 'json',
-                    // timeout: 30 * 1000,
-                })
-                .done(function (data) {
-
-                    $('#bodyOrder').empty();
-
-                    var html = '';
-
-                    $.each(data, function (idx, item) {
-
-                        var currentTime = new Date(parseInt(item.setDate.replace('/Date(', '')));
-                        var month = currentTime.getMonth() + 1;
-                        var day = currentTime.getDate();
-                        var year = currentTime.getFullYear();
-                        var date = day + "-" + month + "-" + year;
-
-                        if (item.status == false) {
-                            status = "Chưa thanh toán";
-                            boolStatus = "False";
-                        }
-                        else if (item.status == true) {
-                            status = "Đã thanh toán";
-                            boolStatus = "True";
-                        }
-                        //show data table
-                        html +=
-                             '<tr class="trbody-' + item.id + '">' +
-                                    '<td>' + item.id + '</td>' +
-                                    '<td id="bodyTableName-' + item.id + '">' + item.tableName + '</td>' +
-                                    '<td>' + item.userName + '</td>' +
-                                    '<td>' + item.promoName + '</td>' +
-                                    '<td>' + date + '</td>' +
-                                    '<td id="bodyTotalMoney-' + item.id + '">' + item.totalMoney + '</td>' +
-                                    '<td id="bodyStatus-' + item.id + '">' + status + '</td>' +
-                                    '<td>' +
-                                     ' <a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnDetail" title="Xem chi tiết">' +
-                                         '<i class="fa fa-folder"></i>' +
-                                     '</a>' +
-                                     '</td>' +
-                                  '<td>' +
-                                      '<a href="javascript:;" data-id="' + item.id + '"data-table="' + item.tableID + '" data-promo="' + item.promoName + '" data-user="' + item.userName + '" data-date="' + date + '" data-status="' + boolStatus + '" data-money="' + item.totalMoney + '"class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
-                                  '</td>' +
-                             '</tr>';
-                    })
-
-                    $('#bodyOrder').html(html);
-                })
-                 .fail(function (jqXHR, status, error) {
-                     console.log(jqXHR);
-                     alert('fail');
-                 });
-            });
-        });
-    </script>
-
-
-    <!--Sort table-->
-    <script>
-
-        //https://www.w3schools.com/howto/howto_js_sort_table.asp
-
-        function sortTable(n) {
-            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-            table = document.getElementById("listTable");
-            switching = true;
-            dir = "asc";
-            while (switching) {
-                switching = false;
-                rows = table.getElementsByTagName("TR");
-                for (i = 1; i < (rows.length - 1) ; i++) {
-                    shouldSwitch = false;
-                    x = rows[i].getElementsByTagName("TD")[n];
-                    y = rows[i + 1].getElementsByTagName("TD")[n];
-                    if (dir == "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    } else if (dir == "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                            shouldSwitch = true;
-                            break;
-                        }
-                    }
-                }
-                if (shouldSwitch) {
-                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                    switching = true;
-                    switchcount++;
-                } else {
-                    if (switchcount == 0 && dir == "asc") {
-                        dir = "desc";
-                        switching = true;
-                    }
-                }
-            }
-        }
-    </script>
-    <!--Search in table-->
-    <script>
-        function Search() {
-            var input, filter, table, tr, td, tdTableName, tdID, i;
-            input = document.getElementById("txtSearch2");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("listTable");
-            tr = table.getElementsByTagName("tr");
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[2];
-                tdTableName = tr[i].getElementsByTagName("td")[1];
-                tdID = tr[i].getElementsByTagName("td")[0];
-
-                if (td) {
-                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1 || tdTableName.innerHTML.toUpperCase().indexOf(filter) > -1 || tdID.innerHTML.toUpperCase().indexOf(filter) > -1 || tdID.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
-            }
-        }
-    </script>
-	
-	<!--advanced search by date and table name-->
-    <script>
-        $('#advancedSearch').on('click', function () {
-            $.ajax({
-                url: '@Url.Action("AdvancedSearch", "Order")',
-                type: 'post',
-                data: { 'customerName': $('#txtSearch2').val(), 'aSFromDate': $('#aSFromDate').val(), 'aSToDate': $('#aSToDate').val(), 'aSTableName': $('#aSTableName').val() },
-                dataType: 'json',
-                // timeout: 30 * 1000,
-            })
-                .done(function (data) {      
-                    var html = '';
-                    $.each(data, function (idx, item) {
-
-                        var currentTime = new Date(parseInt(item.setDate.replace('/Date(', '')));
-                        var month = currentTime.getMonth() + 1;
-                        var day = currentTime.getDate();
-                        var year = currentTime.getFullYear();
-                        var date = day + "-" + month + "-" + year;
-
-                        if (item.status == false) {
-                            status = "Chưa thanh toán";
-                            boolStatus = "False";
-                        }
-                        else if (item.status == true) {
-                            status = "Đã thanh toán";
-                            boolStatus = "True";
-                        }
-                        //show data table
-                        html +=
-                             '<tr class="trbody-' + item.id + '">' +
-                                    '<td>' + item.id + '</td>' +
-                                    '<td id="bodyTableName-' + item.id + '">' + item.tableName + '</td>' +
-                                    '<td>' + item.userName + '</td>' +
-                                    '<td>' + item.promoName + '</td>' +
-                                    '<td>' + date + '</td>' +
-                                    '<td id="bodyTotalMoney-' + item.id + '">' + item.totalMoney + '</td>' +
-                                    '<td id="bodyStatus-' + item.id + '">' + status + '</td>' +
-                                    '<td>' +
-                                     ' <a href="javascript:;" data-id="' + item.id + '" class="btn btn-primary btn-xs btnDetail" title="Xem chi tiết">' +
-                                         '<i class="fa fa-folder"></i>' +
-                                     '</a>' +
-                                     '</td>' +
-                                  '<td>' +
-                                      '<a href="javascript:;" data-id="' + item.id + '"data-table="' + item.tableID + '" data-promo="' + item.promoName + '" data-user="' + item.userName + '" data-date="' + date + '" data-status="' + boolStatus + '" data-money="' + item.totalMoney + '"class="btn btn-info btn-xs btnEdit" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>' +
-                                  '</td>' +
-                             '</tr>';
-                    })
-
-                    $('#bodyOrder').html(html);
-               })
-            .fail(function () {
-                alert('fail');
-            });
-        });
-    </script>
-
+<script src="~/Asserts/DataTables-1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/Order.js"></script>
+    <script src="~/Asserts/DataTables-1.10.15/js/dataTables.bootstrap.min.js"></script>
 }
+
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
@@ -516,16 +27,6 @@
 
         <div class="x_content" style="display: block;">
             <div class="row">
-                <div class="col-sm-4">
-                    @*<label>Hiện</label>
-                        <select>
-                            <option value="value">5</option>
-                            <option value="value">10</option>
-                            <option value="value">50</option>
-                            <option value="value">100</option>
-                        </select>
-                        <label>Trên</label>*@
-                </div>
                 <div class="col-sm-8">
                     <form id="frmView">
                         <label class="radio-inline">
@@ -542,27 +43,31 @@
 
             </div>
             <div class="panel panel-default panel-table" style="margin-top: 20px">
-                <div class="panel-heading clearfix">
-                    <div class="col-sm-8">
-                        <a href="javascript:;" id="btnAddNew" title="Thêm mới" class="panel-title"></a>
+                <div class="lengthpage" style="padding-left:5px;">
+                    <div class="float-left">
+                        <select class="form-control text-center" id="lengthpage">
+                            <option value="0" disabled>Hiển thị</option>
+                            <option value="2">2</option>
+                            <option value="5">5</option>
+                            <option selected value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="-1">Tất cả</option>
+                        </select>
+                    </div>
+                </div>
+                <a style="float: right; margin-top: 5px" data-click="0" href="javascript:;" id="AddvancedButton" title="Chuyển tùy chọn tìm kiếm" class="btn btn-danger"><i class="fa fa-cogs"></i></a>
+                <div class="searchbox">
+
+                    <div id="basesearch" class="searchbox-hiden">
+                        <div class="form-groups">
+                            <div class="col-sm-12">
+                                <input type="text" id="search2" title="Tên bàn, tên khách hàng..." class="form-control" placeholder="Từ khóa">
+                            </div>
+                        </div>
                     </div>
 
-                    @*<div class="col-sm-4">
-                            <input type="text" id="txtSearch" class="form-control" placeholder="Nhập từ khóa">
-                        </div>*@
-                    <div class="col-sm-4 form-inline" >
-                        @*<input type="text" id="txtSearch2" onkeyup="Search()" class="form-control" placeholder="Từ khóa">*@
-                        <a id="OptionSearch" style="float:right; margin-left:10px" data-option="0" class="btn btn-primary">
-                            <i class="fa fa-cogs"></i>
-                        </a>
-                        <div style="float:right" class="input-group">
-                            <input type="text" class="form-control" id="txtSearch2" onkeyup="Search()" placeholder="Từ khóa">
-                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-                        </div>  
-                    </div>
-					<!--Tìm kiếm nâng cao-->
-                    <div id="frmAdvancedSearch" class="hidden">
-                        <div class="col-sm-8" style="float:right">
+                    <div id="frmAdvancedSearch" style="margin-top:40px;padding:5px;" class="hidden">
+                        <div class="col-sm-12" style="float:right;padding:0px;">
                             <div class="form-group col-sm-4">
                                 <label>Từ ngày</label>
                                 <input type="date" id="aSFromDate" class="form-control" />
@@ -574,7 +79,7 @@
                             <div class="form-group col-sm-4">
                                 <label>Tên bàn</label>
                                 <select class="form-control" id="aSTableName">
-                                    <option value="0">------------</option>
+                                    <option value="0">-----Tất cả------</option>
                                     @foreach (var item in ViewBag.ListTable)
                                     {
                                         <option value="@item.ID">@item.Name</option>
@@ -586,19 +91,20 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="panel-body clearfix">
                     <table id="listTable" class="table table-striped table-responsive jambo_table bulk_action">
                         <thead>
                             <tr>
-                                <th style="cursor:pointer" onclick="sortTable(0)">Mã hóa đơn &nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
-                                <th style="cursor:pointer" onclick="sortTable(1)">Tên bàn&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
-                                <th style="cursor:pointer" onclick="sortTable(2)">Tên khách hàng&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
-                                <th style="cursor:pointer" onclick="sortTable(3)">Khuyến mãi&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
-                                <th style="cursor:pointer" onclick="sortTable(4)">Ngày tạo&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
-                                <th style="cursor:pointer" onclick="sortTable(5)">Thành tiền&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
-                                <th style="cursor:pointer" onclick="sortTable(6)">Tình trạng&nbsp;<i class="fa fa-sort" aria-hidden="true"></i></th>
+                                <th>Mã hóa đơn</th>
+                                <th>Tên bàn</th>
+                                <th>Tên khách hàng</i></th>
+                                <th>Khuyến mãi</i></th>
+                                <th>Ngày tạo</th>
+                                <th>Thành tiền</th>
+                                <th>Tình trạng</th>
                                 <th>&nbsp;</th>
                                 <th>&nbsp;</th>
                             </tr>
@@ -637,26 +143,6 @@
                             }
                         </tbody>
                     </table>
-                </div>
-                <div class="panel-footer">
-                    <div class="row">
-                        <div class="col col-xs-4">
-                            Page 1 of 5
-                        </div>
-                        <div class="col col-xs-8">
-                            <ul class="pagination hidden-xs pull-right">
-                                <li><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">4</a></li>
-                                <li><a href="#">5</a></li>
-                            </ul>
-                            <ul class="pagination visible-xs pull-right">
-                                <li><a href="#">«</a></li>
-                                <li><a href="#">»</a></li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

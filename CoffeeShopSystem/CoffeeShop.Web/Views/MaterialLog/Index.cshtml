@@ -1,26 +1,19 @@
-﻿@model IEnumerable<CoffeeShop.Model.ModelEntity.MaterialLog>
+﻿@model dynamic
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
     var mateList = ViewBag.MateList as IEnumerable<CoffeeShop.Model.ModelEntity.Material>;
-
-    // test pagination
-    int currentPage = 1;
-    var totalItems = (int)ViewBag.TotalItems;
-    int rowPerPage = 10; //(int)ViewBag.RowPerPage;
-    var totalPages = totalItems * 1.0 / rowPerPage;
-    if (totalPages > (int)totalPages)
-    {
-        totalPages = (int)totalPages + 1;
-    }
 }
 
+@section css {
+    <link href="~/Asserts/DataTables-1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Asserts/DuyVM2.css" rel="stylesheet" />
+}
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
-            <h2>Bản ghi nhập - xuất nguyên vật liệu</h2>
+            <h2>DANH SÁCH LOG NGUYÊN VẬT LIỆU</h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li style="float:right">
                     <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -31,49 +24,49 @@
 
         <div class="x_content" style="display: block;">
             <div class="row">
-                <div class="col-sm-4">
-                    <label>Hiện</label>
-                    <select id="slRowPerPage" name="slRowPerPage">
-                        <option value="5" @(rowPerPage == 5 ? "selected" : "")>5</option>
-                        <option value="10" @(rowPerPage == 10 ? "selected" : "")>10</option>
-                        <option value="20" @(rowPerPage == 20 ? "selected" : "")>20</option>
-                        <option value="50" @(rowPerPage == 50 ? "selected" : "")>50</option>
-                        <option value="100" @(rowPerPage == 100 ? "selected" : "")>100</option>
-                    </select>
-                    <label>dòng mỗi trang</label>
-                </div>
-                <div class="col-sm-6">
-                    <form id="frmGetByStatus">
+                <div class="col-sm-8">
+                    <form id="viewOption">
                         <label class="radio-inline">
-                            <input type="radio" name="optradio" value="0" checked="checked">Đang quản lý
+                            <input type="radio" name="option" checked="checked" value="0">Đang quản lý
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="optradio" value="1">Đã xóa
+                            <input type="radio" id="check" name="option" value="1">Đã xóa
                         </label>
                     </form>
                 </div>
 
             </div>
             <div class="panel panel-default panel-table" style="margin-top: 20px">
-                <div class="panel-heading clearfix">
-                    <div class="col-sm-6">
-                        <a href="javascript:;" id="btnAddNew" data-toggle="modal" data-target="#infoModal" title="Thêm mới" class="panel-title"><i class="glyphicon glyphicon-plus"></i></a>
+                <div class="clearfix">
+                    <div class="addbtn">
+                        <a href="javascript:;" id="AddButton" title="Thêm mới" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></a>
                     </div>
-
-                    <div class="col-sm-6">
-                        <div class="form-inline">
-                            <button id="btnAdvanceSearch" class="btn pull-right"><i class="fa fa-cogs"></i></button>
-                            <button id="btnBasicSearch" class="btn pull-right" style="margin-left:5px;"><i class="fa fa-search"></i></button>
-                            <input type="text" class="form-control pull-right" id="txtKeyword" placeholder="Từ khóa...">
+                    <div class="lengthpage">
+                        <div class="float-left">
+                            <select class="form-control text-center" id="lengthpage">
+                                <option value="0" disabled>Hiển thị</option>
+                                <option value="5">5</option>
+                                <option selected value="10">10</option>
+                                <option value="20">50</option>
+                                <option value="-1">Tất cả</option>
+                            </select>
                         </div>
                     </div>
-
-                    <div class="col-sm-12 hide" id="advanceSearchBox">
-                        <div style="border-bottom: 1px solid lightgray;">
-                            <h4>Tìm kiếm nâng cao</h4>
+                    <a style="float: right; margin-top: 5px" data-click="0" href="javascript:;" id="AdvancedSearchButton" title="Chuyển tùy chọn tìm kiếm" class="btn btn-danger"><i class="fa fa-cogs"></i></a>
+                    <div class="searchbox">
+                        <div id="basesearch" class="searchbox-hiden">
+                            <div class="form-groups">
+                                <div class="col-sm-12">
+                                    <input type="text" id="search" title="Tên nguyên vật liệu,..." class="form-control" placeholder="Từ khóa">
+                                </div>
+                            </div>
                         </div>
-                        <div style="padding-top:5px;">
-                            <form id="frmAdvanceSearch" class="">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <div id="advancedsearch" class="searchbox-hiden" style="display:none;position:inherit;margin:20px auto;">
+                        <form id="SearchAdvancedForm" action="@Url.Action("Search", "MaterialLog")" method="get">
+                            <div class="form-groups">
                                 <div class="form-group col-sm-4 col-xs-12">
                                     <label>
                                         Từ ngày
@@ -104,12 +97,12 @@
                                         }
                                     </select>
                                 </div>
-                                @*<div class="form-inline">
-                                        <label>
-                                            Nhân viên
-                                        </label>
-                                        <input class="form-control" type="text" name="MaterialName" value=" " />
-                                    </div>*@
+                                <div class="form-group col-sm-4 col-xs-12">
+                                    <label>
+                                        Nhân viên
+                                    </label>
+                                    <input class="form-control" type="text" name="MaterialName" value=" " />
+                                </div>
                                 <div class="form-group col-sm-4 col-xs-12">
                                     <label>
                                         Số lượng tồn
@@ -148,169 +141,104 @@
                                         <option value="1">Đã xóa</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-sm-2">
-                                    <label>.</label>
-                                    <button class="form-control" type="submit" style="background:#ddd;">Tìm</button>
+                                <div style="clear:both;">
+                                    <button type="button" class="btn btn-default pull-left" id="btnAdvancedSearch" style="margin-left:10px;"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
                 <div class="panel-body clearfix">
-                    <table class="table table-striped table-responsive jambo_table bulk_action" id="listTable">
+                    <table id="Table" class="table table-striped table-responsive jambo_table bulk_action">
                         <thead>
-                            <tr class="headings">
-                                <th>
-                                    <div class="icheckbox_flat-green" style="position: relative;"><input type="checkbox" id="check-all" class="flat" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                                </th>
-                                <th class="column-title">
-                                    ID
-                                </th>
-                                <th class="column-title">
-                                    Ngày ghi
-                                </th>
-                                <th class="column-title">
-                                    Tên nguyên vật liệu
-                                </th>
-                                <th class="column-title">
-                                    Số lượng tồn
-                                </th>
-                                <th class="column-title">
-                                    Đơn giá
-                                </th>
-                                <th class="column-title">
-                                    Tên nhân viên
-                                </th>
-                                <th class="column-title">
-                                    Loại log ghi
-                                </th>
-                                <th class="column-title">
-                                    Chú thích
-                                </th>
-                                <th class="column-title no-link last">
-                                    <span class="nobr">Action</span>
-                                </th>
-                                <th class="bulk-actions" colspan="7">
-                                    <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-                                </th>
+                            <tr>
+                                <th>#</th>
+                                <th>Ngày ghi</th>
+                                <th>Tên nguyên vật liệu</th>
+                                <th>Số lượng tồn</th>
+                                <th>Đơn giá</th>
+                                <th>Tên nhân viên</th>
+                                <th>Loại log ghi</th>
+                                <th>Chú thích</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-
-                        <tbody id="logContent">
+                        <tbody id="BodyTable">
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td></td>
+                                <tr id="item-@item.ID">
+                                    <td>@item.ID</td>
+                                    <td>@item.CreatedDate</td>
+                                    <td>@(item.Material == null ? "" : item.Material.Name)</td>
+                                    <td>@item.Inventory</td>
+                                    <td>@item.UnitPrice</td>
+                                    <td>@(item.User == null ? "" : item.User.Name)</td>
+                                    <td>@(item.Type == false ? "Thêm" : "Sửa")</td>
+                                    <td>@(string.IsNullOrWhiteSpace(item.Description) ? "đang cập nhật" : item.Description)</td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.ID)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.CreatedDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Material.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Inventory)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.UnitPrice)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.User.Username)
-                                    </td>
-                                    <td>
-                                        @(item.Type.GetValueOrDefault(false) == true ? "Sửa" : "Thêm")
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Description)
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-info btn-xs editItem" data-id="@(item.ID)" title="Chỉnh sửa"><i class="fa fa-pencil"></i></a>
-                                        <a href="#" class="btn btn-danger btn-xs deleteItem" data-id="@(item.ID)" title="Xóa"><i class="fa fa-trash-o"></i></a>
+                                        <a href="javascript:;" class="_edit btn btn-info btn-xs" data-id="@item.ID" title="Sửa"><i class="fa fa-pencil"></i></a>
+                                        <a href="javascript:;" class="_delete btn btn-danger btn-xs" data-id="@item.ID" data-toggle="modal" data-target="#DeleteModal" title="Xóa"><i class="fa fa-trash-o"></i></a>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
-                <div class="panel-footer">
-                    <div class="row">
-                        <div class="col col-xs-8 pull-right" id="logPaging">
-                            <ul class="pagination hidden-xs pull-right">
-                                @if (currentPage > 3 && currentPage < totalPages)
-                                {
-                                    <li><a href="javascript:;" data-page="1">Đầu tiên</a></li>
-                                }
-
-                                @for (int i = (currentPage - 2 > 0 ? currentPage - 2 : 1); i <= currentPage + 2 && i <= totalPages; i++)
-                                {
-                                    <li class=" @(i == currentPage ? "active" : "") "><a href="javascript:;" data-page="@(i)">@(i)</a></li>
-                                }
-
-                                @if (currentPage < totalPages - 2)
-                                {
-                                    <li><a href="javascript:;" data-page="@(totalPages)">Cuối cùng</a></li>
-                                }
-                            </ul>
-                            <ul class="pagination visible-xs pull-right">
-                                <li><a href="#">«</a></li>
-                                <li><a href="#">»</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
-@*create popup*@
-<div id="infoModal" class="modal fade" role="dialog" style="margin:auto;">
-    <div class="modal-dialog">
+<!-- Modal add-->
+<div class="modal fade" id="AddModal" role="dialog">
+    <div class="modal-dialog" style="width:700px">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Thông tin bản ghi</h4>
-            </div>
-            <div class="modal-body">
-                <form action="" id="frmMaterialLogInfo">
+            <form id="AddForm" method="post" action="@Url.Action("Create", "MaterialLog")" class="form-horizontal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Thông tin</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="ID" />
+                    <input type="hidden" name="IsDelete" value="false" />
+                    <input type="hidden" name="EmployeeID" value="1" />
                     <div class="clearfix">
                         <div class="form-group col-md-6 col-xs-12">
                             <label>Nguyên vật liệu</label>
                             <select class="form-control" name="MaterialID" id="slCategory">
-                                <option value="" selected disabled hidden>--Chọn ngyên vật liệu--</option>
                                 @foreach (var item in mateList)
                                 {
                                     <option value="@(item.ID)">@(item.Name)</option>
                                 }
                             </select>
+                            <label id="lblValidateMaterialID" style="color:red; display:none"></label>
                         </div>
                     </div>
                     <div class="clearfix">
                         <div class="form-group col-md-6 col-xs-12">
                             <label>Ngày nhập liệu</label>
                             <input type="date" name="CreatedDate" id="dtDate" class="form-control">
+                            <label id="lblValidateCreatedDate" style="color:red; display:none"></label>
                         </div>
                         <div class="form-group col-md-6 col-xs-12">
-                            <label>Nguyên vật liệu</label>
+                            <label>Loại log ghi</label>
                             <select class="form-control" name="Type" id="slType">
-                                <option value="" selected disabled hidden>--Chọn loại log--</option>
-                                <option value="false">Thêm</option>
+                                <option value="false" selected>Thêm</option>
                                 <option value="true">Sửa</option>
                             </select>
+                            <label id="lblValidateType" style="color:red; display:none"></label>
                         </div>
-
                     </div>
                     <div class="clearfix">
                         <div class="form-group col-md-6 col-xs-12">
                             <label>Số lượng tồn</label>
                             <input type="number" name="Inventory" id="txtInventory" class="form-control">
+                            <label id="lblValidateInventory" style="color:red; display:none"></label>
                         </div>
                         <div class="form-group col-md-6 col-xs-12 pull-left">
                             <label>Đơn giá</label>
                             <input type="number" name="UnitPrice" id="txtUnitPrice" class="form-control">
+                            <label id="lblValidateUnitPrice" style="color:red; display:none"></label>
                         </div>
                     </div>
                     <div class="clearfix">
@@ -319,79 +247,137 @@
                             <div>
                                 <textarea name="Description" id="txt" rows="3" class="form-control">đang cập nhật...</textarea>
                             </div>
+                            <label id="lblValidateDescription" style="color:red; display:none"></label>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <div id="errMessageHolder" class="alert alert-danger" style="display:none;text-align:left;">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton">Lưu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal edit-->
+<div class="modal fade" id="EditModal" role="dialog">
+    <div class="modal-dialog" style="width:700px">
+        <div class="modal-content">
+            <form id="EditForm" method="post" action="@Url.Action("Edit", "MaterialLog")" class="form-horizontal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Thông tin</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="ID" />
+                    <input type="hidden" name="IsDelete" />
+                    <input type="hidden" name="EmployeeID" value="1" />
+                    <div class="clearfix">
+                        <div class="form-group col-md-6 col-xs-12">
+                            <label>Nguyên vật liệu</label>
+                            <select class="form-control" name="MaterialID" id="slCategory">
+                                @foreach (var item in mateList)
+                                {
+                                    <option value="@(item.ID)">@(item.Name)</option>
+                                }
+                            </select>
+                            <label id="lblValidateMaterialID" style="color:red; display:none"></label>
                         </div>
-                        <input type="hidden" id="formInfoType" />
-                        <input type="hidden" id="txtID" />
-                        <button type="submit" class="btn btn-primary">Cập nhật</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                     </div>
-                    <input type="reset" class="hidden" />
-                </form>
-            </div>
+                    <div class="clearfix">
+                        <div class="form-group col-md-6 col-xs-12">
+                            <label>Ngày nhập liệu</label>
+                            <input type="date" name="CreatedDate" id="dtDate" class="form-control">
+                            <label id="lblValidateCreatedDate" style="color:red; display:none"></label>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12">
+                            <label>Loại log ghi</label>
+                            <select class="form-control" name="Type" id="slType">
+                                <option value="false" selected>Thêm</option>
+                                <option value="true">Sửa</option>
+                            </select>
+                            <label id="lblValidateType" style="color:red; display:none"></label>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="form-group col-md-6 col-xs-12">
+                            <label>Số lượng tồn</label>
+                            <input type="number" name="Inventory" id="txtInventory" class="form-control">
+                            <label id="lblValidateInventory" style="color:red; display:none"></label>
+                        </div>
+                        <div class="form-group col-md-6 col-xs-12 pull-left">
+                            <label>Đơn giá</label>
+                            <input type="number" name="UnitPrice" id="txtUnitPrice" class="form-control">
+                            <label id="lblValidateUnitPrice" style="color:red; display:none"></label>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="form-group col-md-12 col-xs-12">
+                            <label>Chú thích</label>
+                            <div>
+                                <textarea name="Description" id="txt" rows="3" class="form-control">đang cập nhật...</textarea>
+                            </div>
+                            <label id="lblValidateDescription" style="color:red; display:none"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton">Lưu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@*/create popup*@
 
-@*Create A PopUp Modal For DeleteConfirmation*@
-
-<div class="modal fade" id="DeleteConfirmation">
-    <div class="modal-dialog">
+<!--Delete Modal-->
+<div class="modal fade" id="DeleteModal" role="dialog">
+    <div class="modal-dialog" style="width:700px">
         <div class="modal-content">
-            <div class="modal-header">
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
-                <h4>THÔNG BÁO</h4>
-            </div>
-            <div class="modal-body">
-                <h4>Bạn có chắc muốn xóa ""?</h4>
-                <input type="hidden" class="id" />
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" data-dismiss="modal" id="r">Không</button>
-                <button type="button" class="btn btn-default" id="btnDeleteItem">Có</button>
-            </div>
+            <form id="DeleteForm" method="post" action="@Url.Action("Delete", "MaterialLog")">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 style="text-align: center">Xác Nhận</h4>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-center">Bạn chắc chắn xóa?</h5>
+                    <input type="hidden" name="ID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton" data-dismiss="modal">Đồng ý</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@*/Create A PopUp Modal For DeleteConfirmation*@
 
-@*Create A PopUp Modal For Message*@
-
-<div class="modal fade" id="messageBox">
-    <div class="modal-dialog modal-sm">
+<!--Recover Modal-->
+<div class="modal fade" id="RecoverModal" role="dialog">
+    <div class="modal-dialog" style="width:700px">
         <div class="modal-content">
-            <div class="modal-header">
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
-                <h4>THÔNG BÁO</h4>
-            </div>
-            <div class="modal-body">
-                teset
-            </div>
-            @*<div class="modal-footer">
-                    <a href="#" class="btn btn-primary" data-dismiss="modal" id="r">Cancle</a>
-                    <a href="#" class="btn btn-danger" onclick="ConfirmDelete()">Confirm</a>
-                </div>*@
+            <form id="RecoverForm" method="post" action="@Url.Action("Recover", "MaterialLog")">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 style="text-align: center">Xác Nhận</h4>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-center">Bạn chắc chắn phục hồi?</h5>
+                    <input type="hidden" name="ID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary savebutton" data-dismiss="modal">Đồng ý</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@*/Create A PopUp Modal For Message*@
-
-<script>
-    $(document).ready(function () {
-        //event click Thêm mới
-        $("#btnAddNew").click(function () {
-            $("#form")[0].reset();
-            $("#MyModal").modal();
-        });
-
-        //event click delete
-        $('.btn-danger').click(function () {
-            $("#DeleteConfirmation").modal("show");
-        });
-    });
-</script>
+@section js {
+    <!--js-->
+    <script src="~/Asserts/DataTables-1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="~/Asserts/jquery-validation-1.17.0/jquery.validate.min.js"></script>
+    <script src="~/Scripts/MaterialLog.js"></script>
+}
 

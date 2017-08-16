@@ -5,6 +5,9 @@ using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
 {
+    /// <summary>
+    /// Manage GroupTable event, action
+    /// </summary>
     public class GroupTableController : Controller
     {
         // GET: GroupTable
@@ -26,12 +29,12 @@ namespace CoffeeShop.Web.Controllers
         /// <summary>
         /// Cập nhật grouptable
         /// </summary>
-        /// <param name="gt">GroupTable</param>
+        /// <param name="groupTable">GroupTable</param>
         /// <returns>Json<bool></returns>
         [HttpPost]
-        public ActionResult Edit(GroupTable gt)
+        public ActionResult Edit(GroupTable groupTable)
         {
-            groupTableService.Update(gt);
+            groupTableService.Update(groupTable);
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 
@@ -49,15 +52,21 @@ namespace CoffeeShop.Web.Controllers
         /// <summary>
         /// Thêm grouptable
         /// </summary>
-        /// <param name="gt">GroupTable</param>
+        /// <param name="groupTable">GroupTable</param>
         /// <returns>Json<ID, Name, Surcharge, TableCount, Description></returns>
         [HttpPost]
-        public ActionResult Add(GroupTable gt)
+        public ActionResult Add(GroupTable groupTable)
         {
-            gt.ShopID = 1;
-            groupTableService.Add(gt);
+            groupTable.ShopID = 1;
+            groupTableService.Add(groupTable);
             groupTableService.Save();
-            var result = new { ID = gt.ID, Name = gt.Name, Surcharge = gt.Surcharge, TableCount = gt.Tables.Count, Description = gt.Description };
+            var result = new
+            {
+                ID = groupTable.ID,
+                Name = groupTable.Name,
+                Surcharge = groupTable.Surcharge,
+                TableCount = groupTable.Tables.Count,
+                Description = groupTable.Description };
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -69,7 +78,11 @@ namespace CoffeeShop.Web.Controllers
         [HttpPost]
         public ActionResult SearchCondition(bool delete)
         {
-            var resultToReturn = new { data = groupTableService.SearchCondition(delete), delete = delete };
+            var resultToReturn = new
+            {
+                data = groupTableService.SearchCondition(delete),
+                delete = delete
+            };
             return Json(resultToReturn, JsonRequestBehavior.AllowGet);
         }
 
@@ -95,7 +108,11 @@ namespace CoffeeShop.Web.Controllers
         public ActionResult SearchAdvanced(string name, decimal fromSurcharge, decimal toSurcharge, bool delete)
         {
             //Gọi service SearchAdvanced
-            var resultToReturn = new { data = groupTableService.SearchAdvanced(name, fromSurcharge, toSurcharge, delete), delete = delete };
+            var resultToReturn = new
+            {
+                data = groupTableService.SearchAdvanced(name, fromSurcharge, toSurcharge, delete),
+                delete = delete
+            };
             return Json(resultToReturn, JsonRequestBehavior.AllowGet);
         }
     }

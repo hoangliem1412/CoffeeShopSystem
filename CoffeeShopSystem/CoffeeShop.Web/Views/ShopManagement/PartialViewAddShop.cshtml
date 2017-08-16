@@ -6,9 +6,7 @@
 
 
     @section css {
-         @*<link href="c:\users\huancoder\desktop\mockv3\mock\[warning]not%20upload%20to%20snv\project\structure\coffeeshopsystem\coffeeshop.common\assets\bootstrap%20v3.3.7\css\bootstrap-theme.min.css" rel="stylesheet" />
-         <link href="c:\users\huancoder\desktop\mockv3\mock\[warning]not%20upload%20to%20snv\project\structure\coffeeshopsystem\coffeeshop.common\assets\jquery-ui-1.12.1\jquery-ui.min.css" rel="stylesheet" />
-        <*@
+         
 
 
         <style type="text/css">
@@ -19,328 +17,16 @@
                     text-decoration: none;
                 }
 
-                /*.btn span.glyphicon {
-                opacity: 0;
-            }
-
-            .btn.active span.glyphicon {
-                opacity: 1;
-            }*/
-
+            
                 .error {
                     color: red;
                 }
 
-                .bigcheckbox {
-                    width: 30px;
-                    height: 30px;
-                }
+                
         </style>
     }
 
-    @section js {
-             
-
-
-
-
-
-
-
-        <script>
-            $(function () {
-
-
-                $("#chkIsDelete").on('click', function () {
-                    $(this).val($(this).prop('checked'));
-                    alert($(this).val());
-                    //alert($("#chkIsDelete").val());//.is(':checked'));
-                });
-
-                //jQuery.extend(jQuery.validator.messages, {
-
-                //    email: "Định dạng email không hợp lệ."
-                //});
-
-
-                //jQuery.validator.addMethod("isNotContainNumber", function (value, element) {
-                //    return this.optional(element) || (isNotContainNumber());
-                //}, "Số điện thoại không được chứa ký tự.");
-
-
-                //jQuery.validator.addMethod("isAValidEmail", function (value, element) {
-                //    return this.optional(element) || (isAValidEmail());
-                //}, "Định dạng email không hợp lệ.");
-
-
-                //jQuery.validator.addMethod("KhongChuaKhoangTrang", function (value, element) {
-                //    return this.optional(element) || (KhongChuaKhoangTrang());
-                //}, "Tên đăng nhập không được chứa khoảng trắng.");
-
-
-                //function KhongChuaKhoangTrang() {
-                //    var inputUsername = $("#username").val();
-
-                //    console.log(inputUsername);
-                //    for (var i = 0; i < inputUsername.length; i++) {
-                //        if (inputUsername[i] == " ") {
-
-
-                //            return false;
-                //        }
-                //    }
-                //    return true;
-                //}
-
-
-
-
-                ////date picker section
-                //var Over21Age = new Date(); //assume most people using this site have an avg age of 21
-                //Over21Age.setFullYear(Over21Age.getFullYear() - 21);
-
-                //var Over16Age = new Date();
-                //Over16Age.setFullYear(Over16Age.getFullYear() - 16);
-                //var stringOver16 = Over16Age.toLocaleDateString('en-US');
-                //$("#datepicker").datepicker({
-
-                //    maxDate: "" + stringOver16 + ""
-
-                //});
-
-                //$("#datepicker").datepicker('setDate', Over21Age); // start day : age 21 , minimum age :16
-
-
-                //end date picker section
-
-                //$('#cboCity').on('change', function (e) {
-                //    var optionSelected = $("option:selected", this);
-                //    var valueSelected = this.value;
-                //  //  alert("da chay vo ham");
-                //    UpdateDistrictList();
-                //    UpdateWardList();
-
-                //});
-
-                //$('#cboDistrict').on('change', function (e) {
-                //    var optionSelected = $("option:selected", this);
-                //    var valueSelected = this.value;
-
-                //    UpdateWardList();
-                //});
-
-
-
-                $("form[name='addShopForm']").validate({
-                    // Specify validation rules
-                    rules: {
-                        // The key name on the left side is the name attribute
-                        // of an input field. Validation rules are defined
-                        // on the right side
-                      
-
-                        Name:
-                            {
-                                required: true
-
-                            },
-
-                       
-                      
-
-                        DetailAddress:
-                            {
-                                required: true
-                            },
-
-                        
-                         
-
-
-                    },
-                    // Specify validation error messages
-                    messages: {
-
-                        Name: {
-                            required: "  Vui lòng nhập tên cửa hàng",
-                          
-
-                        },
-
-
-                       
-                        DetailAddress:
-                            {
-                                required: "Vui lòng nhập địa chỉ cửa hàng"
-                            },
-
-                    },
-
-
-                    // Make sure the form is submitted to the destination defined
-                    // in the "action" attribute of the form when valid
-
-                    errorElement: 'div',
-                    errorLabelContainer: ".addErrorText",
-                    submitHandler: function (form) {
-                        // khi có ajax thì không dùng form.submit()
-                        //form.submit();
-
-                    }
-                });
-
-
-
-
-
-            });
-
-
-            //function isNotContainNumber() {
-            //    var inputPhone = $("#txtPhone").val();
-
-            //    console.log(inputPhone);
-            //    for (var i = 0; i < inputPhone.length; i++) {
-            //        if (isNaN(inputPhone[i])) {
-
-
-            //            return false;
-            //        }
-            //    }
-            //    return true;
-            //}
-
-            //function isAValidEmail()
-            //{
-            //    var inputEmail = $("#email").val();
-
-            //    console.log(inputEmail);
-            //    var pattern = new RegExp("/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/");
-            //    var result = pattern.test(inputEmail);
-            //    console.log(result);
-            //    return result;
-
-            //}
-
-
-
-
-
-            function UpdateDistrictList() {
-
-                var cityID = $('#cboCity').val();
-                url = "/AccountManagement/UpdateDistrictList?cityID=" + cityID;
-
-                $.ajax({
-                    url: url,
-                    dataType: 'json',
-                    timeout: 30 * 1000,
-                    async: false
-
-                })
-
-
-
-             .done(function (data) {
-
-                 $('#cboDistrict').html("");
-                 $.each(data, function (i, district) {
-
-
-                     
-
-                     var html =
-                         '<option value="' + district.ID + '">' + district.Name + '</option>';
-
-
-                     $('#cboDistrict').append(html);
-                 });
-
-             })
-                .fail(function (jqXHR, textStatus, error) {
-                    $('#cboDistrict').html("");
-                    alert("district ajax error");
-
-
-                });
-            }
-
-
-
-            function UpdateWardList() {
-
-                var districtID = $('#cboDistrict').val();
-                url = "/AccountManagement/UpdateWardList?districtID=" + districtID;
-
-                $.ajax({
-                    url: url,
-                    dataType: 'json',
-                    timeout: 30 * 1000,
-                    async: false
-
-                })
-
-
-
-             .done(function (data) {
-
-                 $('#cboWard').html("");
-                 $.each(data, function (i, ward) {
-                     console.log(data);
-
-                     //  var onlydate = user.birthdate.split("12:00AM");
-                     // console.log(onlydate);
-
-                     var html =
-                         '<option value="' + ward.ID + '">' + ward.Name + '</option>';
-
-                     console.log(html);
-
-                     $('#cboWard').append(html);
-                 });
-
-             })
-                .fail(function (jqXHR, textStatus, error) {
-                    $('#cboWard').html("");
-                    alert(" ward ajax error");
-
-
-                });
-            }
-
-
-            //$("#lblIsDelete").on("click", function () {
-
-            //    var btnChecked = $("#lblIsDelete");
-
-            //    if (btnChecked.hasClass("active")) {
-            //        btnChecked.removeClass("active");
-            //        btnChecked.removeClass("btn-success");
-            //        btnChecked.addClass("btn-default");
-
-            //        $('#chkIsDelete').attr('checked', false);
-            //        alert($("#chkIsDelete").is(':checked'));
-
-
-            //    }
-            //    else {
-            //        btnChecked.addClass("active");
-            //        btnChecked.addClass("btn-success");
-            //        $('#chkIsDelete').attr('checked', true);
-            //        alert($("#chkIsDelete").is(':checked'));
-
-            //    }
-            //});
-
-
-
-
-
-
-
-
-        </script>
-    }
+   
 
 
     <form class="form-horizontal" method="post" action="/ShopManagement/CreateNew" name="addShopForm" id="addShopForm">
@@ -412,7 +98,7 @@
                 <textarea class="form-control" id="txtFullDes_Add" name="Description"></textarea>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label for="chkIsDelete" class="col-sm-2 control-label">Đã xóa?</label>
          
             <div class="col-sm-4">
@@ -423,17 +109,7 @@
            
         </div>
 
-     
-        
-
-
-
-
-
-
-
-
-    </form>
+  </form>
 
 
 

@@ -8,7 +8,11 @@ namespace CoffeeShop.Web.Controllers
     public class CityController : Controller
     {
 
-        ICityService _iCityService;
+        ICityService _iCityService;//Declare interface ICityService.
+
+        ///<summary>
+        ///The class constructor.
+        ///</summary>
         public CityController(ICityService cityService)
         {
             this._iCityService = cityService;
@@ -17,18 +21,39 @@ namespace CoffeeShop.Web.Controllers
         // GET: City
         public ActionResult Index()
         {
-            var list = _iCityService.GetAll();
+            var list = _iCityService
+                .GetAll()
+                .Select(x => new City
+                {
+                    ID = x.ID,
+                    Name = x.Name,
+                    Description = x.Description,
+                    IsDelete = x.IsDelete
+                });
             return View(list);
         }
 
-        //load data for datatables
+        /// <summary>
+        /// GET:Load data for datatables.
+        /// </summary>
+        /// <returns>Json</returns>
         public ActionResult LoadData()
         {
-            var list = _iCityService.GetAll().Select(x => new City { ID = x.ID, Name = x.Name, Description = x.Description, IsDelete = x.IsDelete });
-            return Json(new { data = list }, JsonRequestBehavior.AllowGet);
+            var list = _iCityService
+                .GetAll()
+                .Select(x => new City {
+                    ID = x.ID,
+                    Name = x.Name,
+                    Description = x.Description,
+                    IsDelete = x.IsDelete });//create list DistrictViewModel.
+
+            return Json(new { data = list }, JsonRequestBehavior.AllowGet);//return json with data is list city.
         }
 
-        //create partial list city
+        /// <summary>.
+        /// GET:Create partial list city.
+        /// </summary>
+        /// <returns>PartialViewResult</returns>
         public PartialViewResult PartialListCity()
         {
             var list = _iCityService.GetAllIsDelete();
@@ -36,13 +61,17 @@ namespace CoffeeShop.Web.Controllers
 
         }
 
-        //insert cty
+        /// <summary>
+        /// POST:Insert.
+        /// </summary>
+        /// <param name="City object"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Insert(City city)
         {
             try
             {
-                return _iCityService.Insert(city);
+                return _iCityService.Insert(city);//call service.
             }
             catch
             {
@@ -50,16 +79,20 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //update city
+        /// <summary>
+        /// POST:Update.
+        /// </summary>
+        /// <param name="City object"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Update(City city)
         {
             try
             {
-                int rs = _iCityService.Edit(city);
+                int rs = _iCityService.Edit(city);//call service.
                 if (rs == 1)
                 {
-                    _iCityService.Save();
+                    _iCityService.Save();//save changes.
                 }
                 return rs;
             }
@@ -69,14 +102,18 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //Delete city
+        /// <summary>
+        /// POST:Delete.
+        /// </summary>
+        /// <param name="cityID"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Delete(int id)
         {
             try
             {
-                _iCityService.Delete1(id);
-                _iCityService.Save();
+                _iCityService.Delete1(id);//call service.
+                _iCityService.Save();//save changes.
                 return 1;
             }
             catch
@@ -85,14 +122,18 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //restore city
+        /// <summary>
+        /// POST:Restore.
+        /// </summary>
+        /// <param name="cityID"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Restore(int id)
         {
             try
             {
-                _iCityService.Restore(id);
-                _iCityService.Save();
+                _iCityService.Restore(id);//call service.
+                _iCityService.Save();//save changes.
                 return 1;
             }
             catch

@@ -132,7 +132,6 @@
     <Compile Include="ModelEntity\Table.cs">
       <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="ModelEntity\UpdateOrder.cs" />
     <Compile Include="ModelEntity\User.cs">
       <DependentUpon>CoffeeSystemDbContext.tt</DependentUpon>
     </Compile>

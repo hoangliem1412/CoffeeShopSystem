@@ -52,7 +52,7 @@ namespace CoffeeShop.Data.Infrastructure
 
 
                     }
-                    else
+                    else  // type = default hoặc type = desc
                     {
                         _resetSet = skipCount == 0 ? _resetSet.OrderByDescending(s => s.ID).Take(pageSize) : _resetSet.OrderByDescending(s => s.ID).Skip(skipCount).Take(pageSize);
 
@@ -67,6 +67,30 @@ namespace CoffeeShop.Data.Infrastructure
                     else
                     {
                         _resetSet = skipCount == 0 ? _resetSet.OrderByDescending(s => s.Name).Take(pageSize) : _resetSet.OrderByDescending(s => s.Name).Skip(skipCount).Take(pageSize);
+
+                    }
+                    break;
+                case "Address":
+                    if (type == "asc")
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderBy(s => s.DetailAddress).Take(pageSize) : _resetSet.OrderBy(s => s.DetailAddress).Skip(skipCount).Take(pageSize);
+
+                    }
+                    else
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderByDescending(s => s.DetailAddress).Take(pageSize) : _resetSet.OrderByDescending(s => s.DetailAddress).Skip(skipCount).Take(pageSize);
+
+                    }
+                    break;
+                case "Description":
+                    if (type == "asc")
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderBy(s => s.Description).Take(pageSize) : _resetSet.OrderBy(s => s.Description).Skip(skipCount).Take(pageSize);
+
+                    }
+                    else
+                    {
+                        _resetSet = skipCount == 0 ? _resetSet.OrderByDescending(s => s.Description).Take(pageSize) : _resetSet.OrderByDescending(s => s.Description).Skip(skipCount).Take(pageSize);
 
                     }
                     break;

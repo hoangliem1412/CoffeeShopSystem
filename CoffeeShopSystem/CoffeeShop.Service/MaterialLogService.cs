@@ -5,87 +5,63 @@ using CoffeeShop.Model.ModelEntity;
 using System.Linq;
 using CoffeeShop.Model;
 using System.Data.SqlClient;
+using CoffeeShop.Data.Repositories;
 
 namespace CoffeeShop.Service
 {
     public class MaterialLogService : Service<MaterialLog>, IMaterialLogService
     {
-        public MaterialLogService(IRepository<MaterialLog> repository, IUnitOfWork unitOfWork) : base(repository, unitOfWork)
+        IMaterialLogRepository repo;
+
+        public MaterialLogService(IMaterialLogRepository mateRepo, IRepository<MaterialLog> repository, IUnitOfWork unitOfWork) : base(repository, unitOfWork)
         {
+            repo = mateRepo;
         }
 
-        public IEnumerable<MaterialLog> GetAvailable()
-        {
-            return base.GetMulti(x => x.IsDelete == false).ToList();
-        }
-
-        public IEnumerable<MaterialLog> GetByStatus(IEnumerable<MaterialLog> list, int status)
-        {
-            // status = 0: active
-            // status = 1: deleted
-
-            IEnumerable<MaterialLog> result = new List<MaterialLog>();
-
-            if (status == -1)
-            {
-                result = GetMulti(x => x.IsDelete == false).ToList();
-            }
-            else
-            {
-                if (status == 0)
-                {
-                    result = list.Where(x => x.IsDelete == false).ToList();
-
-                    if (result.Count() == 0)
-                    {
-                        result = GetMulti(x => x.IsDelete == false).ToList();
-                    }
-                }
-                else if (status == 1)
-                {
-                    result = list.Where(x => x.IsDelete == true).ToList();
-
-                    if (result.Count() == 0)
-                    {
-                        result = GetMulti(x => x.IsDelete == true).ToList();
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public IEnumerable<MaterialLog> GetDeleted()
-        {
-            return base.GetMulti(x => x.IsDelete == true).ToList();
-        }
-
+        /// <summary>
+        /// to flat item
+        /// </summary>
+        /// <param name="buf">the item to be flatten</param>
+        /// <returns></returns>
         public dynamic Flat(MaterialLog buf)
         {
             if (buf != null)
             {
-                var result = new { buf.CreatedDate, buf.Description, buf.EmployeeID, buf.ID, buf.Inventory, buf.IsDelete, MateName = buf.Material.Name, buf.MaterialID, buf.Type, buf.UnitPrice, EmpName = buf.User.Name };
+                var result = new { CreatedDate = buf.CreatedDate.Value.ToShortDateString(), buf.Description, buf.EmployeeID,  buf.ID, buf.Inventory, buf.IsDelete, MaterialName = (buf.Material == null ? "" : buf.Material.Name), buf.MaterialID, buf.Type, buf.UnitPrice, EmployeeName = (buf.User == null ? "" : buf.User.Name) };
                 return result;
             }
 
             return null;
         }
 
-        public dynamic Paging(IEnumerable<MaterialLog> list, int rowPerPage, int currentPage)
+        /// <summary>
+        /// to flat a bunch of items
+        /// </summary>
+        /// <param name="buf">item list</param>
+        /// <returns></returns>
+        public dynamic Flat(IEnumerable<MaterialLog> buf)
         {
-            if (list.Count() > 0)
+            if (buf != null && buf.Count() > 0)
             {
-                var result = list.Skip((currentPage - 1) * rowPerPage)
-                .Take(rowPerPage)
-                .Select(x => new { x.ID, x.Inventory, x.IsDelete, MateName = x.Material.Name, x.MaterialID, x.Type, x.UnitPrice, CreatedDate = x.CreatedDate.GetValueOrDefault(DateTime.Now), x.Description, x.EmployeeID, EmpName = x.User.Name })
-                .ToList();
-
+                var result = buf
+                    .Select(x => new { CreatedDate = x.CreatedDate.Value.ToShortDateString(), x.Description, x.EmployeeID, x.ID, x.Inventory, x.IsDelete, MaterialName = (x.Material == null ? "" : x.Material.Name), x.MaterialID, x.Type, x.UnitPrice, EmployeeName = (x.User == null ? "" : x.User.Name) })
+                    .ToList();
                 return result;
             }
 
-            return null;
+            return new List<MaterialLog>();
         }
 
+        public void RefreshInstance(MaterialLog entity)
+        {
+            repo.RefreshInstance(entity);
+        }
+
+        /// <summary>
+        /// to delete an item according to it's id
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns></returns>
         public new bool Delete(int id)
         {
             var item = base.GetSingleById(id);
@@ -108,6 +84,11 @@ namespace CoffeeShop.Service
             return result;
         }
 
+        /// <summary>
+        /// to add an item to database
+        /// </summary>
+        /// <param name="item">the item</param>
+        /// <returns></returns>
         public new MaterialLog Add(MaterialLog item)
         {
             var newItem = base.Add(item);
@@ -115,6 +96,7 @@ namespace CoffeeShop.Service
             try
             {
                 Save();
+                repo.RefreshInstance(item);
             }
             catch (SqlException ex)
             {
@@ -124,46 +106,33 @@ namespace CoffeeShop.Service
             return item;
         }
 
-        public new bool Update(MaterialLog item)
+        /// <summary>
+        /// to update an item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public new MaterialLog Update(MaterialLog item)
         {
             base.Update(item);
-            var result = true;
 
             try
             {
                 Save();
+                repo.RefreshInstance(item);
             }
             catch (SqlException ex)
             {
-                result = false;
+                item = null;
             }
 
-            return result;
+            return item;
         }
 
-        public IEnumerable<MaterialLog> SearchByName(string keyword)
-        {
-            if (!string.IsNullOrWhiteSpace(keyword))
-            {
-                return GetMulti(x => x.Material.Name.Contains(keyword)).ToList();
-            }
-
-            return new List<MaterialLog>();
-        }
-
-        public dynamic Flat(IEnumerable<MaterialLog> buf)
-        {
-            if (buf.Count() > 0)
-            {
-                var result = buf
-                    .Select(x => new { x.ID, x.Inventory, x.IsDelete, MateName = x.Material.Name, x.MaterialID, x.Type, x.UnitPrice, CreatedDate = x.CreatedDate.GetValueOrDefault(DateTime.Now), x.Description, x.EmployeeID, EmpName = x.User.Name })
-                    .ToList();
-                return result;
-            }
-
-            return new List<MaterialLog>();
-        }
-
+        /// <summary>
+        /// to search for items according to model attribute
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IEnumerable<MaterialLog> Search(MaterialLogSearchViewModel model)
         {
             IEnumerable<MaterialLog> result = GetAll();

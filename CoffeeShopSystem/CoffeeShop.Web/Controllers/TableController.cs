@@ -5,6 +5,9 @@ using System.Web.Mvc;
 
 namespace CoffeeShop.Web.Controllers
 {
+    /// <summary>
+    /// Manage table
+    /// </summary>
     public class TableController : Controller
     {
         // GET: Table
@@ -36,13 +39,13 @@ namespace CoffeeShop.Web.Controllers
         /// <summary>
         /// Cập nhật table
         /// </summary>
-        /// <param name="t">Table</param>
+        /// <param name="table">Table</param>
         /// <returns>Json</returns>
         [HttpPost]
-        public ActionResult Edit(Table t)
+        public ActionResult Edit(Table table)
         {
             //Gọi service Update
-            tableService.Update(t);
+            tableService.Update(table);
             //Save dữ liệu
             tableService.Save();
             return Json("", JsonRequestBehavior.AllowGet);
@@ -51,18 +54,25 @@ namespace CoffeeShop.Web.Controllers
         /// <summary>
         /// Thêm table
         /// </summary>
-        /// <param name="t">Table</param>
+        /// <param name="table">Table</param>
         /// <returns>Json(ID, Name, GroupTableName, GroupTableID, OrderCount, Des)</returns>
         [HttpPost]
-        public ActionResult Add(Table t)
+        public ActionResult Add(Table table)
         {
             //Gọi service Add
-            tableService.Add(t);
+            tableService.Add(table);
             //Save
             tableService.Save();
             //Gọi service GetByID của grouptable lấy thông tin của group
-            var resultGroupTable = groupTableService.GetSingleById(t.GroupTableID);
-            var data = new { ID = t.ID, Name = t.Name, GroupTableName = resultGroupTable.Name, GroupTableID = resultGroupTable.ID, OrderCount = 0, Des = t.Description };
+            var resultGroupTable = groupTableService.GetSingleById(table.GroupTableID);
+            var data = new
+            {
+                ID = table.ID,
+                Name = table.Name,
+                GroupTableName = resultGroupTable.Name,
+                GroupTableID = resultGroupTable.ID,
+                OrderCount = 0, Des = table.Description
+            };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
@@ -88,7 +98,11 @@ namespace CoffeeShop.Web.Controllers
         {
             //Gọi service SearchCondition
             //gán kết quả trả về
-            var resultToReturn = new { data = tableService.SearchCondition(delete), delete = delete };
+            var resultToReturn = new
+            {
+                data = tableService.SearchCondition(delete),
+                delete = delete
+            };
             return Json(resultToReturn, JsonRequestBehavior.AllowGet);
         }
 
@@ -114,7 +128,11 @@ namespace CoffeeShop.Web.Controllers
         [HttpPost]
         public ActionResult SearchAdvanced(string name, int groupTableID, bool delete)
         {
-            var resultToReturn = new { data = tableService.SearchAdvanced(name, groupTableID, delete), delete = delete };
+            var resultToReturn = new
+            {
+                data = tableService.SearchAdvanced(name, groupTableID, delete),
+                delete = delete
+            };
             //Gọi service SearchAdvanced
             return Json(resultToReturn, JsonRequestBehavior.AllowGet);
         }

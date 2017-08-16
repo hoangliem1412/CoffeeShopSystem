@@ -6,17 +6,12 @@ namespace CoffeeShop.Service
 {
     public interface IMaterialLogService : IService<MaterialLog>
     {
-        IEnumerable<MaterialLog> GetAvailable();
-        IEnumerable<MaterialLog> GetDeleted();
-        IEnumerable<MaterialLog> GetByStatus(IEnumerable<MaterialLog> list, int status);
-        dynamic Paging(IEnumerable<MaterialLog> list, int rowPerPage, int currentPage);
         dynamic Flat(MaterialLog buf);
         dynamic Flat(IEnumerable<MaterialLog> buf);
         new bool Delete(int id);
         new MaterialLog Add(MaterialLog item);
-        new bool Update(MaterialLog item);
-        IEnumerable<MaterialLog> SearchByName(string keyword);
+        new MaterialLog Update(MaterialLog item);
         IEnumerable<MaterialLog> Search(MaterialLogSearchViewModel model);
-
+        void RefreshInstance(MaterialLog entity);
     }
 }

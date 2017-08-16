@@ -166,6 +166,7 @@
     <Compile Include="Controllers\GroupTableController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MaterialCategoryController.cs" />
     <Compile Include="Controllers\MaterialController.cs" />
     <Compile Include="Controllers\MaterialLogController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -179,7 +180,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\UpDateOrder.cs" />
     <Compile Include="Models\DistrictViewModel.cs" />
+    <Compile Include="Models\MaterialCategoryViewModel.cs" />
     <Compile Include="Models\MaterialViewModel.cs" />
     <Compile Include="Models\WardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -373,6 +376,7 @@
     <Content Include="Content\dist\js\npm.js" />
     <Content Include="Content\images\user.png" />
     <Content Include="Content\KieuNTL1_style.css" />
+    <Content Include="Content\Order.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\font-awesome\.gitignore" />
     <Content Include="fonts\font-awesome\css\font-awesome.css" />
@@ -402,6 +406,8 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Controllers\MaterialController.js" />
     <Content Include="Scripts\custom.min.js" />
+    <Content Include="Scripts\DatHT5.js" />
+    <Content Include="Scripts\GroupTable.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -413,9 +419,14 @@
     <Content Include="Scripts\KieuNTL1_script.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\npm.js" />
+    <Content Include="Scripts\Order.js" />
     <Content Include="Scripts\plugins\jquery.twbsPagination.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\Table.js" />
+    <Content Include="Scripts\TrungLM1.js" />
+    <Content Include="Scripts\VoCP\city.js" />
+    <Content Include="Scripts\VoCP\district.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -462,6 +473,8 @@
     <Content Include="Views\District\Index.cshtml" />
     <Content Include="Views\District\_PartialListDistrict.cshtml" />
     <Content Include="Views\Ward\Index.cshtml" />
+    <Content Include="Views\MaterialCategory\Index.cshtml" />
+    <Content Include="Views\Category\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

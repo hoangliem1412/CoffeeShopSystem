@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -103,12 +103,13 @@
     </div>
 </div>
 @*/Create A PopUp Modal For DeleteConfirmation*@
-
-<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.12.4.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
-@*<script src="~/scripts/jquery-1.10.2.min.js"></script>*@
-<script>
+@section js{
+    <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.12.4.js"></script>
+    <script>jQuery.noConflict(true);</script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
     $(document).ready(function () {
         //default load list district with id = 1(TPHCM) in popup insert + update
         $.ajax({
@@ -167,11 +168,12 @@
             if (key == "false") {
                 $('.btnDelete').css("display", "");
                 $('.btnRestore').css("display", "none");
+                $('.btnEdit').css("display", "");
             } else {
                 $('.btnDelete').css("display", "none");
+                $('.btnEdit').css("display", "none");
                 $('.btnRestore').css("display", "");
             }
-
         });
 
         function HasValue(val) {
@@ -246,6 +248,20 @@
         });
         table.column(5).search("false").draw();
         //======================end datatables===========================
+        //event click paging datatable
+        $('#myTable').on('draw.dt', function () {
+            var key = $('#txtIsDeleteOption').val();
+            if (key == "false") {
+                $('.btnDelete').css("display", "");
+                $('.btnRestore').css("display", "none");
+                $('.btnEdit').css("display", "");
+            } else {
+                $('.btnDelete').css("display", "none");
+                $('.btnEdit').css("display", "none");
+                $('.btnRestore').css("display", "");
+            }
+        });
+
         let checkClickAddNew = false;
         //event click Thêm mới
         $("#btnAddNew").click(function () {
@@ -451,4 +467,5 @@
         $('#lblStatus').addClass('label-danger')
         $('#lblStatus').removeClass('label-success')
     }
-</script>
+    </script>
+}

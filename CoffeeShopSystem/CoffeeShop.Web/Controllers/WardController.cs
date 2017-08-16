@@ -9,8 +9,11 @@ namespace CoffeeShop.Web.Controllers
 {
     public class WardController : Controller
     {
-        IWardService _iWardService;
+        IWardService _iWardService;//Declare interface IWardService.
 
+        ///<summary>
+        ///The class constructor.
+        ///</summary>
         public WardController(IWardService iWard)
         {
             this._iWardService = iWard;
@@ -23,21 +26,36 @@ namespace CoffeeShop.Web.Controllers
             return View(list);
         }
 
-        //load data for datatables
+        /// <summary>
+        /// GET:Load data for datatables.
+        /// </summary>
+        /// <returns>Json</returns>
         public ActionResult LoadData()
         {
-            var list = _iWardService.GetAll().Select(x => new WardViewModel { ID = x.ID, Name = x.Name, Description = x.Description, DistrictID = x.DistrictID, NameDistrict = x.District.Name, IsDelete = x.IsDelete });
-            return Json(new { data = list }, JsonRequestBehavior.AllowGet);
+            var list = _iWardService
+                .GetAll()
+                .Select(x => new WardViewModel {
+                    ID = x.ID, Name = x.Name,
+                    Description = x.Description,
+                    DistrictID = x.DistrictID,
+                    NameDistrict = x.District.Name,
+                    IsDelete = x.IsDelete });//create list WardViewModel.
+
+            return Json(new { data = list }, JsonRequestBehavior.AllowGet);//return json with data is list ward.
         }
 
-        //insert ward
+        /// <summary>
+        /// POST:Insert
+        /// </summary>
+        /// <param name="Ward object"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Insert(Ward ward)
         {
             try
             {
-                int rs = _iWardService.Insert(ward);
-                _iWardService.Save();
+                int rs = _iWardService.Insert(ward);//call service
+                _iWardService.Save();//save changes
                 return rs;
             }
             catch
@@ -46,16 +64,20 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //update district
+        /// <summary>
+        /// POST:Update
+        /// </summary>
+        /// <param name="Ward object"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Update(Ward ward)
         {
             try
             {
-                int rs = _iWardService.Edit(ward);
+                int rs = _iWardService.Edit(ward);//call service
                 if (rs == 1)
                 {
-                    _iWardService.Save();
+                    _iWardService.Save();//save changes
                 }
                 return rs;
             }
@@ -65,14 +87,18 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //Delete district
+        /// <summary>
+        /// POST:Delete
+        /// </summary>
+        /// <param name="wardID"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Delete(int id)
         {
             try
             {
-                _iWardService.Delete1(id);
-                _iWardService.Save();
+                _iWardService.Delete1(id);//call service
+                _iWardService.Save();//save changes
                 return 1;
             }
             catch (Exception ex)
@@ -81,14 +107,18 @@ namespace CoffeeShop.Web.Controllers
             }
         }
 
-        //Restore district
+        /// <summary>
+        /// POST:Restore
+        /// </summary>
+        /// <param name="wardID"></param>
+        /// <returns>int</returns>
         [HttpPost]
         public int Restore(int id)
         {
             try
             {
-                _iWardService.Restore(id);
-                _iWardService.Save();
+                _iWardService.Restore(id);//call service
+                _iWardService.Save();//save changes
                 return 1;
             }
             catch (Exception ex)

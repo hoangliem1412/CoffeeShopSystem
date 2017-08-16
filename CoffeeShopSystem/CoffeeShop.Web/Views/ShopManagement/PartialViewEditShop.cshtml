@@ -16,184 +16,17 @@
                     text-decoration: none;
                 }
 
-                /*.btn span.glyphicon {
-                opacity: 0;
-            }
-
-            .btn.active span.glyphicon {
-                opacity: 1;
-            }*/
+             
 
                 .error {
                     color: red;
                 }
 
-                .bigcheckbox {
-                    width: 30px;
-                    height: 30px;
-                }
+                
         </style>
     }
 
-    @section js {
-             
-
-
-
-
-
-
-
-        <script>
-         
-
-
-            //function isNotContainNumber() {
-            //    var inputPhone = $("#txtPhone").val();
-
-            //    console.log(inputPhone);
-            //    for (var i = 0; i < inputPhone.length; i++) {
-            //        if (isNaN(inputPhone[i])) {
-
-
-            //            return false;
-            //        }
-            //    }
-            //    return true;
-            //}
-
-            //function isAValidEmail()
-            //{
-            //    var inputEmail = $("#email").val();
-
-            //    console.log(inputEmail);
-            //    var pattern = new RegExp("/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/");
-            //    var result = pattern.test(inputEmail);
-            //    console.log(result);
-            //    return result;
-
-            //}
-
-
-
-
-
-            function UpdateDistrictList() {
-
-                var cityID = $('#cboCity').val();
-                url = "/AccountManagement/UpdateDistrictList?cityID=" + cityID;
-
-                $.ajax({
-                    url: url,
-                    dataType: 'json',
-                    timeout: 30 * 1000,
-                    async: false
-
-                })
-
-
-
-             .done(function (data) {
-
-                 $('#cboDistrict').html("");
-                 $.each(data, function (i, district) {
-
-
-                     
-
-                     var html =
-                         '<option value="' + district.ID + '">' + district.Name + '</option>';
-
-
-                     $('#cboDistrict').append(html);
-                 });
-
-             })
-                .fail(function (jqXHR, textStatus, error) {
-                    $('#cboDistrict').html("");
-                    alert("district ajax error");
-
-
-                });
-            }
-
-
-           
-
-            function UpdateWardList() {
-
-                var districtID = $('#cboDistrict').val();
-                url = "/AccountManagement/UpdateWardList?districtID=" + districtID;
-
-                $.ajax({
-                    url: url,
-                    dataType: 'json',
-                    timeout: 30 * 1000,
-                    async: false
-
-                })
-
-
-
-             .done(function (data) {
-
-                 $('#cboWard').html("");
-                 $.each(data, function (i, ward) {
-                     console.log(data);
-
-                     //  var onlydate = user.birthdate.split("12:00AM");
-                     // console.log(onlydate);
-
-                     var html =
-                         '<option value="' + ward.ID + '">' + ward.Name + '</option>';
-
-                     console.log(html);
-
-                     $('#cboWard').append(html);
-                 });
-
-             })
-                .fail(function (jqXHR, textStatus, error) {
-                    $('#cboWard').html("");
-                    alert(" ward ajax error");
-
-
-                });
-            }
-
-
-            //$("#lblIsDelete").on("click", function () {
-
-            //    var btnChecked = $("#lblIsDelete");
-
-            //    if (btnChecked.hasClass("active")) {
-            //        btnChecked.removeClass("active");
-            //        btnChecked.removeClass("btn-success");
-            //        btnChecked.addClass("btn-default");
-
-            //        $('#chkIsDelete').attr('checked', false);
-            //        alert($("#chkIsDelete").is(':checked'));
-
-
-            //    }
-            //    else {
-            //        btnChecked.addClass("active");
-            //        btnChecked.addClass("btn-success");
-            //        $('#chkIsDelete').attr('checked', true);
-            //        alert($("#chkIsDelete").is(':checked'));
-
-            //    }
-            //});
-
-
-
-
-
-
-
-
-        </script>
-    }
+   
  
 
     <form class="form-horizontal editShopForm" method="post" action="/ShopManagement/Edit" name="editShopForm" id="editShopForm_@Model.ID">
@@ -262,7 +95,7 @@
                 <textarea class="form-control" id="txtFullDes_Edit" name="Description" >@Model.Description</textarea>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group hidden">
             <label for="chkIsDelete" class="col-sm-2 control-label">Đã xóa?</label>
          
             <div class="col-sm-4">

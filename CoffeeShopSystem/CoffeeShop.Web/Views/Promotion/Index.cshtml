@@ -12,501 +12,14 @@
 @section js{
 
     <script src="~/Asserts/jquery-validation-1.17.0/jquery.validate.min.js"></script>
+    <script src="~/Scripts/TrungLM1.js"></script>
 
-    <!-- GetPromotionById-->
-    <script>
-        $('.EditItem').on('click', function () {
-
-            var id = $(this).data('proid');
-            $('#ProIDText').val(id);
-
-            var form = $('#GetEditForm');
-
-            $.ajax({
-                url: form.attr('action'),
-                type: form.attr('method'),
-
-                dataType: 'json',
-                data: form.serialize(),
-                timeout: 30 * 1000,
-
-            })
-                 .done(function (result) {
-
-                     $('#EIDtext').val(result.ID);
-                     $('#EShoptext').val(result.ShopID);
-                     $('#Enametext').val(result.Name);
-
-                     // Gán date
-                     var date = new Date(parseInt(result.StartDate.replace('/Date(', '')));
-                     var month = date.getMonth() + 1;
-                     if (month < 10) month = '0' + month;
-                     var day = date.getDate();
-                     if (day < 10) month = '0' + day;
-                     var year = date.getFullYear();
-                     var StartDate = year + "-" + month + "-" + day;
-                     $('#EStartDate').val(StartDate);
-
-                     // Gán date
-                     var date = new Date(parseInt(result.EndDate.replace('/Date(', '')));
-                     var month = date.getMonth() + 1;
-                     if (month < 10) month = '0' + month;
-                     var day = date.getDate();
-                     if (day < 10) month = '0' + day;
-                     var year = date.getFullYear();
-                     var EndDate = year + "-" + month + "-" + day;
-                     $('#EEndDate').val(EndDate);
-                     $('#Epurchasenumber').val(result.BasePurchase);
-                     $('#Ediscountnumer').val(result.Discount);
-                     $('#Ediscriptiontextarea').val(result.Description);
-
-                 })
-
-                 .fail(function (jqXHR, status, error) {
-                     console.log(jqXHR);
-                     alert('Load thất bại!');
-
-                 });
-
-        })
-    </script>
-
-    <!-- AddModal -->
-    <script>
-        $('#AddModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('whatever') // Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('New message to ' + recipient)
-            modal.find('.modal-body input').val(recipient)
-        })
-    </script>
-
-    <!-- EditModal -->
-    <script>
-        $('#EditModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('whatever') // Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('New message to ' + recipient)
-            modal.find('.modal-body input').val(recipient)
-        })
-    </script>
-
-    <!-- DeleteModal -->
-    <script>
-        $('#DeleteModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('whatever') // Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('New message to ' + recipient)
-            modal.find('.modal-body input').val(recipient)
-        })
-    </script>
-
-
-    <!-- RecoveryModal -->
-    <script>
-        $('#RecoveryModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('whatever') // Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('New message to ' + recipient)
-            modal.find('.modal-body input').val(recipient)
-        })
-    </script>
-
-
-    <!-- Validate AddForm -->
-    <script type="text/javascript">
-    $('#AddForm').validate({
-        rules: {
-            Name: {
-                required: true,
-            },
-            StartDate: {
-                required: true,
-            },
-            // 2. Enddate > StartDate, Today
-            EndDate: {
-                required: true,
-            },
-
-            BasePurchase: {
-                required: true,
-            },
-
-
-            Discount: {
-                required: true,
-            },
-
-        },
-
-        messages: {
-            Name: {
-                required: 'Vui lòng nhập tên',
-            },
-            StartDate: {
-                required: 'Please enter Start Date',
-            },
-            EndDate: {
-                required: 'Please enter End Date',
-            },
-
-            BasePurchase: {
-                required: 'Please enter BasePurchase',
-            },
-
-            Discount: {
-                required: 'Please enter Discount',
-            },
-        },
-
-        errorElement: "span",
-        errorClass: "help-block",
-
-        highlight: function (elements) {
-            $(elements).closest('.form-group').removeClass('has-success');
-            $(elements).closest('.form-group').addClass('has-error');
-
-        },
-        success: function (label) {
-            $(label).closest('.form-group')
-            .removeClass('has-error');
-
-            $(label).closest('.form-group')
-           .addClass('has-success');
-
-            label.remove();
-
-        },
-    });
-
-    </script>
-
-
-    <!-- Validate EditForm -->
-    <script type="text/javascript">
-    $('#EditForm').validate({
-        rules: {
-            Name: {
-                required: true,
-            },
-            StartDate: {
-                required: true,
-            },
-
-            EndDate: {
-                required: true,
-            },
-
-            BasePurchase: {
-                required: true,
-            },
-
-
-            Discount: {
-                required: true,
-            },
-
-        },
-
-        messages: {
-            Name: {
-                required: 'Vui lòng nhập tên',
-            },
-            StartDate: {
-                required: 'Please enter Start Date',
-            },
-            EndDate: {
-                required: 'Please enter End Date',
-            },
-
-            BasePurchase: {
-                required: 'Please enter BasePurchase',
-            },
-
-            Discount: {
-                required: 'Please enter Discount',
-            },
-        },
-
-        errorElement: "span",
-        errorClass: "help-block",
-
-        highlight: function (elements) {
-            $(elements).closest('.form-group').removeClass('has-success');
-            $(elements).closest('.form-group').addClass('has-error');
-
-        },
-        success: function (label) {
-            $(label).closest('.form-group')
-            .removeClass('has-error');
-
-            $(label).closest('.form-group')
-           .addClass('has-success');
-
-            label.remove();
-
-        },
-    });
-
-    </script>
-
-
-    <!-- Search in table: name, des-->
-    @*<script>
-    function myFunction() {
-        $('#paging').hide();
-        var input, filter, table, tr, td, i;
-        input = document.getElementById("SearchText");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("listTable");
-        tr = table.getElementsByTagName("tr");
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[1]; // name
-            des = tr[i].getElementsByTagName("td")[6]; // description
-            if (td) {
-                if (td.innerHTML.toUpperCase().indexOf(filter) > -1 || des.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
     }
-    </script>*@
-
-    <!-- Submit Add -->
-    <script>
-        $(document).ready(function () {
-            $('#submitAdd').on('click', function () {
-
-                //// Check validate
-                var form = $('#AddForm');
-                form.validate();
-
-                if (form.valid() == true) {
-                    $('#AddForm').submit();
-                    $('#AddModal').modal('hide');
-                    }
-
-                else {
-                }
-                })
-        })
-    </script>
-
-    <!-- Ajax: Submit Edit-->
-    <script>
-        $(document).ready(function () {
-            $('#submitEdit').on('click', function () {
-                // Check validate
-                var form = $('#EditForm');
-                form.validate();
-                if (form.valid() == true) {
-                    //Call ajax
-                    $.ajax({
-                        url: form.attr('action'),
-                        type: form.attr('method'),
-
-                        dataType: 'json',
-                        data: form.serialize(),
-                        timeout: 30 * 1000,
-
-                    })
-                        .done(function (n) {
-                            // update this row in table
-                            var id = form.find('[name=ID]').val();//?form > result
-                            var name = form.find('[name=Name]').val();
-                            var basepurchase = form.find('[name=BasePurchase]').val();//?val();
-                            var discount = form.find('[name=Discount]').val();
-                            var startdate = form.find('[name=StartDate]').val();
-                            var enddate = form.find('[name=EndDate]').val();
-                            var description = form.find('[name=Description]').val();
-
-                            var table = $('#BodyTable');
-                            table.find('#ID-' + id).html(id);
-                            table.find('#Name-' + id).html(name);
-                            table.find('#BasePurchase-' + id).html(basepurchase);
-                            table.find('#Discount-' + id).html(discount);
-                            table.find('#StartDate-' + id).html(startdate);
-                            table.find('#EndDate-' + id).html(enddate);
-                            table.find('#Description-' + id).html(description);
-
-                            $('#EditModal').modal('hide');
-                        })
-
-                     .fail(function (jqXHR, status, error) {
-                         console.log(jqXHR);
-                         alert('Cập nhật thất bại!');
-                     });
-                }
-                else { }
-            })
-        })
-    </script>
-
-
-    <!-- Ajax: Submit Delete-->
-    <script>
-    $('.DeleteItem').on('click', function () {
-        //show Modal
-        var iddel = $(this).data('proid');
-
-        //Submit delete
-        $('#submitDelete').on('click', function () {
-            //Call Ajax
-            $.ajax({
-                url: '@Url.Action("Delete","Promotion")',
-                type: 'post',
-                data: {'idToDelete': iddel},
-                dataType: 'json',
-            })
-
-             .done(function (result) {
-                 if (result == false) {
-                     alert('Không được xóa khuyến mãi đang trong hóa đơn !!!');
-
-                     $('#DeleteModal').modal('hide');
-                 }
-                 else {
-                     $('#DeleteModal').modal('hide');
-
-                     // Remove this row in table
-                     $('#BodyTable #item-' + iddel).remove();
-                 }
-
-             })
-
-             .fail(function (jqXHR, status, error) {
-                 console.log(jqXHR);
-                 alert('Xóa thất bại!');
-             });
-
-        })
-
-
-    })
-    </script>
-
-
-    <!-- Ajax: Submit Recovery-->
-    <script>
-    $('.RecoveryItem').on('click', function () {
-        //show Modal
-        var idrecovery = $(this).data('proid');
-
-        //Submit
-        $('#submitRecovery').on('click', function () {
-            //Call Ajax
-            $.ajax({
-                url: '@Url.Action("Recovery","Promotion")',
-                type: 'post',
-                data: { 'idToRecovery': idrecovery },
-                dataType: 'json',
-            })
-
-             .done(function (result) {
-                     $('#RecoveryModal').modal('hide');
-
-                     // Remove this row in table
-                     $('#BodyTable #item-' + idrecovery).remove();
-
-             })
-
-             .fail(function (jqXHR, status, error) {
-                 console.log(jqXHR);
-                 alert('Phục hồi thất bại!');
-             });
-
-        })
-    })
-    </script>
-
-
-    <!-- Sort -->
-    <script>
-        function sortTable(n) {
-          var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-          table = document.getElementById("listTable");
-          switching = true;
-          //Set the sorting direction to ascending:
-          dir = "asc";
-          /*Make a loop that will continue until
-          no switching has been done:*/
-          while (switching) {
-            //start by saying: no switching is done:
-            switching = false;
-            rows = table.getElementsByTagName("TR");
-            /*Loop through all table rows (except the
-            first, which contains table headers):*/
-            for (i = 1; i < (rows.length - 1); i++) {
-              //start by saying there should be no switching:
-              shouldSwitch = false;
-              /*Get the two elements you want to compare,
-              one from current row and one from the next:*/
-              x = rows[i].getElementsByTagName("TD")[n];
-              y = rows[i + 1].getElementsByTagName("TD")[n];
-              /*check if the two rows should switch place,
-              based on the direction, asc or desc:*/
-              if (dir == "asc") {
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                  //if so, mark as a switch and break the loop:
-                  shouldSwitch= true;
-                  break;
-                }
-              } else if (dir == "desc") {
-                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                  //if so, mark as a switch and break the loop:
-                  shouldSwitch= true;
-                  break;
-                }
-              }
-            }
-            if (shouldSwitch) {
-              /*If a switch has been marked, make the switch
-              and mark that a switch has been done:*/
-              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-              switching = true;
-              //Each time a switch is done, increase this count by 1:
-              switchcount ++;
-            } else {
-              /*If no switching has been done AND the direction is "asc",
-              set the direction to "desc" and run the while loop again.*/
-              if (switchcount == 0 && dir == "asc") {
-                dir = "desc";
-                switching = true;
-              }
-            }
-          }
-        }
-    </script>
-
-    <!-- Load list by radio-->
-    <script>
-        $('#RadioForm [name=optradio]').change(function () {
-            var select = $(this).val();
-            location.href = "/Promotion/LoadByCondition?select=" + select;
-        })
-    </script>
-
-}
-
 <!-- Content -->
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
-            <h2>Danh Sách Khuyến Mãi</h2>
+            <h2>DANH SÁCH KHUYẾN MÃI</h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li style="float:right">
                     <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -517,68 +30,48 @@
 
         <div class="x_content" style="display: block;">
             <div class="row">
-                <div class="col-sm-4">
-                    <label>Hiện</label>
-                    <select>
-                        <option value="value">5</option>
-                        <option value="value">10</option>
-                        <option value="value">50</option>
-                        <option value="value">100</option>
-                    </select>
-                    <label>Trên</label>
-                </div>
-                <div class="col-sm-8">
                     <form id="RadioForm" action="">
                         <label class="radio-inline">
-                            <input type="radio" name="optradio" value="all" @if (ViewBag.Select == "all") { <text> checked="checked" </text>  }> Hiển thị tất cả
+                            <input type="radio" name="optradio" value="active" @if (ViewBag.Select == "active") { <text> checked="checked" </text>    }>Đang quản lý
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="optradio" value="active" @if (ViewBag.Select == "active") { <text> checked="checked" </text>  }>Đang quản lý
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="optradio" value="delete" @if (ViewBag.Select == "delete") { <text> checked="checked" </text>  }>Đã xóa
+                            <input type="radio" name="optradio" value="delete" @if (ViewBag.Select == "delete") { <text> checked="checked" </text>    }>Đã xóa
                         </label>
                     </form>
-                </div>
-
+                <!-- Advanced Search-->
+                <form id="AdvancedSearch" class="form-inline" action="@Url.Action("AdvancedSearch","Promotion")" style="margin-top:50px">
+                    <div class="form-group">
+                        <label for="NameText" style="margin-left: 10px">Tìm kiếm theo Tên:</label>
+                        <input type="text" class="form-control" id="NameText" name="Name" value="@ViewBag.Name">
+                    </div>
+                    <div class="form-group" style="margin-left:20px">
+                        <label for="StartDate">Từ ngày: </label>
+                        <input type="date" class="form-control" id="StartDate" name="StartDate" value="@ViewBag.StartDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="EndDate">Đến ngày: </label>
+                        <input type="date" class="form-control" id="EndDate" name="EndDate" value="@ViewBag.EndDate">
+                    </div>
+                    <!-- Submit -->
+                    <button id="submitSearch" class="btn btn-primary" style="float:right">Tìm kiếm</button>
+                </form>
             </div>
             <div class="panel panel-default panel-table" style="margin-top: 20px">
+
                 <div class="panel-heading clearfix">
-                    <div class="col-sm-8">
-                        <a href="javascript:;" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="panel-title"><i class="glyphicon glyphicon-plus"></i></a>
+                    <div>
+                        <!-- Button Add -->
+                        <div class="col-sm-8">
+                            <a href="javascript:;" data-toggle="modal" data-target="#AddModal" title="Thêm mới" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i></a>
+                        </div>
+
+                        <!-- Basic Search-->
+                        <form id="SearchForm" action="@Url.Action("BasicSearch", "Promotion")">
+                            <div class="col-sm-4">
+                                <input id="SearchText" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm khuyến mãi theo tên, mô tả">
+                            </div>
+                        </form>
                     </div>
-
-                    <!-- Basic Search-->
-                    @*<form id = "SearchForm" action="@Url.Action("Search", "Promotion")">
-                    <div class="col-sm-4">
-                        <input id="SearchText" onkeyup="myFunction()" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm khuyến mãi theo tên, mô tả">
-                    </div>
-                    </form>*@
-
-                    <!-- Basic Search-->
-                    <form id="SearchForm" action="@Url.Action("BasicSearch", "Promotion")">                        
-                        <div class="col-sm-4">
-                            <input id="SearchText" name="keyword" type="text" class="form-control" placeholder="Tìm kiếm khuyến mãi theo tên, mô tả">
-                        </div>
-                    </form>
-
-                    <!-- Advanced Search-->
-                    <form id="AdvancedSearch" class="form-inline" action="@Url.Action("AdvancedSearch","Promotion")" style="margin-top:50px">
-                        <div class="form-group">
-                            <label for="NameText">Tìm kiếm theo Tên:</label>
-                            <input type="text" class="form-control" id="NameText" name="Name" value="@ViewBag.Name">
-                        </div>
-                        <div class="form-group" style="margin-left:20px">
-                            <label for="StartDate">Từ ngày:</label>
-                            <input type="date" class="form-control" id="StartDate" name="StartDate" value="@ViewBag.StartDate">
-                        </div>
-                        <div class="form-group">
-                            <label for="EndDate"> - </label>
-                            <input type="date" class="form-control" id="EndDate" name="EndDate" value="@ViewBag.EndDate">
-                        </div>
-
-                        <button id="submitSearch" class="btn btn-primary" style="float:right">Tìm kiếm</button>
-                    </form>
                 </div>
 
                 <!-- Sort in table -->
@@ -611,26 +104,26 @@
 
                                     <td id="Discount-@i.ID">@i.Discount</td>
 
-                                    <td id="StartDate-@i.ID">@string.Format("{0:dd.MM.yyyy}", i.StartDate)</td>
+                                    <td id="StartDate-@i.ID">@string.Format("{0:MM/dd/yyyy}", i.StartDate)</td>
 
-                                    <td id="EndDate-@i.ID">@string.Format("{0:dd.MM.yyyy}", i.EndDate)</td>
+                                    <td id="EndDate-@i.ID">@string.Format("{0:MM/dd/yyyy}", i.EndDate)</td>
 
                                     <td id="Description-@i.ID">@i.Description</td>
 
                                     <!-- 4. Edit, Delete btn-->
                                     <td>
-                                        <a href="javascript:;" class="EditItem btn btn-primary btn-xs" data-toggle="modal" data-target="#EditModal" data-proid="@i.ID" title="Sửa">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-
+                                        
                                         @if (ViewBag.Select == "delete")
                                         {
-                                            <a href="javascript:;" class="RecoveryItem btn btn-success btn-xs" data-toggle="modal" data-target="#RecoveryModal" data-proid="@i.ID" title="Phục hồi">
-                                                <i class="fa fa-arrow-circle-left"></i>
+                                            <a href="javascript:;" class="RecoveryItem btn btn-primary btn-xs" data-toggle="modal" data-target="#RecoveryModal" data-proid="@i.ID" title="Phục hồi">
+                                                <i class="fa fa-reply-all"></i>
                                             </a>
                                         }
                                         else
                                         {
+                                            <a href="javascript:;" class="EditItem btn btn-primary btn-xs" data-toggle="modal" data-target="#EditModal" data-proid="@i.ID" title="Sửa">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
                                             <a href="javascript:;" class="DeleteItem btn btn-danger btn-xs" data-toggle="modal" data-target="#DeleteModal" data-proid="@i.ID" title="Xóa">
                                                 <i class="fa fa-trash-o"></i>
                                             </a>
@@ -659,9 +152,6 @@
                                         <a href="?page=1&select=@ViewBag.Select&Name=@ViewBag.Name&StartDate=@ViewBag.StartDate&EndDate=@ViewBag.EndDate&keyword=@ViewBag.keyword" aria-label="Previous" hidden>
                                             <span aria-hidden="true">&laquo;</span>
                                         </a>
-                                        @*<a href="?page=1&select=@ViewBag.Select" aria-label="Previous" hidden>
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>*@
                                     </li>
                                 }
 
@@ -782,10 +272,11 @@
                     </div>
                 </div>
 
-                <!-- Button -->
+                <!-- Submit -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>
-                    <button type="button" id="submitAdd" class="btn btn-success">Lưu</button>
+                    <button type="button" id="submitAdd" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                    
                 </div>
 
             </form>
@@ -855,10 +346,10 @@
                     </div>
                 </div>
 
-                <!-- Button -->
+                <!-- Submit -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
-                    <button type="button" id="submitEdit" class="btn btn-success">Lưu</button>
+                    <button type="button" id="submitEdit" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>                    
                 </div>
             </form>
         </div>
@@ -892,10 +383,11 @@
 
                 </div>
 
-                <!-- Button -->
+                <!-- Submit -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
-                    <button type="button" id="submitDelete" class="btn btn-success">Đồng Ý</button>
+                    <button type="button" id="submitDelete" class="btn btn-primary">Đồng Ý</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>                    
+                    
                 </div>
             </form>
         </div>
@@ -918,8 +410,6 @@
             <div class="modal-body">
 
                 <input type="hidden" name="IdToRecovery" class="form-control" id="RecoveryIDText">
-
-
                 <div class="form-group">
                     <label class="form-control-label">Bạn chắc chắn muốn phục hồi khuyến mãi này ?</label>
                 </div>
@@ -927,8 +417,8 @@
 
             <!-- Button -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
-                <button type="button" id="submitRecovery" class="btn btn-success">Đồng Ý</button>
+                <button type="button" id="submitRecovery" class="btn btn-primary">Đồng Ý</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Hủy</button>               
             </div>
         </div>
     </div>
